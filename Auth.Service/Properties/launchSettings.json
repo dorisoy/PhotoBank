@@ -1,10 +1,10 @@
 ﻿{
-  "profiles": {
-    "Auth.Service": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
+    "profiles": {
+        "Auth.Service": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "DOTNET_ENVIRONMENT": "Development"
+            }
+        }
     }
-  }
 }

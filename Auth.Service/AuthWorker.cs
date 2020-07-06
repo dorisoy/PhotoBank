@@ -13,13 +13,13 @@ using PhotoBank.QueueLogic.Manager;
 
 namespace PhotoBank.Auth.Service
 {
-    public class Worker : BackgroundService
+    public class AuthWorker : BackgroundService
     {
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueueManager _queueManager;
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<AuthWorker> _logger;
 
-        public Worker(IRepositoryFactory repositoryFactory, IQueueManager queueManager, ILogger<Worker> logger)
+        public AuthWorker(IRepositoryFactory repositoryFactory, IQueueManager queueManager, ILogger<AuthWorker> logger)
         {
             _repositoryFactory = repositoryFactory;
             _queueManager = queueManager;
