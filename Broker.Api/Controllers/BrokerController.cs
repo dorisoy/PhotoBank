@@ -92,7 +92,7 @@ namespace PhotoBank.Broker.Api.Controllers
             var getPhotosOutputMessage = _queueManager.WaitFor<GetPhotosOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             if (getPhotosOutputMessage.Result == OutputMessageResult.Success)
             {
-                return new GetPhotosResponse { Success = true };
+                return new GetPhotosResponse { Success = true, PhotoIds = getPhotosOutputMessage.PhotoIds };
             }
             else
             {

@@ -10,6 +10,6 @@ namespace PhotoBank.Photo.Service.Data
 
         public int UserId { get; set; }
 
-        public byte[] Image { get; set; }
+        public string Path { get; set; }
     }
 }

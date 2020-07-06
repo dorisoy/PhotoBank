@@ -11,5 +11,7 @@ namespace PhotoBank.Photo.Contracts
         public GetPhotosOutputMessage(string guid, OutputMessageResult result) : base(guid, result)
         {
         }
+
+        public IEnumerable<int> PhotoIds { get; set; }
     }
 }

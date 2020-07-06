@@ -14,9 +14,9 @@ namespace PhotoBank.Photo.Service.Data
             _context = context;
         }
 
-        public IEnumerable<PhotoPoco> GetPhotos(int userId)
+        public IEnumerable<PhotoPoco> GetUserPhotos(int userId)
         {
-            return Enumerable.Empty<PhotoPoco>();
+            return _context.Photos.Where(x => x.UserId == userId).ToList();
         }
     }
 }

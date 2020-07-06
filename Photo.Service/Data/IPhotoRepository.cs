@@ -7,6 +7,6 @@ namespace PhotoBank.Photo.Service.Data
 {
     public interface IPhotoRepository : IRepository
     {
-        IEnumerable<PhotoPoco> GetPhotos(int userId);
+        IEnumerable<PhotoPoco> GetUserPhotos(int userId);
     }
 }

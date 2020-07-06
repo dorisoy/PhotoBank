@@ -40,8 +40,11 @@ namespace PhotoBank.Photo.Service
 
         private void ProcessGetPhotosInputMessage(GetPhotosInputMessage inputMessage)
         {
-            var photos = _repositoryFactory.Get<IPhotoRepository>().GetPhotos(inputMessage.UserId);
-            var outputMessage = new GetPhotosOutputMessage(inputMessage.Guid, OutputMessageResult.Success);
+            var photos = _repositoryFactory.Get<IPhotoRepository>().GetUserPhotos(inputMessage.UserId);
+            var outputMessage = new GetPhotosOutputMessage(inputMessage.Guid, OutputMessageResult.Success)
+            {
+                PhotoIds = photos.Select(x => x.Id).ToList()
+            };
             _queueManager.Send(PhotoSettings.PhotoOutputQueue, outputMessage);
         }
     }

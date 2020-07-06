@@ -8,5 +8,7 @@ namespace PhotoBank.Broker.Api.Contracts
     public class GetPhotosResponse
     {
         public bool Success { get; set; }
+
+        public IEnumerable<int> PhotoIds { get; set; }
     }
 }
