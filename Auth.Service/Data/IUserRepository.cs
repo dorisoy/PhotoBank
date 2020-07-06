@@ -8,5 +8,7 @@ namespace PhotoBank.Auth.Service.Data
     public interface IUserRepository : IRepository
     {
         void AddUser(UserPoco user);
+
+        UserPoco GetUser(string login, string password);
     }
 }

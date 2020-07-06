@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Broker.Api.Contracts;
+using PhotoBank.Photo.Contracts;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Manager;
 
@@ -32,6 +30,7 @@ namespace PhotoBank.Broker.Api.Controllers
             var inputMessage = new CreateUserInputMessage(inputMessageGuid)
             {
                 Login = request.Login,
+                Password = request.Password,
                 Name = request.Name,
                 EMail = request.EMail
             };
@@ -44,6 +43,60 @@ namespace PhotoBank.Broker.Api.Controllers
             else
             {
                 return new CreateUserResponse { Success = false };
+            }
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public LoginResponse Login(LoginRequest request)
+        {
+            var inputMessageGuid = Guid.NewGuid().ToString();
+            var inputMessage = new LoginInputMessage(inputMessageGuid)
+            {
+                Login = request.Login,
+                Password = request.Password
+            };
+            _queueManager.Send(AuthSettings.AuthInputQueue, inputMessage);
+            var outputMessage = _queueManager.WaitFor<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+            if (outputMessage.Result == OutputMessageResult.Success)
+            {
+                return new LoginResponse { Success = true };
+            }
+            else
+            {
+                return new LoginResponse { Success = false };
+            }
+        }
+
+        [HttpPost]
+        [Route("getPhotos")]
+        public GetPhotosResponse GetPhotos(GetPhotosRequest request)
+        {
+            var inputMessageGuid = Guid.NewGuid().ToString();
+            var loginInputMessage = new LoginInputMessage(inputMessageGuid)
+            {
+                Login = request.Login,
+                Password = request.Password
+            };
+            _queueManager.Send(AuthSettings.AuthInputQueue, loginInputMessage);
+            var loginOutputMessage = _queueManager.WaitFor<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+            if (loginOutputMessage.Result == OutputMessageResult.Error)
+            {
+                return new GetPhotosResponse { Success = false };
+            }
+            var getPhotosInputMessage = new GetPhotosInputMessage(inputMessageGuid)
+            {
+                UserId = loginOutputMessage.UserId
+            };
+            _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotosInputMessage);
+            var getPhotosOutputMessage = _queueManager.WaitFor<GetPhotosOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+            if (getPhotosOutputMessage.Result == OutputMessageResult.Success)
+            {
+                return new GetPhotosResponse { Success = true };
+            }
+            else
+            {
+                return new GetPhotosResponse { Success = false };
             }
         }
     }

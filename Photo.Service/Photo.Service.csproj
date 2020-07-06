@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>dotnet-Photo.Service-3464393C-2C1A-469F-807A-9A0CBBE13C07</UserSecretsId>
+    <RootNamespace>PhotoBank.Photo.Service</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+    <ProjectReference Include="..\Photo.Contracts\Photo.Contracts.csproj" />
+    <ProjectReference Include="..\QueueLogic\QueueLogic.csproj" />
+  </ItemGroup>
+</Project>

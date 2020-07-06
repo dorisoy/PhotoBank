@@ -10,6 +10,8 @@ namespace PhotoBank.Auth.Contracts
 
         public string Login { get; set; }
 
+        public string Password { get; set; }
+
         public string EMail { get; set; }
 
         public CreateUserInputMessage(string guid) : base(guid)

@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace PhotoBank.Auth.Service.Data
 {
@@ -17,6 +16,11 @@ namespace PhotoBank.Auth.Service.Data
         {
             _context.Users.Add(user);
             _context.SaveChanges();
+        }
+
+        public UserPoco GetUser(string login, string password)
+        {
+            return _context.Users.FirstOrDefault(x => x.Login == login && x.Password == password);
         }
     }
 }

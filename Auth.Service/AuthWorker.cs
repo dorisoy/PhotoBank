@@ -35,6 +35,10 @@ namespace PhotoBank.Auth.Service
                 {
                     await Task.Factory.StartNew(() => ProcessCreateUserInputMessage((CreateUserInputMessage)message));
                 }
+                else if (message is LoginInputMessage)
+                {
+                    await Task.Factory.StartNew(() => ProcessLoginInputMessage((LoginInputMessage)message));
+                }
             }
         }
 
@@ -43,11 +47,21 @@ namespace PhotoBank.Auth.Service
             var user = new UserPoco
             {
                 Login = inputMessage.Login,
+                Password = inputMessage.Password,
                 Name = inputMessage.Name,
                 EMail = inputMessage.EMail
             };
             _repositoryFactory.Get<IUserRepository>().AddUser(user);
             var outputMessage = new CreateUserOutputMessage(inputMessage.Guid, OutputMessageResult.Success);
+            _queueManager.Send(AuthSettings.AuthOutputQueue, outputMessage);
+        }
+
+        private void ProcessLoginInputMessage(LoginInputMessage inputMessage)
+        {
+            var user = _repositoryFactory.Get<IUserRepository>().GetUser(inputMessage.Login, inputMessage.Password);
+            var messageResult = user != null ? OutputMessageResult.Success : OutputMessageResult.Error;
+            var userId = user != null ? user.Id : 0;
+            var outputMessage = new LoginOutputMessage(inputMessage.Guid, messageResult) { UserId = userId };
             _queueManager.Send(AuthSettings.AuthOutputQueue, outputMessage);
         }
     }
