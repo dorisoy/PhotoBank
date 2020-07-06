@@ -3,6 +3,7 @@ using PhotoBank.QueueLogic.Contracts;
 
 namespace PhotoBank.Auth.Contracts
 {
+    [Serializable]
     public class CreateUserInputMessage : InputMessage
     {
         public string Name { get; set; }

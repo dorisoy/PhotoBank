@@ -12,7 +12,7 @@ using PhotoBank.QueueLogic.Manager;
 namespace PhotoBank.Broker.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api")]
     public class BrokerController : ControllerBase
     {
         private readonly IQueueManager _queueManager;
@@ -24,7 +24,8 @@ namespace PhotoBank.Broker.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpPost]
+        [Route("createUser")]
         public CreateUserResponse CreateUser(CreateUserRequest request)
         {
             var inputMessageGuid = Guid.NewGuid().ToString();

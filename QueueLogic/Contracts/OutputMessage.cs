@@ -4,6 +4,7 @@ using System.Text;
 
 namespace PhotoBank.QueueLogic.Contracts
 {
+    [Serializable]
     public abstract class OutputMessage : Message
     {
         public OutputMessageResult Result { get; private set; }
