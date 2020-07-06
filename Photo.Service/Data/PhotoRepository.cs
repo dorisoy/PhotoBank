@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace PhotoBank.Photo.Service.Data
 {
@@ -17,6 +15,11 @@ namespace PhotoBank.Photo.Service.Data
         public IEnumerable<PhotoPoco> GetUserPhotos(int userId)
         {
             return _context.Photos.Where(x => x.UserId == userId).ToList();
+        }
+
+        public PhotoPoco GetPhoto(int photoId)
+        {
+            return _context.Photos.FirstOrDefault(x => x.Id == photoId);
         }
     }
 }

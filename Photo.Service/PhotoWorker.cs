@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +36,10 @@ namespace PhotoBank.Photo.Service
                 {
                     await Task.Factory.StartNew(() => ProcessGetPhotosInputMessage((GetPhotosInputMessage)message));
                 }
+                else if (message is GetPhotoInputMessage)
+                {
+                    await Task.Factory.StartNew(() => ProcessGetPhotoInputMessage((GetPhotoInputMessage)message));
+                }
             }
         }
 
@@ -45,6 +50,22 @@ namespace PhotoBank.Photo.Service
             {
                 PhotoIds = photos.Select(x => x.Id).ToList()
             };
+            _queueManager.Send(PhotoSettings.PhotoOutputQueue, outputMessage);
+        }
+
+        private void ProcessGetPhotoInputMessage(GetPhotoInputMessage inputMessage)
+        {
+            GetPhotoOutputMessage outputMessage;
+            var photo = _repositoryFactory.Get<IPhotoRepository>().GetPhoto(inputMessage.PhotoId);
+            if (photo != null && File.Exists(photo.Path))
+            {
+                var photoBytes = File.ReadAllBytes(photo.Path);
+                outputMessage = new GetPhotoOutputMessage(inputMessage.Guid, OutputMessageResult.Success) { PhotoBytes = photoBytes };
+            }
+            else
+            {
+                outputMessage = new GetPhotoOutputMessage(inputMessage.Guid, OutputMessageResult.Error);
+            }
             _queueManager.Send(PhotoSettings.PhotoOutputQueue, outputMessage);
         }
     }

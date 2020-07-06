@@ -99,5 +99,37 @@ namespace PhotoBank.Broker.Api.Controllers
                 return new GetPhotosResponse { Success = false };
             }
         }
+
+        [HttpPost]
+        [Route("getPhoto")]
+        public IActionResult GetPhoto(GetPhotoRequest request)
+        {
+            var inputMessageGuid = Guid.NewGuid().ToString();
+            var loginInputMessage = new LoginInputMessage(inputMessageGuid)
+            {
+                Login = request.Login,
+                Password = request.Password
+            };
+            _queueManager.Send(AuthSettings.AuthInputQueue, loginInputMessage);
+            var loginOutputMessage = _queueManager.WaitFor<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+            if (loginOutputMessage.Result == OutputMessageResult.Error)
+            {
+                return NotFound();
+            }
+            var getPhotoInputMessage = new GetPhotoInputMessage(inputMessageGuid)
+            {
+                PhotoId = request.PhotoId
+            };
+            _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
+            var getPhotoOutputMessage = _queueManager.WaitFor<GetPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+            if (getPhotoOutputMessage.Result == OutputMessageResult.Success)
+            {
+                return File(getPhotoOutputMessage.PhotoBytes, "image/jpeg");
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }
