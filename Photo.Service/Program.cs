@@ -1,9 +1,10 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PhotoBank.DataAccess;
 using PhotoBank.Photo.Service.Data;
+using PhotoBank.Photo.Service.MessageProcessors;
 using PhotoBank.QueueLogic.Manager;
+using PhotoBank.Service.Common.MessageProcessors;
 
 namespace PhotoBank.Photo.Service
 {
@@ -18,18 +19,26 @@ namespace PhotoBank.Photo.Service
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    InitRepositoryFactory(services, hostContext.Configuration);
-                    services.AddSingleton(typeof(IQueueManager), typeof(QueueManager));
+                    var queueManager = new QueueManager();
+                    services.AddSingleton(typeof(IQueueManager), queueManager);
+
+                    var connectionString = hostContext.Configuration["connectionString"];
+                    var dbContext = new PhotoServiceDBContext(connectionString);
+                    var repositoryFactory = new RepositoryFactory();
+                    repositoryFactory.Add(typeof(IPhotoRepository), new PhotoRepository(dbContext));
+                    services.AddSingleton(typeof(IRepositoryFactory), repositoryFactory);
+
+                    var processorContext = new MessageProcessorContext
+                    {
+                        QueueManager = queueManager,
+                        RepositoryFactory = repositoryFactory
+                    };
+                    var processorFactory = new MessageProcessorFactory(processorContext);
+                    processorFactory.Add(typeof(GetPhotoInputMessageProcessor));
+                    processorFactory.Add(typeof(GetPhotosInputMessageProcessor));
+                    services.AddSingleton(typeof(IMessageProcessorFactory), processorFactory);
+
                     services.AddHostedService<PhotoWorker>();
                 });
-
-        private static void InitRepositoryFactory(IServiceCollection services, IConfiguration configuration)
-        {
-            var connectionString = configuration["connectionString"];
-            var context = new PhotoServiceDBContext(connectionString);
-            var factory = new RepositoryFactory();
-            factory.Add(typeof(IPhotoRepository), new PhotoRepository(context));
-            services.AddSingleton(typeof(IRepositoryFactory), factory);
-        }
     }
 }

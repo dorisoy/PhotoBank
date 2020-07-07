@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Starter", "Starter\Starter.csproj", "{1A139B2A-75E8-40D8-8485-14D25FB79016}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Photo.Contracts", "Photo.Contracts\Photo.Contracts.csproj", "{E2422D77-9D2C-4B37-8B58-DB6BFFB02FF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.Contracts", "Photo.Contracts\Photo.Contracts.csproj", "{E2422D77-9D2C-4B37-8B58-DB6BFFB02FF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Photo.Service", "Photo.Service\Photo.Service.csproj", "{ACDA99B3-1797-4CD4-BE63-A6D50D66A6BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.Service", "Photo.Service\Photo.Service.csproj", "{ACDA99B3-1797-4CD4-BE63-A6D50D66A6BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Common", "Service.Common\Service.Common.csproj", "{8A534DAB-8698-48C7-94FB-8DE6C3F16B19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{ACDA99B3-1797-4CD4-BE63-A6D50D66A6BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACDA99B3-1797-4CD4-BE63-A6D50D66A6BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACDA99B3-1797-4CD4-BE63-A6D50D66A6BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A534DAB-8698-48C7-94FB-8DE6C3F16B19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A534DAB-8698-48C7-94FB-8DE6C3F16B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A534DAB-8698-48C7-94FB-8DE6C3F16B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A534DAB-8698-48C7-94FB-8DE6C3F16B19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

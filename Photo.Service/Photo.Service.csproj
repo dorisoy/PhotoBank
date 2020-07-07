@@ -15,5 +15,6 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\Photo.Contracts\Photo.Contracts.csproj" />
     <ProjectReference Include="..\QueueLogic\QueueLogic.csproj" />
+    <ProjectReference Include="..\Service.Common\Service.Common.csproj" />
   </ItemGroup>
 </Project>
