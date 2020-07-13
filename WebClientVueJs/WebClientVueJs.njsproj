@@ -37,6 +37,12 @@
     <Content Include="src\components\Auth.vue" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="src\components\Photos.vue">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\config.js" />
+    <Content Include="src\cookies.js" />
+    <Content Include="src\router.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />

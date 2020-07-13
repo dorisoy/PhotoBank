@@ -6,14 +6,16 @@
         </div>
         <div>
             <label>Password: </label>
-            <input type="text" v-model="password" />
+            <input type="password" v-model="password" />
         </div>
         <button v-on:click="send">Send</button>
     </div>
 </template>
 
 <script>
-    import axios from 'axios';
+    import Axios from 'axios';
+    import Config from '@/config';
+    import '@/cookies';
 
     export default {
         name: 'Auth',
@@ -21,22 +23,23 @@
         },
         data() {
             return {
-                login: "",
-                password: ""
+                login: "vinge",
+                password: "12345"
             };
         },
         mounted() {
         },
         methods: {
-            send: function () {
-                var postData = { login: this.login, password: this.password };
-                axios({
+            send() {
+                Axios({
                     method: 'post',
-                    url: 'https://localhost:44363/api/stub/login',
-                    data: postData
+                    url: Config.loginApiPath,
+                    data: { login: this.login, password: this.password }
                 }).then(response => {
                     if (response.data.success) {
-                        
+                        this.$cookies.set('login', this.login);
+                        this.$cookies.set('token', response.data.token);
+                        this.$router.push('photos');
                     }
                 });
             }
