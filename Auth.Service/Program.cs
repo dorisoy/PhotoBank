@@ -26,6 +26,7 @@ namespace PhotoBank.Auth.Service
                 var dbContext = new AuthServiceDBContext(connectionString);
                 var repositoryFactory = new RepositoryFactory();
                 repositoryFactory.Add(typeof(IUserRepository), new UserRepository(dbContext));
+                repositoryFactory.Add(typeof(ITokenRepository), new TokenRepository(dbContext));
                 services.AddSingleton(typeof(IRepositoryFactory), repositoryFactory);
 
                 var processorContext = new MessageProcessorContext
@@ -36,6 +37,7 @@ namespace PhotoBank.Auth.Service
                 var processorFactory = new MessageProcessorFactory(processorContext);
                 processorFactory.Add(typeof(CreateUserInputMessageProcessor));
                 processorFactory.Add(typeof(LoginInputMessageProcessor));
+                processorFactory.Add(typeof(CheckTokenInputMessageProcessor));
                 services.AddSingleton(typeof(IMessageProcessorFactory), processorFactory);
 
                 services.AddHostedService<AuthWorker>();

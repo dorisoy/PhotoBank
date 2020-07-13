@@ -14,7 +14,10 @@ namespace PhotoBank.Auth.Service.MessageProcessors
             var user = _context.RepositoryFactory.Get<IUserRepository>().GetUser(inputMessage.Login, inputMessage.Password);
             var messageResult = user != null ? OutputMessageResult.Success : OutputMessageResult.Error;
             var userId = user != null ? user.Id : 0;
-            var outputMessage = new LoginOutputMessage(inputMessage.Guid, messageResult) { UserId = userId };
+            var token = TokenGenerator.GetNewToken();
+            var tokenPoco = new TokenPoco { Login = inputMessage.Login, UserId = userId, Token = token };
+            _context.RepositoryFactory.Get<ITokenRepository>().AddToken(tokenPoco);
+            var outputMessage = new LoginOutputMessage(inputMessage.Guid, messageResult) { Token = token };
             _context.QueueManager.Send(AuthSettings.AuthOutputQueue, outputMessage);
         }
     }

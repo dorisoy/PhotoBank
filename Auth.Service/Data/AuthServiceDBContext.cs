@@ -20,6 +20,8 @@ namespace PhotoBank.Auth.Service.Data
 
         public DbSet<UserPoco> Users { get; set; }
 
+        public DbSet<TokenPoco> Tokens { get; set; }
+
         public string ConnectionString { get; }
     }
 }

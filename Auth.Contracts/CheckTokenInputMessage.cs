@@ -6,11 +6,13 @@ using PhotoBank.QueueLogic.Contracts;
 namespace PhotoBank.Auth.Contracts
 {
     [Serializable]
-    public class LoginOutputMessage : OutputMessage
+    public class CheckTokenInputMessage : InputMessage
     {
-        public LoginOutputMessage(string guid, OutputMessageResult result) : base(guid, result)
+        public CheckTokenInputMessage(string guid) : base(guid)
         {
         }
+
+        public string Login { get; set; }
 
         public string Token { get; set; }
     }

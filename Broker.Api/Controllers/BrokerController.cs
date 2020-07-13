@@ -60,7 +60,7 @@ namespace PhotoBank.Broker.Api.Controllers
             var outputMessage = _queueManager.WaitFor<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             if (outputMessage.Result == OutputMessageResult.Success)
             {
-                return new LoginResponse { Success = true };
+                return new LoginResponse { Success = true, Token = outputMessage.Token };
             }
             else
             {
@@ -73,20 +73,20 @@ namespace PhotoBank.Broker.Api.Controllers
         public GetPhotosResponse GetPhotos(GetPhotosRequest request)
         {
             var inputMessageGuid = Guid.NewGuid().ToString();
-            var loginInputMessage = new LoginInputMessage(inputMessageGuid)
+            var checkTokenInputMessage = new CheckTokenInputMessage(inputMessageGuid)
             {
                 Login = request.Login,
-                Password = request.Password
+                Token = request.Token
             };
-            _queueManager.Send(AuthSettings.AuthInputQueue, loginInputMessage);
-            var loginOutputMessage = _queueManager.WaitFor<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            if (loginOutputMessage.Result == OutputMessageResult.Error)
+            _queueManager.Send(AuthSettings.AuthInputQueue, checkTokenInputMessage);
+            var checkTokenOutputMessage = _queueManager.WaitFor<CheckTokenOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+            if (checkTokenOutputMessage.Result == OutputMessageResult.Error)
             {
                 return new GetPhotosResponse { Success = false };
             }
             var getPhotosInputMessage = new GetPhotosInputMessage(inputMessageGuid)
             {
-                UserId = loginOutputMessage.UserId
+                UserId = checkTokenOutputMessage.UserId
             };
             _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotosInputMessage);
             var getPhotosOutputMessage = _queueManager.WaitFor<GetPhotosOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
@@ -105,14 +105,14 @@ namespace PhotoBank.Broker.Api.Controllers
         public IActionResult GetPhoto(GetPhotoRequest request)
         {
             var inputMessageGuid = Guid.NewGuid().ToString();
-            var loginInputMessage = new LoginInputMessage(inputMessageGuid)
+            var checkTokenInputMessage = new CheckTokenInputMessage(inputMessageGuid)
             {
                 Login = request.Login,
-                Password = request.Password
+                Token = request.Token
             };
-            _queueManager.Send(AuthSettings.AuthInputQueue, loginInputMessage);
-            var loginOutputMessage = _queueManager.WaitFor<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            if (loginOutputMessage.Result == OutputMessageResult.Error)
+            _queueManager.Send(AuthSettings.AuthInputQueue, checkTokenInputMessage);
+            var checkTokenOutputMessage = _queueManager.WaitFor<CheckTokenOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+            if (checkTokenOutputMessage.Result == OutputMessageResult.Error)
             {
                 return NotFound();
             }
