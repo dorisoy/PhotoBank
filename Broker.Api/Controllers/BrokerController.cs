@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhotoBank.Auth.Contracts;
@@ -11,6 +12,7 @@ namespace PhotoBank.Broker.Api.Controllers
 {
     [ApiController]
     [Route("api")]
+    [EnableCors("TCAPolicy")]
     public class BrokerController : ControllerBase
     {
         private readonly IQueueManager _queueManager;
