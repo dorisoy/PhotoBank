@@ -56,9 +56,27 @@ namespace PhotoBank.Broker.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getPhoto")]
+        public IActionResult GetPhotoGet(string login, string token, int photoId)
+        {
+            if (login == "vinge" && token == "qwertyuiop" && photoId == 1)
+            {
+                return File(System.IO.File.ReadAllBytes(@"D:\Projects\PhotoBank\Photo.Service\Database\DSC_8671.jpg"), "image/jpeg");
+            }
+            else if (login == "vinge" && token == "qwertyuiop" && photoId == 2)
+            {
+                return File(System.IO.File.ReadAllBytes(@"D:\Projects\PhotoBank\Photo.Service\Database\DSC_9918.jpg"), "image/jpeg");
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         [Route("getPhoto")]
-        public IActionResult GetPhoto(GetPhotoRequest request)
+        public IActionResult GetPhotoPost(GetPhotoRequest request)
         {
             if (request.Login == "vinge" && request.Token == "qwertyuiop" && request.PhotoId == 1)
             {
@@ -71,6 +89,22 @@ namespace PhotoBank.Broker.Api.Controllers
             else
             {
                 return NotFound();
+            }
+        }
+
+        [HttpPost]
+        [Route("uploadPhotos")]
+        public UploadPhotoReponse UploadPhotos(UploadPhotoRequest request)
+        {
+            var bytes1 = System.IO.File.ReadAllBytes(@"C:\Users\Kolya\Desktop\1.png");
+            var bytes2 = Convert.FromBase64String(request.Files.First());
+            if (request.Login == "vinge" && request.Token == "qwertyuiop")
+            {
+                return new UploadPhotoReponse { Success = false };
+            }
+            else
+            {
+                return new UploadPhotoReponse { Success = false };
             }
         }
     }
