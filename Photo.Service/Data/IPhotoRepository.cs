@@ -10,5 +10,7 @@ namespace PhotoBank.Photo.Service.Data
         IEnumerable<PhotoPoco> GetUserPhotos(int userId);
 
         PhotoPoco GetPhoto(int photoId);
+
+        int SavePhoto(int userId, string path);
     }
 }

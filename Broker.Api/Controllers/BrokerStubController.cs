@@ -75,36 +75,16 @@ namespace PhotoBank.Broker.Api.Controllers
         }
 
         [HttpPost]
-        [Route("getPhoto")]
-        public IActionResult GetPhotoPost(GetPhotoRequest request)
-        {
-            if (request.Login == "vinge" && request.Token == "qwertyuiop" && request.PhotoId == 1)
-            {
-                return File(System.IO.File.ReadAllBytes(@"D:\Projects\PhotoBank\Photo.Service\Database\DSC_8671.jpg"), "image/jpeg");
-            }
-            else if (request.Login == "vinge" && request.Token == "qwertyuiop" && request.PhotoId == 2)
-            {
-                return File(System.IO.File.ReadAllBytes(@"D:\Projects\PhotoBank\Photo.Service\Database\DSC_9918.jpg"), "image/jpeg");
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpPost]
         [Route("uploadPhotos")]
-        public UploadPhotoReponse UploadPhotos(UploadPhotoRequest request)
+        public UploadPhotosReponse UploadPhotos(UploadPhotosRequest request)
         {
-            var bytes1 = System.IO.File.ReadAllBytes(@"C:\Users\Kolya\Desktop\1.png");
-            var bytes2 = Convert.FromBase64String(request.Files.First());
             if (request.Login == "vinge" && request.Token == "qwertyuiop")
             {
-                return new UploadPhotoReponse { Success = false };
+                return new UploadPhotosReponse { Result = UploadPhotoResult.AllPhotos };
             }
             else
             {
-                return new UploadPhotoReponse { Success = false };
+                return new UploadPhotosReponse { Result = UploadPhotoResult.NoOne };
             }
         }
     }

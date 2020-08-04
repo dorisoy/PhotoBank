@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace PhotoBank.Broker.Api.Contracts
 {
-    public class UploadPhotoRequest
+    public class UploadPhotosRequest
     {
         public string Login { get; set; }
 
         public string Token { get; set; }
 
-        public string[] Files { get; set; }
+        public IEnumerable<string> Files { get; set; }
     }
 }

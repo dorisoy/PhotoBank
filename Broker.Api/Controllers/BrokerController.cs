@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -102,9 +104,41 @@ namespace PhotoBank.Broker.Api.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("getPhoto")]
-        public IActionResult GetPhoto(GetPhotoRequest request)
+        public IActionResult GetPhoto(string login, string token, int photoId)
+        {
+            var inputMessageGuid = Guid.NewGuid().ToString();
+            var checkTokenInputMessage = new CheckTokenInputMessage(inputMessageGuid)
+            {
+                Login = login,
+                Token = token
+            };
+            _queueManager.Send(AuthSettings.AuthInputQueue, checkTokenInputMessage);
+            var checkTokenOutputMessage = _queueManager.WaitFor<CheckTokenOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+            if (checkTokenOutputMessage.Result == OutputMessageResult.Error)
+            {
+                return NotFound();
+            }
+            var getPhotoInputMessage = new GetPhotoInputMessage(inputMessageGuid)
+            {
+                PhotoId = photoId
+            };
+            _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
+            var getPhotoOutputMessage = _queueManager.WaitFor<GetPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+            if (getPhotoOutputMessage.Result == OutputMessageResult.Success)
+            {
+                return File(getPhotoOutputMessage.PhotoBytes, "image/jpeg");
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        [Route("uploadPhotos")]
+        public UploadPhotosReponse UploadPhotos(UploadPhotosRequest request)
         {
             var inputMessageGuid = Guid.NewGuid().ToString();
             var checkTokenInputMessage = new CheckTokenInputMessage(inputMessageGuid)
@@ -116,21 +150,38 @@ namespace PhotoBank.Broker.Api.Controllers
             var checkTokenOutputMessage = _queueManager.WaitFor<CheckTokenOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             if (checkTokenOutputMessage.Result == OutputMessageResult.Error)
             {
-                return NotFound();
+                return new UploadPhotosReponse { Result = UploadPhotoResult.NoOne };
             }
-            var getPhotoInputMessage = new GetPhotoInputMessage(inputMessageGuid)
+            if ((request.Files ?? Enumerable.Empty<string>()).Any() == false)
             {
-                PhotoId = request.PhotoId
-            };
-            _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
-            var getPhotoOutputMessage = _queueManager.WaitFor<GetPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            if (getPhotoOutputMessage.Result == OutputMessageResult.Success)
+                return new UploadPhotosReponse { Result = UploadPhotoResult.NoOne };
+            }
+            var uploadedPhotoIds = new List<int>();
+            foreach (var fileBase64Content in request.Files)
             {
-                return File(getPhotoOutputMessage.PhotoBytes, "image/jpeg");
+                var uploadPhotoInputMessage = new UploadPhotoInputMessage(inputMessageGuid)
+                {
+                    UserId = checkTokenOutputMessage.UserId,
+                    FileBase64Content = fileBase64Content
+                };
+                _queueManager.Send(PhotoSettings.PhotoInputQueue, uploadPhotoInputMessage);
+                var uploadPhotoOutputMessage = _queueManager.WaitFor<UploadPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
+                if (uploadPhotoOutputMessage.Result == OutputMessageResult.Success)
+                {
+                    uploadedPhotoIds.Add(uploadPhotoOutputMessage.PhotoId);
+                }
+            }
+            if (uploadedPhotoIds.Count == request.Files.Count())
+            {
+                return new UploadPhotosReponse { Result = UploadPhotoResult.AllPhotos, PhotoIds = uploadedPhotoIds };
+            }
+            else if (uploadedPhotoIds.Count > 0)
+            {
+                return new UploadPhotosReponse { Result = UploadPhotoResult.Partially, PhotoIds = uploadedPhotoIds };
             }
             else
             {
-                return NotFound();
+                return new UploadPhotosReponse { Result = UploadPhotoResult.NoOne };
             }
         }
     }

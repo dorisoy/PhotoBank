@@ -21,5 +21,14 @@ namespace PhotoBank.Photo.Service.Data
         {
             return _context.Photos.FirstOrDefault(x => x.Id == photoId);
         }
+
+        public int SavePhoto(int userId, string path)
+        {
+            var poco = new PhotoPoco { UserId = userId, Path = path };
+            _context.Photos.Add(poco);
+            _context.SaveChanges();
+
+            return poco.Id;
+        }
     }
 }
