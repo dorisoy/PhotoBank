@@ -4,7 +4,7 @@
         <uploadPhoto />
         <ul>
             <li v-for="photoUrl in photoUrls" v-bind:key="photoUrl">
-                <img v-bind:src="photoUrl" />
+                <img v-bind:src="photoUrl" width="250" />
             </li>
         </ul>
     </div>
