@@ -36,20 +36,22 @@ namespace PhotoBank.QueueLogic.Manager
         public Message Wait(string queueName)
         {
             var factory = MakeConnectionFactory();
-            using (var connection = factory.CreateConnection())
-            using (var model = connection.CreateModel())
+            while (true)
             {
-                while (true)
+                using (var connection = factory.CreateConnection())
+                using (var model = connection.CreateModel())
                 {
                     var messageContainer = model.BasicGet(queueName, true);
-                    if (messageContainer == null)
+                    if (messageContainer != null)
+                    {
+                        var messageTypeName = messageContainer.BasicProperties.GetHeaderValue(MessageType);
+                        var message = (Message)BinarySerialization.FromBytes(messageTypeName, messageContainer.Body);
+                        return message;
+                    }
+                    else
                     {
                         Thread.Sleep(WaitTimeout);
-                        continue;
                     }
-                    var messageTypeName = messageContainer.BasicProperties.GetHeaderValue(MessageType);
-                    var message = (Message)BinarySerialization.FromBytes(messageTypeName, messageContainer.Body);
-                    return message;
                 }
             }
         }
@@ -57,25 +59,24 @@ namespace PhotoBank.QueueLogic.Manager
         public TMessage WaitFor<TMessage>(string queueName, string messageGuid) where TMessage : Message
         {
             var factory = MakeConnectionFactory();
-            using (var connection = factory.CreateConnection())
-            using (var model = connection.CreateModel())
+            while (true)
             {
-                while (true)
+                using (var connection = factory.CreateConnection())
+                using (var model = connection.CreateModel())
                 {
-                    var messageContainer = model.BasicGet(queueName, false);
-                    if (messageContainer == null)
+                    BasicGetResult messageContainer = null;
+                    while ((messageContainer = model.BasicGet(queueName, false)) != null)
                     {
-                        Thread.Sleep(WaitTimeout);
-                        continue;
+                        var messageContainerGuid = messageContainer.BasicProperties.GetHeaderValue(MessageGuid);
+                        if (messageGuid == messageContainerGuid)
+                        {
+                            model.BasicAck(messageContainer.DeliveryTag, false); // отметка, что сообщение получено
+                            var messageTypeName = messageContainer.BasicProperties.GetHeaderValue(MessageType);
+                            var message = (TMessage)BinarySerialization.FromBytes(messageTypeName, messageContainer.Body);
+                            return message;
+                        }
                     }
-                    var messageContainerGuid = messageContainer.BasicProperties.GetHeaderValue(MessageGuid);
-                    if (messageGuid == messageContainerGuid)
-                    {
-                        model.BasicAck(messageContainer.DeliveryTag, false);
-                        var messageTypeName = messageContainer.BasicProperties.GetHeaderValue(MessageType);
-                        var message = (TMessage)BinarySerialization.FromBytes(messageTypeName, messageContainer.Body);
-                        return message;
-                    }
+                    Thread.Sleep(WaitTimeout);
                 }
             }
         }
