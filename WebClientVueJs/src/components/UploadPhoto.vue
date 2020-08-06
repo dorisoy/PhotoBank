@@ -4,7 +4,7 @@
             Upload photos:
             <input type="file" id="files" ref="files" multiple v-on:change="handleFilesUpload()" />
         </label>
-        <button v-on:click="submitFile()">Send</button>
+        <button v-on:click="submitFiles()">Send</button>
     </div>
 </template>
 
@@ -24,14 +24,16 @@
             handleFilesUpload() {
                 this.files = this.$refs.files.files;
             },
-            submitFile() {
+            submitFiles() {
                 var uploadFunc = function (filesBase64) {
                     Axios({
                         method: 'post',
                         url: Config.uploadPhotosApiPath,
                         data: { login: self.$cookies.get('login'), token: self.$cookies.get('token'), files: filesBase64 }
                     }).then(response => {
-                        if (response.data.success) {
+                        if (response.data.isAuthenticated == false) {
+                            this.$router.push('/');
+                        } else if (response.data.success) {
                             alert('OK');
                         }
                     });

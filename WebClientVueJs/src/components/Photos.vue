@@ -35,7 +35,9 @@
                 url: Config.getPhotosApiPath,
                 data: { login: this.$cookies.get('login'), token: this.$cookies.get('token') }
             }).then(response => {
-                if (response.data.success) {
+                if (response.data.isAuthenticated == false) {
+                    this.$router.push('/');
+                } else if (response.data.success) {
                     // формируем адрес для получения содержимого каждой фотки
                     var photoIds = response.data.photoIds;
                     for (var photoIdIndex in photoIds) {

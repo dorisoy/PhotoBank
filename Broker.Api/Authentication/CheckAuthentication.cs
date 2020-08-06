@@ -8,7 +8,7 @@ using PhotoBank.Broker.Api.Contracts;
 namespace PhotoBank.Broker.Api.Authentication
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class AuthenticationFilter : ActionFilterAttribute
+    public class CheckAuthentication : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -17,7 +17,7 @@ namespace PhotoBank.Broker.Api.Authentication
             var authenticationManager = context.HttpContext.RequestServices.GetService<IAuthenticationManager>();
             if (authenticationManager.IsAuthenticated(login, token) == false)
             {
-                context.Result = new NotFoundResult();
+                context.Result = new JsonResult(new AuthenticatedResponse { IsAuthenticated = false });
             }
             base.OnActionExecuting(context);
         }

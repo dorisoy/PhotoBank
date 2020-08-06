@@ -78,7 +78,7 @@ namespace PhotoBank.Broker.Api.Controllers
 
         [HttpPost]
         [Route("getPhotos")]
-        [AuthenticationFilter]
+        [CheckAuthentication]
         public GetPhotosResponse GetPhotos(GetPhotosRequest request)
         {
             var inputMessageGuid = Guid.NewGuid().ToString();
@@ -100,7 +100,7 @@ namespace PhotoBank.Broker.Api.Controllers
 
         [HttpGet]
         [Route("getPhoto")]
-        [AuthenticationFilter]
+        [CheckAuthentication]
         public IActionResult GetPhoto(string login, string token, int photoId)
         {
             var inputMessageGuid = Guid.NewGuid().ToString();
@@ -122,7 +122,7 @@ namespace PhotoBank.Broker.Api.Controllers
 
         [HttpPost]
         [Route("uploadPhotos")]
-        [AuthenticationFilter]
+        [CheckAuthentication]
         public UploadPhotosReponse UploadPhotos(UploadPhotosRequest request)
         {
             if ((request.Files ?? Enumerable.Empty<string>()).Any() == false)
