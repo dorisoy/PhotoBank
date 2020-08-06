@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using PhotoBank.Broker.Api.Authentication;
 using PhotoBank.QueueLogic.Manager;
 
 namespace PhotoBank.Broker.Api
@@ -29,6 +23,7 @@ namespace PhotoBank.Broker.Api
             {
                 builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             }));
+            services.AddSingleton(typeof(IAuthenticationManager), typeof(AuthenticationManager));
             services.AddSingleton(typeof(IQueueManager), typeof(QueueManager));
             services.AddControllers();
         }

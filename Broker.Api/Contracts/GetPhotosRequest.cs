@@ -5,10 +5,7 @@ using System.Threading.Tasks;
 
 namespace PhotoBank.Broker.Api.Contracts
 {
-    public class GetPhotosRequest
+    public class GetPhotosRequest : AuthenticatedRequest
     {
-        public string Login { get; set; }
-
-        public string Token { get; set; }
     }
 }
