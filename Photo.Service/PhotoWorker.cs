@@ -11,13 +11,13 @@ namespace PhotoBank.Photo.Service
     public class PhotoWorker : BackgroundService
     {
         private readonly IMessageProcessorFactory _processorFactory;
-        private readonly IQueueManager _queueManager;
+        private readonly IQueueListener _queueListener;
         private readonly ILogger<PhotoWorker> _logger;
 
         public PhotoWorker(IMessageProcessorFactory processorFactory, IQueueManager queueManager, ILogger<PhotoWorker> logger)
         {
             _processorFactory = processorFactory;
-            _queueManager = queueManager;
+            _queueListener = queueManager.CreateListener(PhotoSettings.PhotoInputQueue);
             _logger = logger;
         }
 
@@ -25,7 +25,7 @@ namespace PhotoBank.Photo.Service
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var message = _queueManager.Wait(PhotoSettings.PhotoInputQueue);
+                var message = _queueListener.WaitForMessage();
                 var processor = _processorFactory.MakeProcessorFor(message);
                 await Task.Factory.StartNew(processor.Execute);
             }

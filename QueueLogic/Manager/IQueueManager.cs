@@ -9,5 +9,7 @@ namespace PhotoBank.QueueLogic.Manager
         Message Wait(string queueName);
 
         TMessage WaitFor<TMessage>(string queueName, string messageGuid) where TMessage : Message;
+
+        IQueueListener CreateListener(string queueName);
     }
 }

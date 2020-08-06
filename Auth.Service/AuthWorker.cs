@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -11,14 +10,14 @@ namespace PhotoBank.Auth.Service
 {
     public class AuthWorker : BackgroundService
     {
-        private readonly IQueueManager _queueManager;
         private readonly IMessageProcessorFactory _processorFactory;
+        private readonly IQueueListener _queueListener;
         private readonly ILogger<AuthWorker> _logger;
 
-        public AuthWorker(IQueueManager queueManager, IMessageProcessorFactory processorFactory, ILogger<AuthWorker> logger)
+        public AuthWorker(IMessageProcessorFactory processorFactory, IQueueManager queueManager, ILogger<AuthWorker> logger)
         {
-            _queueManager = queueManager;
             _processorFactory = processorFactory;
+            _queueListener = queueManager.CreateListener(AuthSettings.AuthInputQueue);
             _logger = logger;
         }
 
@@ -26,7 +25,7 @@ namespace PhotoBank.Auth.Service
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var message = _queueManager.Wait(AuthSettings.AuthInputQueue);
+                var message = _queueListener.WaitForMessage();
                 var processor = _processorFactory.MakeProcessorFor(message);
                 await Task.Factory.StartNew(processor.Execute);
             }

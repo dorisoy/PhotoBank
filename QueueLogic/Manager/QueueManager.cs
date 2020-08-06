@@ -11,9 +11,6 @@ namespace PhotoBank.QueueLogic.Manager
     {
         public TimeSpan WaitTimeout { get; set; }
 
-        private static readonly string MessageType = "MessageType";
-        private static readonly string MessageGuid = "MessageGuid";
-
         public QueueManager()
         {
             WaitTimeout = TimeSpan.FromSeconds(1);
@@ -21,21 +18,21 @@ namespace PhotoBank.QueueLogic.Manager
 
         public void Send(string queueName, Message messsage)
         {
-            var factory = MakeConnectionFactory();
+            var factory = QueueConnectionFactory.MakeConnectionFactory();
             using (var connection = factory.CreateConnection())
             using (var model = connection.CreateModel())
             {
                 var props = model.CreateBasicProperties();
                 props.Headers = new Dictionary<string, object>();
-                props.Headers.Add(MessageType, messsage.GetType().AssemblyQualifiedName);
-                props.Headers.Add(MessageGuid, messsage.Guid);
+                props.Headers.Add(MessageFieldConstants.MessageType, messsage.GetType().AssemblyQualifiedName);
+                props.Headers.Add(MessageFieldConstants.MessageGuid, messsage.Guid);
                 model.BasicPublish("", queueName, props, BinarySerialization.ToBytes(messsage));
             }
         }
 
         public Message Wait(string queueName)
         {
-            var factory = MakeConnectionFactory();
+            var factory = QueueConnectionFactory.MakeConnectionFactory();
             while (true)
             {
                 using (var connection = factory.CreateConnection())
@@ -44,7 +41,7 @@ namespace PhotoBank.QueueLogic.Manager
                     var messageContainer = model.BasicGet(queueName, true);
                     if (messageContainer != null)
                     {
-                        var messageTypeName = messageContainer.BasicProperties.GetHeaderValue(MessageType);
+                        var messageTypeName = messageContainer.BasicProperties.GetHeaderValue(MessageFieldConstants.MessageType);
                         var message = (Message)BinarySerialization.FromBytes(messageTypeName, messageContainer.Body);
                         return message;
                     }
@@ -58,7 +55,7 @@ namespace PhotoBank.QueueLogic.Manager
 
         public TMessage WaitFor<TMessage>(string queueName, string messageGuid) where TMessage : Message
         {
-            var factory = MakeConnectionFactory();
+            var factory = QueueConnectionFactory.MakeConnectionFactory();
             while (true)
             {
                 using (var connection = factory.CreateConnection())
@@ -67,11 +64,11 @@ namespace PhotoBank.QueueLogic.Manager
                     BasicGetResult messageContainer = null;
                     while ((messageContainer = model.BasicGet(queueName, false)) != null)
                     {
-                        var messageContainerGuid = messageContainer.BasicProperties.GetHeaderValue(MessageGuid);
+                        var messageContainerGuid = messageContainer.BasicProperties.GetHeaderValue(MessageFieldConstants.MessageGuid);
                         if (messageGuid == messageContainerGuid)
                         {
                             model.BasicAck(messageContainer.DeliveryTag, false); // отметка, что сообщение получено
-                            var messageTypeName = messageContainer.BasicProperties.GetHeaderValue(MessageType);
+                            var messageTypeName = messageContainer.BasicProperties.GetHeaderValue(MessageFieldConstants.MessageType);
                             var message = (TMessage)BinarySerialization.FromBytes(messageTypeName, messageContainer.Body);
                             return message;
                         }
@@ -81,14 +78,9 @@ namespace PhotoBank.QueueLogic.Manager
             }
         }
 
-        private ConnectionFactory MakeConnectionFactory()
+        public IQueueListener CreateListener(string queueName)
         {
-            return new ConnectionFactory()
-            {
-                HostName = "localhost",
-                UserName = "vinge",
-                Password = "vinge",
-            };
+            return new QueueListener(queueName, false, QueueConnectionFactory.MakeConnectionFactory());
         }
     }
 }
