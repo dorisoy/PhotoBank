@@ -17,7 +17,7 @@ namespace PhotoBank.Photo.Service
         public PhotoWorker(IMessageProcessorFactory processorFactory, IQueueManager queueManager, ILogger<PhotoWorker> logger)
         {
             _processorFactory = processorFactory;
-            _queueListener = queueManager.CreateListener(PhotoSettings.PhotoInputQueue);
+            _queueListener = queueManager.CreateQueueListener(PhotoSettings.PhotoInputQueue);
             _logger = logger;
         }
 

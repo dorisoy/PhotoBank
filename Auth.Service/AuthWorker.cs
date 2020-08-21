@@ -17,7 +17,7 @@ namespace PhotoBank.Auth.Service
         public AuthWorker(IMessageProcessorFactory processorFactory, IQueueManager queueManager, ILogger<AuthWorker> logger)
         {
             _processorFactory = processorFactory;
-            _queueListener = queueManager.CreateListener(AuthSettings.AuthInputQueue);
+            _queueListener = queueManager.CreateQueueListener(AuthSettings.AuthInputQueue);
             _logger = logger;
         }
 

@@ -64,15 +64,18 @@ namespace PhotoBank.Broker.Api.Controllers
                 Password = request.Password
             };
             _queueManager.Send(AuthSettings.AuthInputQueue, inputMessage);
-            var outputMessage = _queueManager.WaitFor<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            if (outputMessage.Result == OutputMessageResult.Success)
+            using (var loginOutputMessageListener = _queueManager.CreateQueueMessageListener<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid))
             {
-                _authenticationManager.Add(request.Login, outputMessage.Token, outputMessage.UserId);
-                return new LoginResponse { Success = true, Token = outputMessage.Token };
-            }
-            else
-            {
-                return new LoginResponse { Success = false };
+                var outputMessage = loginOutputMessageListener.WaitForMessage();
+                if (outputMessage.Result == OutputMessageResult.Success)
+                {
+                    _authenticationManager.Add(request.Login, outputMessage.Token, outputMessage.UserId);
+                    return new LoginResponse { Success = true, Token = outputMessage.Token };
+                }
+                else
+                {
+                    return new LoginResponse { Success = false };
+                }
             }
         }
 
@@ -87,14 +90,17 @@ namespace PhotoBank.Broker.Api.Controllers
                 UserId = _authenticationManager.GetUserId(request.Login, request.Token)
             };
             _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotosInputMessage);
-            var getPhotosOutputMessage = _queueManager.WaitFor<GetPhotosOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            if (getPhotosOutputMessage.Result == OutputMessageResult.Success)
+            using (var getPhotosOutputMessageListener = _queueManager.CreateQueueMessageListener<GetPhotosOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid))
             {
-                return new GetPhotosResponse { Success = true, PhotoIds = getPhotosOutputMessage.PhotoIds };
-            }
-            else
-            {
-                return new GetPhotosResponse { Success = false };
+                var getPhotosOutputMessage = getPhotosOutputMessageListener.WaitForMessage();
+                if (getPhotosOutputMessage.Result == OutputMessageResult.Success)
+                {
+                    return new GetPhotosResponse { Success = true, PhotoIds = getPhotosOutputMessage.PhotoIds };
+                }
+                else
+                {
+                    return new GetPhotosResponse { Success = false };
+                }
             }
         }
 
@@ -109,14 +115,17 @@ namespace PhotoBank.Broker.Api.Controllers
                 PhotoId = photoId
             };
             _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
-            var getPhotoOutputMessage = _queueManager.WaitFor<GetPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            if (getPhotoOutputMessage.Result == OutputMessageResult.Success)
+            using (var getPhotoOutputMessageListener = _queueManager.CreateQueueMessageListener<GetPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid))
             {
-                return File(getPhotoOutputMessage.PhotoBytes, "image/jpeg");
-            }
-            else
-            {
-                return NotFound();
+                var getPhotoOutputMessage = getPhotoOutputMessageListener.WaitForMessage();
+                if (getPhotoOutputMessage.Result == OutputMessageResult.Success)
+                {
+                    return File(getPhotoOutputMessage.PhotoBytes, "image/jpeg");
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
         }
 

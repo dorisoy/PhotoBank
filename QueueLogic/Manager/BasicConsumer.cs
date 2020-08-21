@@ -6,11 +6,6 @@ using RabbitMQ.Client.Events;
 
 namespace PhotoBank.QueueLogic.Manager
 {
-    class BasicConsumerEventArgs : EventArgs
-    {
-        public Message Message { get; internal set; }
-    }
-
     class BasicConsumer : IBasicConsumer
     {
         public IModel Model { get; set; }
@@ -29,17 +24,44 @@ namespace PhotoBank.QueueLogic.Manager
         {
         }
 
-        public event EventHandler<BasicConsumerEventArgs> OnReceiveMessage;
+        public event EventHandler<HandleBasicDeliverEventArgs> OnHandleBasicDeliver;
 
         public void HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
         {
-            var messageTypeName = properties.GetHeaderValue(MessageFieldConstants.MessageType);
-            var message = (Message)BinarySerialization.FromBytes(messageTypeName, body);
-            if (OnReceiveMessage != null) OnReceiveMessage(this, new BasicConsumerEventArgs { Message = message });
+            if (OnHandleBasicDeliver != null)
+            {
+                OnHandleBasicDeliver(this, new HandleBasicDeliverEventArgs
+                {
+                    ConsumerTag = consumerTag,
+                    DeliveryTag = deliveryTag,
+                    Redelivered = redelivered,
+                    Exchange = exchange,
+                    RoutingKey = routingKey,
+                    Properties = properties,
+                    Body = body
+                });
+            }
         }
 
         public void HandleModelShutdown(object model, ShutdownEventArgs reason)
         {
+        }
+
+        public class HandleBasicDeliverEventArgs : EventArgs
+        {
+            public string ConsumerTag { get; set; }
+
+            public ulong DeliveryTag { get; set; }
+
+            public bool Redelivered { get; set; }
+
+            public string Exchange { get; set; }
+
+            public string RoutingKey { get; set; }
+
+            public IBasicProperties Properties { get; set; }
+
+            public ReadOnlyMemory<byte> Body { get; set; }
         }
     }
 }

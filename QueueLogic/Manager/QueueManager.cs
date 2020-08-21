@@ -9,18 +9,24 @@ namespace PhotoBank.QueueLogic.Manager
 {
     public class QueueManager : IQueueManager
     {
+        private ConnectionFactory _connectionFactory;
+        private IConnection _connection;
+     //   private IModel _model;
+
         public TimeSpan WaitTimeout { get; set; }
 
         public QueueManager()
         {
+            _connectionFactory = QueueConnectionFactory.MakeConnectionFactory();
+            _connection = _connectionFactory.CreateConnection();
+         //   _model = _connection.CreateModel();
             WaitTimeout = TimeSpan.FromSeconds(1);
         }
 
         public void Send(string queueName, Message messsage)
         {
-            var factory = QueueConnectionFactory.MakeConnectionFactory();
-            using (var connection = factory.CreateConnection())
-            using (var model = connection.CreateModel())
+            //using (var connection = _connectionFactory.CreateConnection())
+            using (var model = _connection.CreateModel())
             {
                 var props = model.CreateBasicProperties();
                 props.Headers = new Dictionary<string, object>();
@@ -78,9 +84,23 @@ namespace PhotoBank.QueueLogic.Manager
             }
         }
 
-        public IQueueListener CreateListener(string queueName)
+        private object _lockObject = new object();
+        public IQueueListener CreateQueueListener(string queueName)
         {
-            return new QueueListener(queueName, false, QueueConnectionFactory.MakeConnectionFactory());
+            //return new QueueListener(queueName, _connectionFactory);
+            lock (_lockObject)
+            {
+                return new QueueListener(queueName, _connection);
+            }
+        }
+
+        public IQueueMessageListener<TMessage> CreateQueueMessageListener<TMessage>(string queueName, string messageGuid) where TMessage : Message
+        {
+            //return new QueueMessageListener<TMessage>(queueName, messageGuid, _connectionFactory);
+            lock (_lockObject)
+            {
+                return new QueueMessageListener<TMessage>(queueName, messageGuid, _connection);
+            }
         }
     }
 }

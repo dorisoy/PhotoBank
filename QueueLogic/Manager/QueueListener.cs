@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using PhotoBank.QueueLogic.Contracts;
+using PhotoBank.QueueLogic.Utils;
 using RabbitMQ.Client;
 
 namespace PhotoBank.QueueLogic.Manager
@@ -12,19 +12,30 @@ namespace PhotoBank.QueueLogic.Manager
         private readonly BasicConsumer _basicConsumer;
         private readonly ConcurrentQueue<Message> _messages;
 
-        public QueueListener(string queueName, bool autoAck, ConnectionFactory factory)
+        public QueueListener(string queueName, ConnectionFactory factory)
         {
             _messages = new ConcurrentQueue<Message>();
             _connection = factory.CreateConnection();
             _model = _connection.CreateModel();
             _basicConsumer = new BasicConsumer();
-            _basicConsumer.OnReceiveMessage += OnReceiveMessage;
-            _model.BasicConsume(queueName, autoAck, _basicConsumer);
+            _basicConsumer.OnHandleBasicDeliver += HandleBasicDeliver;
+            _model.BasicConsume(queueName, true, _basicConsumer);
         }
 
-        private void OnReceiveMessage(object sender, BasicConsumerEventArgs e)
+        public QueueListener(string queueName, IConnection connection)
         {
-            _messages.Enqueue(e.Message);
+            _model = connection.CreateModel();
+            _messages = new ConcurrentQueue<Message>();
+            _basicConsumer = new BasicConsumer();
+            _basicConsumer.OnHandleBasicDeliver += HandleBasicDeliver;
+            _model.BasicConsume(queueName, true, _basicConsumer);
+        }
+
+        private void HandleBasicDeliver(object sender, BasicConsumer.HandleBasicDeliverEventArgs e)
+        {
+            var messageTypeName = e.Properties.GetHeaderValue(MessageFieldConstants.MessageType);
+            var message = (Message)BinarySerialization.FromBytes(messageTypeName, e.Body);
+            _messages.Enqueue(message);
         }
 
         public Message WaitForMessage()
@@ -37,7 +48,7 @@ namespace PhotoBank.QueueLogic.Manager
         public void Dispose()
         {
             if (_model != null) _model.Dispose();
-            if (_connection != null) _connection.Dispose();
+            //if (_connection != null) _connection.Dispose();
         }
     }
 }
