@@ -23,9 +23,9 @@ namespace PhotoBank.Photo.Service
                     services.AddSingleton(typeof(IQueueManager), queueManager);
 
                     var connectionString = hostContext.Configuration["connectionString"];
-                    var dbContext = new PhotoServiceDBContext(connectionString);
+                    var contextFactory = new PhotoServiceDBContextFactory(connectionString);
                     var repositoryFactory = new RepositoryFactory();
-                    repositoryFactory.Add(typeof(IPhotoRepository), new PhotoRepository(dbContext));
+                    repositoryFactory.Add(typeof(IPhotoRepository), () => new PhotoRepository(contextFactory));
                     services.AddSingleton(typeof(IRepositoryFactory), repositoryFactory);
 
                     var processorContext = new MessageProcessorContext

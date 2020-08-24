@@ -23,10 +23,10 @@ namespace PhotoBank.Auth.Service
                 services.AddSingleton(typeof(IQueueManager), queueManager);
 
                 var connectionString = hostContext.Configuration["connectionString"];
-                var dbContext = new AuthServiceDBContext(connectionString);
+                var contextFactory = new AuthServiceDBContextFactory(connectionString);
                 var repositoryFactory = new RepositoryFactory();
-                repositoryFactory.Add(typeof(IUserRepository), new UserRepository(dbContext));
-                repositoryFactory.Add(typeof(ITokenRepository), new TokenRepository(dbContext));
+                repositoryFactory.Add(typeof(IUserRepository), () => new UserRepository(contextFactory));
+                repositoryFactory.Add(typeof(ITokenRepository), () => new TokenRepository(contextFactory));
                 services.AddSingleton(typeof(IRepositoryFactory), repositoryFactory);
 
                 var processorContext = new MessageProcessorContext

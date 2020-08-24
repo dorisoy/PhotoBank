@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PhotoBank.DataAccess
 {
-    public interface IRepository
+    public interface IRepository : IDisposable
     {
     }
 }

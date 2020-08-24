@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using System.Linq;
 
 namespace PhotoBank.Auth.Service.Data
 {
@@ -10,9 +6,9 @@ namespace PhotoBank.Auth.Service.Data
     {
         private AuthServiceDBContext _context;
 
-        public TokenRepository(AuthServiceDBContext context)
+        public TokenRepository(AuthServiceDBContextFactory contextFactory)
         {
-            _context = context;
+            _context = contextFactory.Make();
         }
 
         public TokenPoco GetToken(string login, string token)
@@ -32,6 +28,11 @@ namespace PhotoBank.Auth.Service.Data
                 _context.Tokens.Add(token);
             }
             _context.SaveChanges();
+        }
+
+        public void Dispose()
+        {
+            if (_context != null) _context.Dispose();
         }
     }
 }

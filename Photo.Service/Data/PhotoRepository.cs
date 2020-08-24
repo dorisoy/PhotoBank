@@ -7,9 +7,9 @@ namespace PhotoBank.Photo.Service.Data
     {
         private readonly PhotoServiceDBContext _context;
 
-        public PhotoRepository(PhotoServiceDBContext context)
+        public PhotoRepository(PhotoServiceDBContextFactory contextFactory)
         {
-            _context = context;
+            _context = contextFactory.Make();
         }
 
         public IEnumerable<PhotoPoco> GetUserPhotos(int userId)
@@ -29,6 +29,11 @@ namespace PhotoBank.Photo.Service.Data
             _context.SaveChanges();
 
             return poco.Id;
+        }
+
+        public void Dispose()
+        {
+            if (_context != null) _context.Dispose();
         }
     }
 }

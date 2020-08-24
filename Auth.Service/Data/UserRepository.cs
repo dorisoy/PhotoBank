@@ -1,15 +1,14 @@
 ﻿using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace PhotoBank.Auth.Service.Data
 {
     public class UserRepository : IUserRepository
     {
-        private AuthServiceDBContext _context;
+        private readonly AuthServiceDBContext _context;
 
-        public UserRepository(AuthServiceDBContext context)
+        public UserRepository(AuthServiceDBContextFactory contextFactory)
         {
-            _context = context;
+            _context = contextFactory.Make();
         }
 
         public void AddUser(UserPoco user)
@@ -21,6 +20,11 @@ namespace PhotoBank.Auth.Service.Data
         public UserPoco GetUser(string login, string password)
         {
             return _context.Users.FirstOrDefault(x => x.Login == login && x.Password == password);
+        }
+
+        public void Dispose()
+        {
+            if (_context != null) _context.Dispose();
         }
     }
 }

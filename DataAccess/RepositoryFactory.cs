@@ -1,29 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PhotoBank.DataAccess
 {
     public class RepositoryFactory : IRepositoryFactory
     {
-        private Dictionary<Type, IRepository> _repositories;
+        private Dictionary<Type, Func<IRepository>> _factoryFuncs;
 
         public RepositoryFactory()
         {
-            _repositories = new Dictionary<Type, IRepository>();
+            _factoryFuncs = new Dictionary<Type, Func<IRepository>>();
         }
 
-        public void Add(Type repositoryType, IRepository repositoryInstance)
+        public void Add(Type repositoryType, Func<IRepository> repositoryFactoryFunc)
         {
-            if (_repositories.ContainsKey(repositoryType)) throw new RepositoryFactoryException("This repository already exists in RepositoryFactory");
-            _repositories.Add(repositoryType, repositoryInstance);
+            if (_factoryFuncs.ContainsKey(repositoryType))
+            {
+                throw new RepositoryFactoryException("This repository factory function is already exist");
+            }
+            _factoryFuncs.Add(repositoryType, repositoryFactoryFunc);
         }
 
         public TRepository Get<TRepository>() where TRepository : IRepository
         {
-            if (_repositories.ContainsKey(typeof(TRepository)))
+            var repositoryType = typeof(TRepository);
+            if (_factoryFuncs.ContainsKey(repositoryType))
             {
-                return (TRepository)_repositories[typeof(TRepository)];
+                var factoryFunc = _factoryFuncs[repositoryType];
+                return (TRepository)factoryFunc();
             }
             else
             {
