@@ -42,14 +42,17 @@ namespace PhotoBank.Broker.Api.Controllers
                 EMail = request.EMail
             };
             _queueManager.Send(AuthSettings.AuthInputQueue, inputMessage);
-            var outputMessage = _queueManager.WaitFor<CreateUserOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            if (outputMessage.Result == OutputMessageResult.Success)
+            using (var createUserOutputMessageListener = _queueManager.CreateQueueMessageListener<CreateUserOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid))
             {
-                return new CreateUserResponse { Success = true };
-            }
-            else
-            {
-                return new CreateUserResponse { Success = false };
+                var outputMessage = createUserOutputMessageListener.WaitForMessage();
+                if (outputMessage.Result == OutputMessageResult.Success)
+                {
+                    return new CreateUserResponse { Success = true };
+                }
+                else
+                {
+                    return new CreateUserResponse { Success = false };
+                }
             }
         }
 

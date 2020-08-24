@@ -11,7 +11,7 @@ namespace PhotoBank.QueueLogic.Manager
         private readonly BasicConsumer _basicConsumer;
         private TMessage _message;
         private readonly string _messageGuid;
-        private bool _disposed;
+        private bool _isDisposed;
 
         public QueueMessageListener(string queueName, string messageGuid, ConnectionFactory factory)
         {
@@ -21,17 +21,7 @@ namespace PhotoBank.QueueLogic.Manager
             _basicConsumer.OnHandleBasicDeliver += OnHandleBasicDeliver;
             _model.BasicConsume(queueName, false, _basicConsumer);
             _messageGuid = messageGuid;
-            _disposed = false;
-        }
-
-        public QueueMessageListener(string queueName, string messageGuid, IConnection connection)
-        {
-            _model = connection.CreateModel();
-            _basicConsumer = new BasicConsumer();
-            _basicConsumer.OnHandleBasicDeliver += OnHandleBasicDeliver;
-            _model.BasicConsume(queueName, false, _basicConsumer);
-            _messageGuid = messageGuid;
-            _disposed = false;
+            _isDisposed = false;
         }
 
         private void OnHandleBasicDeliver(object sender, BasicConsumer.HandleBasicDeliverEventArgs e)
@@ -42,25 +32,24 @@ namespace PhotoBank.QueueLogic.Manager
                 _model.BasicAck(e.DeliveryTag, false); // отметка, что сообщение получено
                 var messageTypeName = e.Properties.GetHeaderValue(MessageFieldConstants.MessageType);
                 _message = (TMessage)BinarySerialization.FromBytes(messageTypeName, e.Body);
-            //    Dispose();
                 _basicConsumer.OnHandleBasicDeliver -= OnHandleBasicDeliver;
             }
         }
 
         public TMessage WaitForMessage()
         {
-            if (_disposed) return default(TMessage);
+            if (_isDisposed) return default(TMessage);
             while (_message == null) ;
             return _message;
         }
 
         public void Dispose()
         {
-            if (!_disposed)
+            if (!_isDisposed)
             {
                 if (_model != null) _model.Dispose();
-            //    if (_connection != null) _connection.Dispose();
-                _disposed = true;
+                if (_connection != null) _connection.Dispose();
+                _isDisposed = true;
             }
         }
     }

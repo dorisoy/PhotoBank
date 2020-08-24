@@ -18,17 +18,18 @@ namespace PhotoBank.Auth.Service
         {
             _processorFactory = processorFactory;
             _queueListener = queueManager.CreateQueueListener(AuthSettings.AuthInputQueue);
+            _queueListener.ReceiveMessage += OnReceiveMessage;
             _logger = logger;
+        }
+
+        private void OnReceiveMessage(object sender, ReceiveMessageEventArgs e)
+        {
+            var processor = _processorFactory.MakeProcessorFor(e.Message);
+            Task.Factory.StartNew(processor.Execute);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                var message = _queueListener.WaitForMessage();
-                var processor = _processorFactory.MakeProcessorFor(message);
-                await Task.Factory.StartNew(processor.Execute);
-            }
         }
     }
 }

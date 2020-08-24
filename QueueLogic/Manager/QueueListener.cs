@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Utils;
 using RabbitMQ.Client;
@@ -12,6 +13,8 @@ namespace PhotoBank.QueueLogic.Manager
         private readonly BasicConsumer _basicConsumer;
         private readonly ConcurrentQueue<Message> _messages;
 
+        public event EventHandler<ReceiveMessageEventArgs> ReceiveMessage;
+
         public QueueListener(string queueName, ConnectionFactory factory)
         {
             _messages = new ConcurrentQueue<Message>();
@@ -22,33 +25,28 @@ namespace PhotoBank.QueueLogic.Manager
             _model.BasicConsume(queueName, true, _basicConsumer);
         }
 
-        public QueueListener(string queueName, IConnection connection)
-        {
-            _model = connection.CreateModel();
-            _messages = new ConcurrentQueue<Message>();
-            _basicConsumer = new BasicConsumer();
-            _basicConsumer.OnHandleBasicDeliver += HandleBasicDeliver;
-            _model.BasicConsume(queueName, true, _basicConsumer);
-        }
-
         private void HandleBasicDeliver(object sender, BasicConsumer.HandleBasicDeliverEventArgs e)
         {
             var messageTypeName = e.Properties.GetHeaderValue(MessageFieldConstants.MessageType);
             var message = (Message)BinarySerialization.FromBytes(messageTypeName, e.Body);
             _messages.Enqueue(message);
+            if (ReceiveMessage != null)
+            {
+                ReceiveMessage(this, new ReceiveMessageEventArgs { Message = message });
+            }
         }
 
-        public Message WaitForMessage()
+        public Message GetMessageOrNull()
         {
             Message message;
-            while (_messages.TryDequeue(out message) == false) ;
+            _messages.TryDequeue(out message);
             return message;
         }
 
         public void Dispose()
         {
             if (_model != null) _model.Dispose();
-            //if (_connection != null) _connection.Dispose();
+            if (_connection != null) _connection.Dispose();
         }
     }
 }

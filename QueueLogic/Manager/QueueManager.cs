@@ -9,30 +9,30 @@ namespace PhotoBank.QueueLogic.Manager
 {
     public class QueueManager : IQueueManager
     {
+        private object _lockObject = new object();
         private ConnectionFactory _connectionFactory;
-        private IConnection _connection;
-     //   private IModel _model;
 
         public TimeSpan WaitTimeout { get; set; }
 
         public QueueManager()
         {
             _connectionFactory = QueueConnectionFactory.MakeConnectionFactory();
-            _connection = _connectionFactory.CreateConnection();
-         //   _model = _connection.CreateModel();
             WaitTimeout = TimeSpan.FromSeconds(1);
         }
 
         public void Send(string queueName, Message messsage)
         {
-            //using (var connection = _connectionFactory.CreateConnection())
-            using (var model = _connection.CreateModel())
+            lock (_lockObject)
             {
-                var props = model.CreateBasicProperties();
-                props.Headers = new Dictionary<string, object>();
-                props.Headers.Add(MessageFieldConstants.MessageType, messsage.GetType().AssemblyQualifiedName);
-                props.Headers.Add(MessageFieldConstants.MessageGuid, messsage.Guid);
-                model.BasicPublish("", queueName, props, BinarySerialization.ToBytes(messsage));
+                using (var connection = _connectionFactory.CreateConnection())
+                using (var model = connection.CreateModel())
+                {
+                    var props = model.CreateBasicProperties();
+                    props.Headers = new Dictionary<string, object>();
+                    props.Headers.Add(MessageFieldConstants.MessageType, messsage.GetType().AssemblyQualifiedName);
+                    props.Headers.Add(MessageFieldConstants.MessageGuid, messsage.Guid);
+                    model.BasicPublish("", queueName, props, BinarySerialization.ToBytes(messsage));
+                }
             }
         }
 
@@ -84,22 +84,19 @@ namespace PhotoBank.QueueLogic.Manager
             }
         }
 
-        private object _lockObject = new object();
         public IQueueListener CreateQueueListener(string queueName)
         {
-            //return new QueueListener(queueName, _connectionFactory);
             lock (_lockObject)
             {
-                return new QueueListener(queueName, _connection);
+                return new QueueListener(queueName, _connectionFactory);
             }
         }
 
         public IQueueMessageListener<TMessage> CreateQueueMessageListener<TMessage>(string queueName, string messageGuid) where TMessage : Message
         {
-            //return new QueueMessageListener<TMessage>(queueName, messageGuid, _connectionFactory);
             lock (_lockObject)
             {
-                return new QueueMessageListener<TMessage>(queueName, messageGuid, _connection);
+                return new QueueMessageListener<TMessage>(queueName, messageGuid, _connectionFactory);
             }
         }
     }

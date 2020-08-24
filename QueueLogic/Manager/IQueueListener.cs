@@ -7,6 +7,13 @@ namespace PhotoBank.QueueLogic.Manager
 {
     public interface IQueueListener : IDisposable
     {
-        Message WaitForMessage();
+        Message GetMessageOrNull();
+
+        event EventHandler<ReceiveMessageEventArgs> ReceiveMessage;
+    }
+
+    public class ReceiveMessageEventArgs : EventArgs
+    {
+        public Message Message { get; set; }
     }
 }
