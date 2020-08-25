@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PhotoBank.QueueLogic.Manager
+namespace PhotoBank.QueueLogic.Contracts
 {
     public static class MessageFieldConstants
     {

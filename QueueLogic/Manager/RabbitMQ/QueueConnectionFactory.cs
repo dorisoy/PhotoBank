@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 
-namespace PhotoBank.QueueLogic.Manager
+namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 {
-    class QueueConnectionFactory
+    static class QueueConnectionFactory
     {
         public static ConnectionFactory MakeConnectionFactory()
         {

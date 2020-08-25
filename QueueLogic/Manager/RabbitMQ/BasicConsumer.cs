@@ -1,10 +1,9 @@
 ﻿using System;
-using PhotoBank.QueueLogic.Contracts;
-using PhotoBank.QueueLogic.Utils;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using PhotoBank.QueueLogic.Contracts;
 
-namespace PhotoBank.QueueLogic.Manager
+namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 {
     class BasicConsumer : IBasicConsumer
     {

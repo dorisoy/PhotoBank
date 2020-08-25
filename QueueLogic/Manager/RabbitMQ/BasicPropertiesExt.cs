@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using RabbitMQ.Client;
 
-namespace PhotoBank.QueueLogic.Utils
+namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 {
-    public static class BasicPropertiesExt
+    static class BasicPropertiesExt
     {
         public static string GetHeaderValue(this IBasicProperties props, string headerName)
         {

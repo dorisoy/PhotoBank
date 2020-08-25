@@ -1,8 +1,8 @@
-﻿using PhotoBank.QueueLogic.Contracts;
-using PhotoBank.QueueLogic.Utils;
+﻿using PhotoBank.QueueLogic.Utils;
 using RabbitMQ.Client;
+using PhotoBank.QueueLogic.Contracts;
 
-namespace PhotoBank.QueueLogic.Manager
+namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 {
     class QueueMessageListener<TMessage> : IQueueMessageListener<TMessage> where TMessage : Message
     {

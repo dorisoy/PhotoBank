@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using PhotoBank.QueueLogic.Contracts;
+﻿using System.Collections.Generic;
 using PhotoBank.QueueLogic.Utils;
+using PhotoBank.QueueLogic.Contracts;
 using RabbitMQ.Client;
 
-namespace PhotoBank.QueueLogic.Manager
+namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 {
     public class QueueManager : IQueueManager
     {

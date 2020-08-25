@@ -24,7 +24,9 @@ namespace PhotoBank.Broker.Api
                 builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             }));
             services.AddSingleton(typeof(IAuthenticationManager), typeof(AuthenticationManager));
-            services.AddSingleton(typeof(IQueueManager), typeof(QueueManager));
+            var queueManagerFactory = new QueueManagerFactory();
+            var queueManager = queueManagerFactory.Make();
+            services.AddSingleton(typeof(IQueueManager), queueManager);
             services.AddControllers();
         }
 

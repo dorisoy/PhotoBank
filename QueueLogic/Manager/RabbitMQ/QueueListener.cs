@@ -4,7 +4,7 @@ using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Utils;
 using RabbitMQ.Client;
 
-namespace PhotoBank.QueueLogic.Manager
+namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 {
     class QueueListener : IQueueListener
     {

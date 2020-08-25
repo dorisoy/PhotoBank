@@ -19,7 +19,8 @@ namespace PhotoBank.Photo.Service
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    var queueManager = new QueueManager();
+                    var queueManagerFactory = new QueueManagerFactory();
+                    var queueManager = queueManagerFactory.Make();
                     services.AddSingleton(typeof(IQueueManager), queueManager);
 
                     var connectionString = hostContext.Configuration["connectionString"];

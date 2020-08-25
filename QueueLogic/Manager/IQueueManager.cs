@@ -1,4 +1,5 @@
-﻿using PhotoBank.QueueLogic.Contracts;
+﻿using PhotoBank.QueueLogic;
+using PhotoBank.QueueLogic.Contracts;
 
 namespace PhotoBank.QueueLogic.Manager
 {
