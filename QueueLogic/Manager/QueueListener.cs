@@ -36,13 +36,6 @@ namespace PhotoBank.QueueLogic.Manager
             }
         }
 
-        public Message GetMessageOrNull()
-        {
-            Message message;
-            _messages.TryDequeue(out message);
-            return message;
-        }
-
         public void Dispose()
         {
             if (_model != null) _model.Dispose();
