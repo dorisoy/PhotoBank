@@ -141,20 +141,28 @@ namespace PhotoBank.Broker.Api.Controllers
             {
                 return new UploadPhotosReponse { Result = UploadPhotoResult.NoOne };
             }
-            var inputMessageGuid = Guid.NewGuid().ToString();
+            var inputMessageGuidList = new List<string>();
             var uploadedPhotoIds = new List<int>();
             foreach (var fileBase64Content in request.Files)
             {
+                var inputMessageGuid = Guid.NewGuid().ToString();
+                inputMessageGuidList.Add(inputMessageGuid);
                 var uploadPhotoInputMessage = new UploadPhotoInputMessage(inputMessageGuid)
                 {
                     UserId = _authenticationManager.GetUserId(request.Login, request.Token),
                     FileBase64Content = fileBase64Content
                 };
                 _queueManager.Send(PhotoSettings.PhotoInputQueue, uploadPhotoInputMessage);
-                var uploadPhotoOutputMessage = _queueManager.WaitFor<UploadPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-                if (uploadPhotoOutputMessage.Result == OutputMessageResult.Success)
+            }
+            foreach (var inputMessageGuid in inputMessageGuidList)
+            {
+                using (var uploadPhotoOutputMessageListener = _queueManager.CreateQueueMessageListener<UploadPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid))
                 {
-                    uploadedPhotoIds.Add(uploadPhotoOutputMessage.PhotoId);
+                    var uploadPhotoOutputMessage = uploadPhotoOutputMessageListener.WaitForMessage();
+                    if (uploadPhotoOutputMessage.Result == OutputMessageResult.Success)
+                    {
+                        uploadedPhotoIds.Add(uploadPhotoOutputMessage.PhotoId);
+                    }
                 }
             }
             if (uploadedPhotoIds.Count == request.Files.Count())
