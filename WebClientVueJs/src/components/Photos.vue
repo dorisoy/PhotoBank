@@ -1,7 +1,7 @@
 <template>
     <div id="photos">
         <h1>Photos</h1>
-        <uploadPhoto />
+        <uploadPhoto v-on:onUpload="onUpload" />
         <ul>
             <li v-for="photoUrl in photoUrls" v-bind:key="photoUrl">
                 <img v-bind:src="photoUrl" width="250" />
@@ -18,8 +18,6 @@
 
     export default {
         name: 'Photos',
-        props: {
-        },
         components: {
             'uploadPhoto': UploadPhoto
         },
@@ -38,17 +36,21 @@
                 if (response.data.isAuthenticated == false) {
                     this.$router.push('/');
                 } else if (response.data.success) {
-                    // формируем адрес для получения содержимого каждой фотки
                     var photoIds = response.data.photoIds;
-                    for (var photoIdIndex in photoIds) {
-                        var photoUrl = Config.getPhotoApiPath + '?login=' + this.$cookies.get('login') + '&token=' + this.$cookies.get('token') + '&photoId=' + photoIds[photoIdIndex];
-                        this.photoUrls.push(photoUrl);
-                    }
+                    this.loadPhotosAndAddToPhotoUrls(photoIds);
                 }
             });
         },
         methods: {
-            send() {
+            onUpload(photoIds) {
+                this.loadPhotosAndAddToPhotoUrls(photoIds);
+            },
+            loadPhotosAndAddToPhotoUrls(photoIds) {
+                for (var photoIdIndex in photoIds) {
+                    // формируем адрес для получения содержимого каждой фотки
+                    var photoUrl = Config.getPhotoApiPath + '?login=' + this.$cookies.get('login') + '&token=' + this.$cookies.get('token') + '&photoId=' + photoIds[photoIdIndex];
+                    this.photoUrls.push(photoUrl);
+                }
             }
         }
     };

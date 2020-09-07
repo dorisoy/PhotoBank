@@ -139,7 +139,7 @@ namespace PhotoBank.Broker.Api.Controllers
         {
             if ((request.Files ?? Enumerable.Empty<string>()).Any() == false)
             {
-                return new UploadPhotosReponse { Result = UploadPhotoResult.NoOne };
+                return new UploadPhotosReponse { Success = false };
             }
             var inputMessageGuidList = new List<string>();
             var uploadedPhotoIds = new List<int>();
@@ -167,15 +167,15 @@ namespace PhotoBank.Broker.Api.Controllers
             }
             if (uploadedPhotoIds.Count == request.Files.Count())
             {
-                return new UploadPhotosReponse { Result = UploadPhotoResult.AllPhotos, PhotoIds = uploadedPhotoIds };
+                return new UploadPhotosReponse { Success = true, PhotoIds = uploadedPhotoIds };
             }
             else if (uploadedPhotoIds.Count > 0)
             {
-                return new UploadPhotosReponse { Result = UploadPhotoResult.Partially, PhotoIds = uploadedPhotoIds };
+                return new UploadPhotosReponse { Success = true, PhotoIds = uploadedPhotoIds };
             }
             else
             {
-                return new UploadPhotosReponse { Result = UploadPhotoResult.NoOne };
+                return new UploadPhotosReponse { Success = false };
             }
         }
     }

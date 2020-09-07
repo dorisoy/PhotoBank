@@ -80,11 +80,11 @@ namespace PhotoBank.Broker.Api.Controllers
         {
             if (request.Login == "vinge" && request.Token == "qwertyuiop")
             {
-                return new UploadPhotosReponse { Result = UploadPhotoResult.AllPhotos };
+                return new UploadPhotosReponse { Success = true };
             }
             else
             {
-                return new UploadPhotosReponse { Result = UploadPhotoResult.NoOne };
+                return new UploadPhotosReponse { Success = false };
             }
         }
     }

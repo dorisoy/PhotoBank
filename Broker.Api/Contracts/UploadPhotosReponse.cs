@@ -7,7 +7,7 @@ namespace PhotoBank.Broker.Api.Contracts
 {
     public class UploadPhotosReponse
     {
-        public UploadPhotoResult Result { get; set; }
+        public bool Success { get; set; }
 
         public IEnumerable<int> PhotoIds { get; set; }
     }

@@ -25,6 +25,7 @@
                 this.files = this.$refs.files.files;
             },
             submitFiles() {
+                var self = this;
                 var uploadFunc = function (filesBase64) {
                     Axios({
                         method: 'post',
@@ -34,11 +35,14 @@
                         if (response.data.isAuthenticated == false) {
                             this.$router.push('/');
                         } else if (response.data.success) {
-                            alert('OK');
+                            self.submitFilesCompleted(response.data.photoIds);
                         }
                     });
                 };
                 Utils.filesToBase64(this.files, uploadFunc);
+            },
+            submitFilesCompleted(photoIds) {
+                this.$emit('onUpload', photoIds);
             }
         }
     }
