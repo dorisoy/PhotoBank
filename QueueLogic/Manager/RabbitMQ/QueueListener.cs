@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Utils;
 using RabbitMQ.Client;
@@ -14,6 +15,8 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         private readonly ConcurrentQueue<Message> _messages;
 
         public event EventHandler<ReceiveMessageEventArgs> ReceiveMessage;
+
+        public ILogger Logger { get; set; }
 
         public QueueListener(string queueName, ConnectionFactory factory)
         {

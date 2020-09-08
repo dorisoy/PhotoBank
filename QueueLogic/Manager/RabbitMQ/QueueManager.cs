@@ -2,6 +2,7 @@
 using PhotoBank.QueueLogic.Utils;
 using PhotoBank.QueueLogic.Contracts;
 using RabbitMQ.Client;
+using Microsoft.Extensions.Logging;
 
 namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 {
@@ -9,6 +10,8 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
     {
         private object _lockObject = new object();
         private ConnectionFactory _connectionFactory;
+
+        public ILogger Logger { get; set; }
 
         public QueueManager()
         {
@@ -35,7 +38,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         {
             lock (_lockObject)
             {
-                return new QueueListener(queueName, _connectionFactory);
+                return new QueueListener(queueName, _connectionFactory) { Logger = Logger };
             }
         }
 
@@ -43,7 +46,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         {
             lock (_lockObject)
             {
-                return new QueueMessageListener<TMessage>(queueName, messageGuid, _connectionFactory);
+                return new QueueMessageListener<TMessage>(queueName, messageGuid, _connectionFactory) { Logger = Logger };
             }
         }
     }

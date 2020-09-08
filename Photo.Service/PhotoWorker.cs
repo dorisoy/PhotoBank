@@ -24,8 +24,9 @@ namespace PhotoBank.Photo.Service
 
         private void OnReceiveMessage(object sender, ReceiveMessageEventArgs e)
         {
+            _logger.LogInformation("Get input message: " + e.Message.Guid);
             var processor = _processorFactory.MakeProcessorFor(e.Message);
-            Task.Factory.StartNew(processor.Execute);
+            Task.Factory.StartNew(processor.Execute).ContinueWith(task => _logger.LogInformation("Send output message: " + e.Message.Guid));
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

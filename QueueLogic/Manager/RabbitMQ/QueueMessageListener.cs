@@ -1,6 +1,9 @@
-﻿using PhotoBank.QueueLogic.Utils;
-using RabbitMQ.Client;
+﻿using System;
+using System.Threading;
+using Microsoft.Extensions.Logging;
 using PhotoBank.QueueLogic.Contracts;
+using PhotoBank.QueueLogic.Utils;
+using RabbitMQ.Client;
 
 namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 {
@@ -12,6 +15,8 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         private TMessage _message;
         private readonly string _messageGuid;
         private bool _isDisposed;
+
+        public ILogger Logger { get; set; }
 
         public QueueMessageListener(string queueName, string messageGuid, ConnectionFactory factory)
         {
@@ -27,6 +32,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         private void OnHandleBasicDeliver(object sender, BasicConsumer.HandleBasicDeliverEventArgs e)
         {
             var messageContainerGuid = e.Properties.GetHeaderValue(MessageFieldConstants.MessageGuid);
+            Logger.LogInformation(String.Format("QueueMessageListener {0}. Wait message {1}. Recieve: {2}", GetHashCode(), _messageGuid, messageContainerGuid));
             if (messageContainerGuid == _messageGuid)
             {
                 _model.BasicAck(e.DeliveryTag, false); // отметка, что сообщение получено
@@ -39,7 +45,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         public TMessage WaitForMessage()
         {
             if (_isDisposed) return default(TMessage);
-            while (_message == null) ;
+            while (_message == null) Thread.Sleep(1000);
             return _message;
         }
 
