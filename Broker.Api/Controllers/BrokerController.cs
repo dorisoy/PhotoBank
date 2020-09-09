@@ -27,7 +27,7 @@ namespace PhotoBank.Broker.Api.Controllers
             _authenticationManager = authenticationManager;
             _queueManager = queueManager;
             _logger = logger;
-            _queueManager.Logger = _logger;
+            //_queueManager.Logger = _logger;
         }
 
         [HttpPost]
@@ -143,6 +143,7 @@ namespace PhotoBank.Broker.Api.Controllers
             {
                 return new UploadPhotosReponse { Success = false };
             }
+            var userId = _authenticationManager.GetUserId(request.Login, request.Token);
             var inputMessageGuidList = new List<string>();
             var uploadedPhotoIds = new List<int>();
             foreach (var fileBase64Content in request.Files)
@@ -151,7 +152,7 @@ namespace PhotoBank.Broker.Api.Controllers
                 inputMessageGuidList.Add(inputMessageGuid);
                 var uploadPhotoInputMessage = new UploadPhotoInputMessage(inputMessageGuid)
                 {
-                    UserId = _authenticationManager.GetUserId(request.Login, request.Token),
+                    UserId = userId,
                     FileBase64Content = fileBase64Content
                 };
                 _logger.LogInformation("Broker. UploadPhotos. Send input message: " + inputMessageGuid);

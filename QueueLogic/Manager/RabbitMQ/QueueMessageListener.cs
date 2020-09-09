@@ -38,7 +38,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
                 while ((basicGetResult = model.BasicGet(_queueName, false)) != null)
                 {
                     var messageContainerGuid = basicGetResult.BasicProperties.GetHeaderValue(MessageFieldConstants.MessageGuid);
-                    Logger.LogInformation(String.Format("QueueMessageListener {0}. Wait message {1}. Recieve: {2}", GetHashCode(), _messageGuid, messageContainerGuid));
+                    LogInfo(String.Format("QueueMessageListener {0}. Wait message {1}. Recieve: {2}", GetHashCode(), _messageGuid, messageContainerGuid));
                     if (messageContainerGuid == _messageGuid)
                     {
                         model.BasicAck(basicGetResult.DeliveryTag, false); // отметка, что сообщение получено
@@ -50,6 +50,14 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
             }
 
             return null;
+        }
+
+        private void LogInfo(string logMessage)
+        {
+            if (Logger != null)
+            {
+                Logger.LogInformation(logMessage);
+            }
         }
     }
 }
