@@ -12,6 +12,8 @@ namespace PhotoBank.QueueLogic.Manager
 
         IQueueMessageListener<TMessage> CreateQueueMessageListener<TMessage>(string queueName, string messageGuid) where TMessage : Message;
 
+        TMessage WaitForMessage<TMessage>(string queueName, string messageGuid) where TMessage : Message;
+
         ILogger Logger { get; set; }
     }
 }

@@ -43,8 +43,7 @@ namespace PhotoBank.Broker.Api.Controllers
                 EMail = request.EMail
             };
             _queueManager.Send(AuthSettings.AuthInputQueue, inputMessage);
-            var createUserOutputMessageListener = _queueManager.CreateQueueMessageListener<CreateUserOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            var outputMessage = createUserOutputMessageListener.WaitForMessage();
+            var outputMessage = _queueManager.WaitForMessage<CreateUserOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             if (outputMessage.Result == OutputMessageResult.Success)
             {
                 return new CreateUserResponse { Success = true };
@@ -67,9 +66,8 @@ namespace PhotoBank.Broker.Api.Controllers
             };
             _logger.LogInformation("Broker. Login. Send input message: " + inputMessageGuid);
             _queueManager.Send(AuthSettings.AuthInputQueue, inputMessage);
-            var loginOutputMessageListener = _queueManager.CreateQueueMessageListener<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             _logger.LogInformation("Broker. Login. Waiting for output message: " + inputMessageGuid);
-            var outputMessage = loginOutputMessageListener.WaitForMessage();
+            var outputMessage = _queueManager.WaitForMessage<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             _logger.LogInformation("Broker. Login. Recieve output message: " + inputMessageGuid);
             if (outputMessage.Result == OutputMessageResult.Success)
             {
@@ -94,9 +92,8 @@ namespace PhotoBank.Broker.Api.Controllers
             };
             _logger.LogInformation("Broker. GetPhotos. Send input message: " + inputMessageGuid);
             _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotosInputMessage);
-            var getPhotosOutputMessageListener = _queueManager.CreateQueueMessageListener<GetPhotosOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             _logger.LogInformation("Broker. GetPhotos. Waiting for output message: " + inputMessageGuid);
-            var getPhotosOutputMessage = getPhotosOutputMessageListener.WaitForMessage();
+            var getPhotosOutputMessage = _queueManager.WaitForMessage<GetPhotosOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             _logger.LogInformation("Broker. GetPhotos. Recieve output message: " + inputMessageGuid);
             if (getPhotosOutputMessage.Result == OutputMessageResult.Success)
             {
@@ -120,9 +117,8 @@ namespace PhotoBank.Broker.Api.Controllers
             };
             _logger.LogInformation("Broker. GetPhoto. Send input message: " + inputMessageGuid);
             _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
-            var getPhotoOutputMessageListener = _queueManager.CreateQueueMessageListener<GetPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             _logger.LogInformation("Broker. GetPhoto. Waiting for output message: " + inputMessageGuid);
-            var getPhotoOutputMessage = getPhotoOutputMessageListener.WaitForMessage();
+            var getPhotoOutputMessage = _queueManager.WaitForMessage<GetPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             _logger.LogInformation("Broker. GetPhoto. Recieve output message: " + inputMessageGuid);
             if (getPhotoOutputMessage.Result == OutputMessageResult.Success)
             {
@@ -160,9 +156,8 @@ namespace PhotoBank.Broker.Api.Controllers
             }
             foreach (var inputMessageGuid in inputMessageGuidList)
             {
-                var uploadPhotoOutputMessageListener = _queueManager.CreateQueueMessageListener<UploadPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
                 _logger.LogInformation("Broker. UploadPhotos. Waiting for output message: " + inputMessageGuid);
-                var uploadPhotoOutputMessage = uploadPhotoOutputMessageListener.WaitForMessage();
+                var uploadPhotoOutputMessage = _queueManager.WaitForMessage<UploadPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
                 _logger.LogInformation("Broker. UploadPhotos. Recieve output message: " + inputMessageGuid);
                 if (uploadPhotoOutputMessage.Result == OutputMessageResult.Success)
                 {
