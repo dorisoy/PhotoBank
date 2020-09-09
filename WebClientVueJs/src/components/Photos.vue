@@ -2,11 +2,13 @@
     <div id="photos">
         <h1>Photos</h1>
         <uploadPhoto v-on:onUpload="onUpload" />
-        <ul>
-            <li v-for="photoUrl in photoUrls" v-bind:key="photoUrl">
-                <img v-bind:src="photoUrl" width="250" />
-            </li>
-        </ul>
+        <div>
+            <ul>
+                <li v-for="photoUrl in photoUrls" v-bind:key="photoUrl">
+                    <img v-bind:src="photoUrl" width="250" />
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -57,4 +59,7 @@
 </script>
 
 <style scoped>
+    li {
+        display: inline-block;
+    }
 </style>
