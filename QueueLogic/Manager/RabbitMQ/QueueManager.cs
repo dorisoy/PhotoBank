@@ -18,7 +18,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
             _connectionFactory = QueueConnectionFactory.MakeConnectionFactory();
         }
 
-        public void Send(string queueName, Message messsage)
+        public void Send(string queueName, Message message)
         {
             lock (_lockObject)
             {
@@ -27,9 +27,9 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
                 {
                     var props = model.CreateBasicProperties();
                     props.Headers = new Dictionary<string, object>();
-                    props.Headers.Add(MessageFieldConstants.MessageType, messsage.GetType().AssemblyQualifiedName);
-                    props.Headers.Add(MessageFieldConstants.MessageGuid, messsage.Guid);
-                    model.BasicPublish("", queueName, props, BinarySerialization.ToBytes(messsage));
+                    props.Headers.Add(MessageFieldConstants.MessageType, message.GetType().AssemblyQualifiedName);
+                    props.Headers.Add(MessageFieldConstants.MessageGuid, message.Guid);
+                    model.BasicPublish("", queueName, props, MessageSerialization.ToBytes(message));
                 }
             }
         }

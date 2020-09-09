@@ -31,7 +31,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         private void HandleBasicDeliver(object sender, BasicConsumer.HandleBasicDeliverEventArgs e)
         {
             var messageTypeName = e.Properties.GetHeaderValue(MessageFieldConstants.MessageType);
-            var message = (Message)BinarySerialization.FromBytes(messageTypeName, e.Body);
+            var message = MessageSerialization.FromBytes(messageTypeName, e.Body);
             _messages.Enqueue(message);
             if (ReceiveMessage != null)
             {

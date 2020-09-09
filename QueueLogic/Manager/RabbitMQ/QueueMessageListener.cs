@@ -41,10 +41,17 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
                     LogInfo(String.Format("QueueMessageListener {0}. Wait message {1}. Recieve: {2}", GetHashCode(), _messageGuid, messageContainerGuid));
                     if (messageContainerGuid == _messageGuid)
                     {
-                        model.BasicAck(basicGetResult.DeliveryTag, false); // отметка, что сообщение получено
                         var messageTypeName = basicGetResult.BasicProperties.GetHeaderValue(MessageFieldConstants.MessageType);
-                        var message = (TMessage)BinarySerialization.FromBytes(messageTypeName, basicGetResult.Body);
-                        return message;
+                        var message = (TMessage)MessageSerialization.FromBytes(messageTypeName, basicGetResult.Body);
+                        if (message != null)
+                        {
+                            model.BasicAck(basicGetResult.DeliveryTag, false); // отметка, что сообщение получено
+                            return message;
+                        }
+                        else
+                        {
+                            return null;
+                        }
                     }
                 }
             }

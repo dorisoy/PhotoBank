@@ -21,6 +21,7 @@ namespace PhotoBank.QueueLogic.Utils
             var formatter = new BinaryFormatter();
             using (var memoryStream = new MemoryStream(bytes.ToArray()))
             {
+                memoryStream.Seek(0, SeekOrigin.Begin);
                 var instance = formatter.Deserialize(memoryStream);
                 return Convert.ChangeType(instance, type);
             }
