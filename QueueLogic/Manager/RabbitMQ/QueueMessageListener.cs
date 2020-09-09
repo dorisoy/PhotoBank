@@ -51,9 +51,5 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 
             return null;
         }
-
-        public void Dispose()
-        {
-        }
     }
 }
