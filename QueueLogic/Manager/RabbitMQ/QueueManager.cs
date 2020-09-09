@@ -10,27 +10,27 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
     {
         private object _lockObject = new object();
         private ConnectionFactory _connectionFactory;
+        private readonly IConnection _connection;
+        private readonly IModel _model;
 
         public ILogger Logger { get; set; }
 
         public QueueManager()
         {
             _connectionFactory = QueueConnectionFactory.MakeConnectionFactory();
+            _connection = _connectionFactory.TryCreateConnection();
+            _model = _connection.CreateModel();
         }
 
         public void Send(string queueName, Message message)
         {
+            var props = _model.CreateBasicProperties();
+            props.Headers = new Dictionary<string, object>();
+            props.Headers.Add(MessageFieldConstants.MessageType, message.GetType().AssemblyQualifiedName);
+            props.Headers.Add(MessageFieldConstants.MessageGuid, message.Guid);
             lock (_lockObject)
             {
-                using (var connection = _connectionFactory.CreateConnection())
-                using (var model = connection.CreateModel())
-                {
-                    var props = model.CreateBasicProperties();
-                    props.Headers = new Dictionary<string, object>();
-                    props.Headers.Add(MessageFieldConstants.MessageType, message.GetType().AssemblyQualifiedName);
-                    props.Headers.Add(MessageFieldConstants.MessageGuid, message.Guid);
-                    model.BasicPublish("", queueName, props, MessageSerialization.ToBytes(message));
-                }
+                _model.BasicPublish("", queueName, props, MessageSerialization.ToBytes(message));
             }
         }
 

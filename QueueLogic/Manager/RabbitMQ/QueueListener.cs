@@ -21,7 +21,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         public QueueListener(string queueName, ConnectionFactory factory)
         {
             _messages = new ConcurrentQueue<Message>();
-            _connection = factory.CreateConnection();
+            _connection = factory.TryCreateConnection();
             _model = _connection.CreateModel();
             _basicConsumer = new BasicConsumer();
             _basicConsumer.OnHandleBasicDeliver += HandleBasicDeliver;

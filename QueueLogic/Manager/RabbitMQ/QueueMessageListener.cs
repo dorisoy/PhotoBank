@@ -31,7 +31,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
 
         private TMessage TryGetMessage()
         {
-            using (var connection = _connectionFactory.CreateConnection())
+            using (var connection = _connectionFactory.TryCreateConnection())
             using (var model = connection.CreateModel())
             {
                 BasicGetResult basicGetResult = null;
