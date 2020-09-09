@@ -32,5 +32,11 @@ namespace PhotoBank.Auth.Service
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
         }
+
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            _queueListener.Dispose();
+            return base.StopAsync(cancellationToken);
+        }
     }
 }
