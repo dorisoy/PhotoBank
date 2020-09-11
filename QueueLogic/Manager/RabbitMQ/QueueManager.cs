@@ -61,9 +61,8 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
                 var consumer = new RabbitMessageConsumer(args =>
                 {
                     _messagesDictionary[queueName].TryAdd(args.Message.Guid, args.Message);
-                    _model.BasicAck(args.DeliveryTag, false);
                 });
-                _model.BasicConsume(queueName, false, consumer);
+                _model.BasicConsume(queueName, true, consumer);
             }
             ConcurrentDictionary<string, Message> messages;
             _messagesDictionary.TryGetValue(queueName, out messages);
