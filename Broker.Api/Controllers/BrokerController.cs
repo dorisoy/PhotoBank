@@ -42,7 +42,7 @@ namespace PhotoBank.Broker.Api.Controllers
                 Name = request.Name,
                 EMail = request.EMail
             };
-            _queueManager.Send(AuthSettings.AuthInputQueue, inputMessage);
+            _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
             var outputMessage = _queueManager.WaitForMessage<CreateUserOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             if (outputMessage.Result == OutputMessageResult.Success)
             {
@@ -65,7 +65,7 @@ namespace PhotoBank.Broker.Api.Controllers
                 Password = request.Password
             };
             _logger.LogInformation("Broker. Login. Send input message: " + inputMessageGuid);
-            _queueManager.Send(AuthSettings.AuthInputQueue, inputMessage);
+            _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
             _logger.LogInformation("Broker. Login. Waiting for output message: " + inputMessageGuid);
             var outputMessage = _queueManager.WaitForMessage<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             _logger.LogInformation("Broker. Login. Recieve output message: " + inputMessageGuid);
@@ -91,7 +91,7 @@ namespace PhotoBank.Broker.Api.Controllers
                 UserId = _authenticationManager.GetUserId(request.Login, request.Token)
             };
             _logger.LogInformation("Broker. GetPhotos. Send input message: " + inputMessageGuid);
-            _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotosInputMessage);
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, getPhotosInputMessage);
             _logger.LogInformation("Broker. GetPhotos. Waiting for output message: " + inputMessageGuid);
             var getPhotosOutputMessage = _queueManager.WaitForMessage<GetPhotosOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             _logger.LogInformation("Broker. GetPhotos. Recieve output message: " + inputMessageGuid);
@@ -116,7 +116,7 @@ namespace PhotoBank.Broker.Api.Controllers
                 PhotoId = photoId
             };
             _logger.LogInformation("Broker. GetPhoto. Send input message: " + inputMessageGuid);
-            _queueManager.Send(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
             _logger.LogInformation("Broker. GetPhoto. Waiting for output message: " + inputMessageGuid);
             var getPhotoOutputMessage = _queueManager.WaitForMessage<GetPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
             _logger.LogInformation("Broker. GetPhoto. Recieve output message: " + inputMessageGuid);
@@ -152,7 +152,7 @@ namespace PhotoBank.Broker.Api.Controllers
                     FileBase64Content = fileBase64Content
                 };
                 _logger.LogInformation("Broker. UploadPhotos. Send input message: " + inputMessageGuid);
-                _queueManager.Send(PhotoSettings.PhotoInputQueue, uploadPhotoInputMessage);
+                _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, uploadPhotoInputMessage);
             }
             foreach (var inputMessageGuid in inputMessageGuidList)
             {

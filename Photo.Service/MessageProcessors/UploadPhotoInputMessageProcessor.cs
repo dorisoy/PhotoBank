@@ -21,7 +21,7 @@ namespace PhotoBank.Photo.Service.MessageProcessors
             {
                 PhotoId = photoId
             };
-            _context.QueueManager.Send(PhotoSettings.PhotoOutputQueue, outputMessage);
+            _context.QueueManager.SendMessage(PhotoSettings.PhotoOutputQueue, outputMessage);
         }
     }
 }

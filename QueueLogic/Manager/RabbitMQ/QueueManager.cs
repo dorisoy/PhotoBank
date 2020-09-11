@@ -1,6 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using PhotoBank.QueueLogic.Contracts;
@@ -15,6 +15,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         private readonly ConnectionFactory _connectionFactory;
         private readonly IConnection _connection;
         private readonly IModel _model;
+        private readonly ConcurrentDictionary<string, MessageConsumer> _consumers;
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, Message>> _messagesDictionary;
 
         public ILogger Logger { get; set; }
@@ -24,10 +25,11 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
             _connectionFactory = QueueConnectionFactory.MakeConnectionFactory();
             _connection = _connectionFactory.TryCreateConnection();
             _model = _connection.CreateModel();
+            _consumers = new ConcurrentDictionary<string, MessageConsumer>();
             _messagesDictionary = new ConcurrentDictionary<string, ConcurrentDictionary<string, Message>>();
         }
 
-        public void Send(string queueName, Message message)
+        public void SendMessage(string queueName, Message message)
         {
             var props = _model.CreateBasicProperties();
             props.Headers = new Dictionary<string, object>();
@@ -39,19 +41,17 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
             }
         }
 
-        public IQueueListener CreateQueueListener(string queueName)
+        public void AddMessageConsumer(string queueName, MessageConsumerCallback callback)
         {
-            lock (_lockObject)
+            if (_consumers.ContainsKey(queueName) == false)
             {
-                return new QueueListener(queueName, _connectionFactory) { Logger = Logger };
+                var consumer = new MessageConsumer(callback);
+                _consumers.TryAdd(queueName, consumer);
+                _model.BasicConsume(queueName, true, consumer);
             }
-        }
-
-        public IQueueMessageListener<TMessage> CreateQueueMessageListener<TMessage>(string queueName, string messageGuid) where TMessage : Message
-        {
-            lock (_lockObject)
+            else
             {
-                return new QueueMessageListener<TMessage>(queueName, messageGuid, _connectionFactory) { Logger = Logger };
+                _consumers[queueName].Callbacks.Add(callback);
             }
         }
 
@@ -60,17 +60,10 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
             if (_messagesDictionary.ContainsKey(queueName) == false)
             {
                 _messagesDictionary.TryAdd(queueName, new ConcurrentDictionary<string, Message>());
-                var consumer = new BasicConsumer();
-                consumer.OnHandleBasicDeliver += (s, e) =>
+                var consumer = new MessageConsumer(message =>
                 {
-                    var messageTypeName = e.Properties.GetHeaderValue(MessageFieldConstants.MessageType);
-                    var message = MessageSerialization.FromBytes(messageTypeName, e.Body);
-                    if (message != null)
-                    {
-                        _model.BasicAck(e.DeliveryTag, false); // отметка, что сообщение получено
-                        _messagesDictionary[queueName].TryAdd(message.Guid, message);
-                    }
-                };
+                    _messagesDictionary[queueName].TryAdd(message.Guid, message);
+                });
                 _model.BasicConsume(queueName, false, consumer);
             }
             ConcurrentDictionary<string, Message> messages;
@@ -84,6 +77,23 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
             messages.TryRemove(messageGuid, out message);
 
             return (TMessage)message;
+        }
+    }
+
+    class MessageConsumer : AbstractConsumer
+    {
+        public List<MessageConsumerCallback> Callbacks { get; private set; }
+
+        public MessageConsumer(MessageConsumerCallback callback)
+        {
+            Callbacks = new List<MessageConsumerCallback> { callback };
+        }
+
+        public override void HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
+        {
+            var messageTypeName = properties.GetHeaderValue(MessageFieldConstants.MessageType);
+            var message = MessageSerialization.FromBytes(messageTypeName, body);
+            Callbacks.ForEach(callback => callback(message));
         }
     }
 }

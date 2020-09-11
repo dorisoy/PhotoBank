@@ -20,7 +20,7 @@ namespace PhotoBank.Auth.Service.MessageProcessors
             };
             _context.RepositoryFactory.Get<IUserRepository>().AddUser(user);
             var outputMessage = new CreateUserOutputMessage(inputMessage.Guid, OutputMessageResult.Success);
-            _context.QueueManager.Send(AuthSettings.AuthOutputQueue, outputMessage);
+            _context.QueueManager.SendMessage(AuthSettings.AuthOutputQueue, outputMessage);
         }
     }
 }

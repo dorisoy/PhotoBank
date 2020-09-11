@@ -23,7 +23,7 @@ namespace PhotoBank.Photo.Service.MessageProcessors
             {
                 outputMessage = new GetPhotoOutputMessage(inputMessage.Guid, OutputMessageResult.Error);
             }
-            _context.QueueManager.Send(PhotoSettings.PhotoOutputQueue, outputMessage);
+            _context.QueueManager.SendMessage(PhotoSettings.PhotoOutputQueue, outputMessage);
         }
     }
 }
