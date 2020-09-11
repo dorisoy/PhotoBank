@@ -32,9 +32,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         public void SendMessage(string queueName, Message message)
         {
             var props = _model.CreateBasicProperties();
-            props.Headers = new Dictionary<string, object>();
-            props.Headers.Add(MessageFieldConstants.MessageType, message.GetType().AssemblyQualifiedName);
-            props.Headers.Add(MessageFieldConstants.MessageGuid, message.Guid);
+            props.Headers = MessageFactory.GetPropertiesHeaders(message);
             lock (_lockObject)
             {
                 _model.BasicPublish("", queueName, props, MessageSerialization.ToBytes(message));
@@ -60,19 +58,16 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
             if (_messagesDictionary.ContainsKey(queueName) == false)
             {
                 _messagesDictionary.TryAdd(queueName, new ConcurrentDictionary<string, Message>());
-                var consumer = new MessageConsumer(message =>
+                var consumer = new RabbitMessageConsumer(args =>
                 {
-                    _messagesDictionary[queueName].TryAdd(message.Guid, message);
+                    _messagesDictionary[queueName].TryAdd(args.Message.Guid, args.Message);
+                    _model.BasicAck(args.DeliveryTag, false);
                 });
                 _model.BasicConsume(queueName, false, consumer);
             }
             ConcurrentDictionary<string, Message> messages;
             _messagesDictionary.TryGetValue(queueName, out messages);
-            while (messages.ContainsKey(messageGuid) == false)
-            {
-                Thread.Sleep(200);
-            }
-
+            while (messages.ContainsKey(messageGuid) == false) Thread.Sleep(200); // waiting for the message
             Message message;
             messages.TryRemove(messageGuid, out message);
 
@@ -89,11 +84,70 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
             Callbacks = new List<MessageConsumerCallback> { callback };
         }
 
-        public override void HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
+        public override void HandleBasicDeliver(
+            string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties prop, ReadOnlyMemory<byte> body)
         {
-            var messageTypeName = properties.GetHeaderValue(MessageFieldConstants.MessageType);
-            var message = MessageSerialization.FromBytes(messageTypeName, body);
+            var message = MessageFactory.MakeMessage(prop, body);
             Callbacks.ForEach(callback => callback(message));
+        }
+    }
+
+    class RabbitMessageConsumer : AbstractConsumer
+    {
+        private Action<CallbackArgs> _callback;
+
+        public RabbitMessageConsumer(Action<CallbackArgs> callback)
+        {
+            _callback = callback;
+        }
+
+        public override void HandleBasicDeliver(
+            string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties prop, ReadOnlyMemory<byte> body)
+        {
+            var message = MessageFactory.MakeMessage(prop, body);
+            var args = new CallbackArgs
+            {
+                Message = message,
+                ConsumerTag = consumerTag,
+                DeliveryTag = deliveryTag,
+                Redelivered = redelivered,
+                Exchange = exchange,
+                RoutingKey = routingKey,
+                Prop = prop,
+                Body = body
+            };
+            _callback(args);
+        }
+
+        public class CallbackArgs
+        {
+            public Message Message { get; set; }
+            public string ConsumerTag { get; set; }
+            public ulong DeliveryTag { get; set; }
+            public bool Redelivered { get; set; }
+            public string Exchange { get; set; }
+            public string RoutingKey { get; set; }
+            public IBasicProperties Prop { get; set; }
+            public ReadOnlyMemory<byte> Body { get; set; }
+        }
+    }
+
+    static class MessageFactory
+    {
+        public static Dictionary<string, object> GetPropertiesHeaders(Message message)
+        {
+            var headers = new Dictionary<string, object>();
+            headers.Add(MessageFieldConstants.MessageType, message.GetType().AssemblyQualifiedName);
+            headers.Add(MessageFieldConstants.MessageGuid, message.Guid);
+
+            return headers;
+        }
+
+        public static Message MakeMessage(IBasicProperties prop, ReadOnlyMemory<byte> body)
+        {
+            var messageTypeName = prop.GetHeaderValue(MessageFieldConstants.MessageType);
+            var message = MessageSerialization.FromBytes(messageTypeName, body);
+            return message;
         }
     }
 }

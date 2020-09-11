@@ -22,7 +22,7 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         {
         }
 
-        public virtual void HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
+        public virtual void HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties prop, ReadOnlyMemory<byte> body)
         {
         }
 
