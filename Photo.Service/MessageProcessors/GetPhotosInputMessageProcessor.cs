@@ -13,7 +13,7 @@ namespace PhotoBank.Photo.Service.MessageProcessors
         {
             var inputMessage = GetMessageAs<GetPhotosInputMessage>();
             var photos = _context.RepositoryFactory.Get<IPhotoRepository>().GetUserPhotos(inputMessage.UserId);
-            var outputMessage = new GetPhotosOutputMessage(inputMessage.Guid, OutputMessageResult.Success)
+            var outputMessage = new GetPhotosOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)
             {
                 PhotoIds = photos.Select(x => x.Id).ToList()
             };

@@ -13,11 +13,11 @@ namespace PhotoBank.Photo.Service.MessageProcessors
         public override void Execute()
         {
             var inputMessage = GetMessageAs<UploadPhotoInputMessage>();
-            var filePath = Path.Combine(PhotoSettings.PhotoDatabasePath, inputMessage.Guid);
+            var filePath = Path.Combine(PhotoSettings.PhotoDatabasePath, inputMessage.ChainId.Value);
             var fileBytes = Convert.FromBase64String(inputMessage.FileBase64Content);
             File.WriteAllBytes(filePath, fileBytes);
             var photoId = _context.RepositoryFactory.Get<IPhotoRepository>().SavePhoto(inputMessage.UserId, filePath);
-            var outputMessage = new UploadPhotoOutputMessage(inputMessage.Guid, OutputMessageResult.Success)
+            var outputMessage = new UploadPhotoOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)
             {
                 PhotoId = photoId
             };

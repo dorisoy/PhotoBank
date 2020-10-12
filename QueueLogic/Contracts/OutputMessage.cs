@@ -9,7 +9,7 @@ namespace PhotoBank.QueueLogic.Contracts
     {
         public OutputMessageResult Result { get; private set; }
 
-        public OutputMessage(string guid, OutputMessageResult result) : base(guid)
+        public OutputMessage(MessageClientId clientId, MessageChainId chainId, OutputMessageResult result) : base(clientId, chainId)
         {
             Result = result;
         }

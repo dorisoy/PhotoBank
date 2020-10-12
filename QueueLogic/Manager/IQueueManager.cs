@@ -9,8 +9,6 @@ namespace PhotoBank.QueueLogic.Manager
 
         void AddMessageConsumer(string queueName, MessageConsumerCallback callback);
 
-        TMessage WaitForMessage<TMessage>(string queueName, string messageGuid) where TMessage : Message;
-
         ILogger Logger { get; set; }
     }
 

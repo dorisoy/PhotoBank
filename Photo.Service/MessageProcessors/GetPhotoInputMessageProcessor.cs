@@ -17,11 +17,11 @@ namespace PhotoBank.Photo.Service.MessageProcessors
             if (photo != null && File.Exists(photo.Path))
             {
                 var photoBytes = File.ReadAllBytes(photo.Path);
-                outputMessage = new GetPhotoOutputMessage(inputMessage.Guid, OutputMessageResult.Success) { PhotoBytes = photoBytes };
+                outputMessage = new GetPhotoOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success) { PhotoBytes = photoBytes };
             }
             else
             {
-                outputMessage = new GetPhotoOutputMessage(inputMessage.Guid, OutputMessageResult.Error);
+                outputMessage = new GetPhotoOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Error);
             }
             _context.QueueManager.SendMessage(PhotoSettings.PhotoOutputQueue, outputMessage);
         }

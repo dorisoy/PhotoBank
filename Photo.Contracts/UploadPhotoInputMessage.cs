@@ -8,7 +8,7 @@ namespace PhotoBank.Photo.Contracts
     [Serializable]
     public class UploadPhotoInputMessage : InputMessage
     {
-        public UploadPhotoInputMessage(string guid) : base(guid)
+        public UploadPhotoInputMessage(MessageClientId userId, MessageChainId chainId) : base(userId, chainId)
         {
         }
 

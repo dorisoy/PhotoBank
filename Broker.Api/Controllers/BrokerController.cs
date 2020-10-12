@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Broker.Api.Authentication;
 using PhotoBank.Broker.Api.Contracts;
+using PhotoBank.Broker.Api.Utils;
 using PhotoBank.Photo.Contracts;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Manager;
@@ -32,10 +32,11 @@ namespace PhotoBank.Broker.Api.Controllers
 
         [HttpPost]
         [Route("createUser")]
-        public CreateUserResponse CreateUser(CreateUserRequest request)
+        public IActionResult CreateUser(CreateUserRequest request)
         {
-            var inputMessageGuid = Guid.NewGuid().ToString();
-            var inputMessage = new CreateUserInputMessage(inputMessageGuid)
+            var messageClientId = ClientIdBuidler.Build(HttpContext);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new CreateUserInputMessage(messageClientId, messageChainId)
             {
                 Login = request.Login,
                 Password = request.Password,
@@ -43,66 +44,42 @@ namespace PhotoBank.Broker.Api.Controllers
                 EMail = request.EMail
             };
             _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
-            var outputMessage = _queueManager.WaitForMessage<CreateUserOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            if (outputMessage.Result == OutputMessageResult.Success)
-            {
-                return new CreateUserResponse { Success = true };
-            }
-            else
-            {
-                return new CreateUserResponse { Success = false };
-            }
+
+            return Ok();
         }
 
         [HttpPost]
         [Route("login")]
-        public LoginResponse Login(LoginRequest request)
+        public IActionResult Login(LoginRequest request)
         {
-            var inputMessageGuid = Guid.NewGuid().ToString();
-            var inputMessage = new LoginInputMessage(inputMessageGuid)
+            var messageClientId = ClientIdBuidler.Build(HttpContext);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new LoginInputMessage(messageClientId, messageChainId)
             {
                 Login = request.Login,
                 Password = request.Password
             };
-            _logger.LogInformation("Broker. Login. Send input message: " + inputMessageGuid);
+            _logger.LogInformation("Broker. Login. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
-            _logger.LogInformation("Broker. Login. Waiting for output message: " + inputMessageGuid);
-            var outputMessage = _queueManager.WaitForMessage<LoginOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            _logger.LogInformation("Broker. Login. Recieve output message: " + inputMessageGuid);
-            if (outputMessage.Result == OutputMessageResult.Success)
-            {
-                _authenticationManager.Add(request.Login, outputMessage.Token, outputMessage.UserId);
-                return new LoginResponse { Success = true, Token = outputMessage.Token };
-            }
-            else
-            {
-                return new LoginResponse { Success = false };
-            }
+
+            return Ok();
         }
 
         [HttpPost]
         [Route("getPhotos")]
         [CheckAuthentication]
-        public GetPhotosResponse GetPhotos(GetPhotosRequest request)
+        public IActionResult GetPhotos(GetPhotosRequest request)
         {
-            var inputMessageGuid = Guid.NewGuid().ToString();
-            var getPhotosInputMessage = new GetPhotosInputMessage(inputMessageGuid)
+            var messageClientId = ClientIdBuidler.Build(HttpContext);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var getPhotosInputMessage = new GetPhotosInputMessage(messageClientId, messageChainId)
             {
                 UserId = _authenticationManager.GetUserId(request.Login, request.Token)
             };
-            _logger.LogInformation("Broker. GetPhotos. Send input message: " + inputMessageGuid);
+            _logger.LogInformation("Broker. GetPhotos. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, getPhotosInputMessage);
-            _logger.LogInformation("Broker. GetPhotos. Waiting for output message: " + inputMessageGuid);
-            var getPhotosOutputMessage = _queueManager.WaitForMessage<GetPhotosOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            _logger.LogInformation("Broker. GetPhotos. Recieve output message: " + inputMessageGuid);
-            if (getPhotosOutputMessage.Result == OutputMessageResult.Success)
-            {
-                return new GetPhotosResponse { Success = true, PhotoIds = getPhotosOutputMessage.PhotoIds };
-            }
-            else
-            {
-                return new GetPhotosResponse { Success = false };
-            }
+
+            return Ok();
         }
 
         [HttpGet]
@@ -110,72 +87,42 @@ namespace PhotoBank.Broker.Api.Controllers
         [CheckAuthentication]
         public IActionResult GetPhoto(string login, string token, int photoId)
         {
-            var inputMessageGuid = Guid.NewGuid().ToString();
-            var getPhotoInputMessage = new GetPhotoInputMessage(inputMessageGuid)
+            var messageClientId = ClientIdBuidler.Build(HttpContext);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var getPhotoInputMessage = new GetPhotoInputMessage(messageClientId, messageChainId)
             {
                 PhotoId = photoId
             };
-            _logger.LogInformation("Broker. GetPhoto. Send input message: " + inputMessageGuid);
+            _logger.LogInformation("Broker. GetPhoto. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
-            _logger.LogInformation("Broker. GetPhoto. Waiting for output message: " + inputMessageGuid);
-            var getPhotoOutputMessage = _queueManager.WaitForMessage<GetPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-            _logger.LogInformation("Broker. GetPhoto. Recieve output message: " + inputMessageGuid);
-            if (getPhotoOutputMessage.Result == OutputMessageResult.Success)
-            {
-                return File(getPhotoOutputMessage.PhotoBytes, "image/jpeg");
-            }
-            else
-            {
-                return NotFound();
-            }
+
+            return Ok();
         }
 
         [HttpPost]
         [Route("uploadPhotos")]
         [CheckAuthentication]
-        public UploadPhotosReponse UploadPhotos(UploadPhotosRequest request)
+        public IActionResult UploadPhotos(UploadPhotosRequest request)
         {
             if ((request.Files ?? Enumerable.Empty<string>()).Any() == false)
             {
-                return new UploadPhotosReponse { Success = false };
+                return BadRequest();
             }
+            var messageClientId = ClientIdBuidler.Build(HttpContext);
             var userId = _authenticationManager.GetUserId(request.Login, request.Token);
-            var inputMessageGuidList = new List<string>();
-            var uploadedPhotoIds = new List<int>();
             foreach (var fileBase64Content in request.Files)
             {
-                var inputMessageGuid = Guid.NewGuid().ToString();
-                inputMessageGuidList.Add(inputMessageGuid);
-                var uploadPhotoInputMessage = new UploadPhotoInputMessage(inputMessageGuid)
+                var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+                var uploadPhotoInputMessage = new UploadPhotoInputMessage(messageClientId, messageChainId)
                 {
                     UserId = userId,
                     FileBase64Content = fileBase64Content
                 };
-                _logger.LogInformation("Broker. UploadPhotos. Send input message: " + inputMessageGuid);
+                _logger.LogInformation("Broker. UploadPhotos. Send input message: " + messageChainId.Value);
                 _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, uploadPhotoInputMessage);
             }
-            foreach (var inputMessageGuid in inputMessageGuidList)
-            {
-                _logger.LogInformation("Broker. UploadPhotos. Waiting for output message: " + inputMessageGuid);
-                var uploadPhotoOutputMessage = _queueManager.WaitForMessage<UploadPhotoOutputMessage>(BrokerSettings.ResultQueue, inputMessageGuid);
-                _logger.LogInformation("Broker. UploadPhotos. Recieve output message: " + inputMessageGuid);
-                if (uploadPhotoOutputMessage.Result == OutputMessageResult.Success)
-                {
-                    uploadedPhotoIds.Add(uploadPhotoOutputMessage.PhotoId);
-                }
-            }
-            if (uploadedPhotoIds.Count == request.Files.Count())
-            {
-                return new UploadPhotosReponse { Success = true, PhotoIds = uploadedPhotoIds };
-            }
-            else if (uploadedPhotoIds.Count > 0)
-            {
-                return new UploadPhotosReponse { Success = true, PhotoIds = uploadedPhotoIds };
-            }
-            else
-            {
-                return new UploadPhotosReponse { Success = false };
-            }
+
+            return Ok();
         }
     }
 }

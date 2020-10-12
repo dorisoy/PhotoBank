@@ -8,7 +8,7 @@ namespace PhotoBank.Auth.Contracts
     [Serializable]
     public class LoginInputMessage : InputMessage
     {
-        public LoginInputMessage(string guid) : base(guid)
+        public LoginInputMessage(MessageClientId clientId, MessageChainId chainId) : base(clientId, chainId)
         {
         }
 

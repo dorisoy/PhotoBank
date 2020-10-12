@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Utils;
@@ -16,7 +15,6 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         private readonly IConnection _connection;
         private readonly IModel _model;
         private readonly ConcurrentDictionary<string, MessageConsumer> _consumers;
-        private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, Message>> _messagesDictionary;
 
         public ILogger Logger { get; set; }
 
@@ -26,7 +24,6 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
             _connection = _connectionFactory.TryCreateConnection();
             _model = _connection.CreateModel();
             _consumers = new ConcurrentDictionary<string, MessageConsumer>();
-            _messagesDictionary = new ConcurrentDictionary<string, ConcurrentDictionary<string, Message>>();
         }
 
         public void SendMessage(string queueName, Message message)
@@ -52,26 +49,6 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
                 _consumers[queueName].Callbacks.Add(callback);
             }
         }
-
-        public TMessage WaitForMessage<TMessage>(string queueName, string messageGuid) where TMessage : Message
-        {
-            if (_messagesDictionary.ContainsKey(queueName) == false)
-            {
-                _messagesDictionary.TryAdd(queueName, new ConcurrentDictionary<string, Message>());
-                var consumer = new RabbitMessageConsumer(args =>
-                {
-                    _messagesDictionary[queueName].TryAdd(args.Message.Guid, args.Message);
-                });
-                _model.BasicConsume(queueName, true, consumer);
-            }
-            ConcurrentDictionary<string, Message> messages;
-            _messagesDictionary.TryGetValue(queueName, out messages);
-            while (messages.ContainsKey(messageGuid) == false) Thread.Sleep(200); // waiting for the message
-            Message message;
-            messages.TryRemove(messageGuid, out message);
-
-            return (TMessage)message;
-        }
     }
 
     class MessageConsumer : AbstractConsumer
@@ -91,53 +68,13 @@ namespace PhotoBank.QueueLogic.Manager.RabbitMQ
         }
     }
 
-    class RabbitMessageConsumer : AbstractConsumer
-    {
-        private Action<CallbackArgs> _callback;
-
-        public RabbitMessageConsumer(Action<CallbackArgs> callback)
-        {
-            _callback = callback;
-        }
-
-        public override void HandleBasicDeliver(
-            string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties prop, ReadOnlyMemory<byte> body)
-        {
-            var message = MessageFactory.MakeMessage(prop, body);
-            var args = new CallbackArgs
-            {
-                Message = message,
-                ConsumerTag = consumerTag,
-                DeliveryTag = deliveryTag,
-                Redelivered = redelivered,
-                Exchange = exchange,
-                RoutingKey = routingKey,
-                Prop = prop,
-                Body = body
-            };
-            _callback(args);
-        }
-
-        public class CallbackArgs
-        {
-            public Message Message { get; set; }
-            public string ConsumerTag { get; set; }
-            public ulong DeliveryTag { get; set; }
-            public bool Redelivered { get; set; }
-            public string Exchange { get; set; }
-            public string RoutingKey { get; set; }
-            public IBasicProperties Prop { get; set; }
-            public ReadOnlyMemory<byte> Body { get; set; }
-        }
-    }
-
     static class MessageFactory
     {
         public static Dictionary<string, object> GetPropertiesHeaders(Message message)
         {
             var headers = new Dictionary<string, object>();
             headers.Add(MessageFieldConstants.MessageType, message.GetType().AssemblyQualifiedName);
-            headers.Add(MessageFieldConstants.MessageGuid, message.Guid);
+            headers.Add(MessageFieldConstants.MessageChainId, message.ChainId.Value);
 
             return headers;
         }

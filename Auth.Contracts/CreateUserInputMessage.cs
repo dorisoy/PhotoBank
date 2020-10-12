@@ -14,7 +14,7 @@ namespace PhotoBank.Auth.Contracts
 
         public string EMail { get; set; }
 
-        public CreateUserInputMessage(string guid) : base(guid)
+        public CreateUserInputMessage(MessageClientId clientId, MessageChainId chainId) : base(clientId, chainId)
         {
         }
     }

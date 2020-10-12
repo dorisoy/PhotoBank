@@ -8,7 +8,7 @@ namespace PhotoBank.Auth.Contracts
     [Serializable]
     public class CreateUserOutputMessage : OutputMessage
     {
-        public CreateUserOutputMessage(string guid, OutputMessageResult result) : base(guid, result)
+        public CreateUserOutputMessage(MessageClientId clientId, MessageChainId chainId, OutputMessageResult result) : base(clientId, chainId, result)
         {
         }
     }

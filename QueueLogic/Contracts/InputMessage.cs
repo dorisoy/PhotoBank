@@ -5,7 +5,7 @@ namespace PhotoBank.QueueLogic.Contracts
     [Serializable]
     public abstract class InputMessage : Message
     {
-        public InputMessage(string guid) : base(guid)
+        public InputMessage(MessageClientId userId, MessageChainId chainId) : base(userId, chainId)
         {
         }
     }

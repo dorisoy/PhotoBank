@@ -8,7 +8,7 @@ namespace PhotoBank.Photo.Contracts
     [Serializable]
     public class GetPhotoOutputMessage : OutputMessage
     {
-        public GetPhotoOutputMessage(string guid, OutputMessageResult result) : base(guid, result)
+        public GetPhotoOutputMessage(MessageClientId clientId, MessageChainId chainId, OutputMessageResult result) : base(clientId, chainId, result)
         {
         }
 

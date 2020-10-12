@@ -19,7 +19,7 @@ namespace PhotoBank.Auth.Service.MessageProcessors
                 EMail = inputMessage.EMail
             };
             _context.RepositoryFactory.Get<IUserRepository>().AddUser(user);
-            var outputMessage = new CreateUserOutputMessage(inputMessage.Guid, OutputMessageResult.Success);
+            var outputMessage = new CreateUserOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success);
             _context.QueueManager.SendMessage(AuthSettings.AuthOutputQueue, outputMessage);
         }
     }

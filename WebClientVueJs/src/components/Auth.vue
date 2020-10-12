@@ -16,6 +16,7 @@
     import Axios from 'axios';
     import Config from '@/config';
     import '@/cookies';
+    import * as SignalR from '@microsoft/signalr'
 
     export default {
         name: 'Auth',
@@ -28,6 +29,12 @@
             };
         },
         mounted() {
+            //this.hubConnection = new SignalR.HubConnectionBuilder().withUrl("http://localhost:8080/callback").build();
+            this.hubConnection = new SignalR.HubConnectionBuilder().withUrl("/callback").build();
+            this.hubConnection.on("LoginResponse", function (response) {
+                alert(response.success);
+            });
+            this.hubConnection.start();
         },
         methods: {
             send() {

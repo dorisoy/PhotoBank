@@ -8,7 +8,7 @@ namespace PhotoBank.Auth.Contracts
     [Serializable]
     public class CheckTokenInputMessage : InputMessage
     {
-        public CheckTokenInputMessage(string guid) : base(guid)
+        public CheckTokenInputMessage(MessageClientId clientId, MessageChainId chainId) : base(clientId, chainId)
         {
         }
 

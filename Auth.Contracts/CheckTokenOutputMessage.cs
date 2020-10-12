@@ -6,7 +6,7 @@ namespace PhotoBank.Auth.Contracts
     [Serializable]
     public class CheckTokenOutputMessage : OutputMessage
     {
-        public CheckTokenOutputMessage(string guid, OutputMessageResult result) : base(guid, result)
+        public CheckTokenOutputMessage(MessageClientId clientId, MessageChainId chainId, OutputMessageResult result) : base(clientId, chainId, result)
         {
         }
 

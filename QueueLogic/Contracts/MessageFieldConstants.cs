@@ -8,6 +8,6 @@ namespace PhotoBank.QueueLogic.Contracts
     {
         public static readonly string MessageType = "MessageType";
 
-        public static readonly string MessageGuid = "MessageGuid";
+        public static readonly string MessageChainId = "MessageChainId";
     }
 }

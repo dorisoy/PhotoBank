@@ -23,10 +23,10 @@ namespace PhotoBank.Auth.Service
 
         private void OnMessageConsume(Message message)
         {
-            _logger.LogInformation("Get input message: " + message.Guid);
+            _logger.LogInformation("Get input message: " + message.ChainId.Value);
             var processor = _processorFactory.MakeProcessorFor(message);
             processor.Execute();
-            _logger.LogInformation("Send output message: " + message.Guid);
+            _logger.LogInformation("Send output message: " + message.ChainId.Value);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

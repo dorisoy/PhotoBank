@@ -1,6 +1,5 @@
 ﻿using System;
-using PhotoBank.Auth.Service.Data;
-using PhotoBank.QueueLogic.Manager;
+using PhotoBank.QueueLogic.Contracts;
 
 namespace Starter
 {
@@ -18,9 +17,9 @@ namespace Starter
     }
 
     [Serializable]
-    class TestMessage : PhotoBank.QueueLogic.Contracts.InputMessage
+    class TestMessage : InputMessage
     {
-        public TestMessage(string guid) : base(guid)
+        public TestMessage(MessageClientId userId, MessageChainId chainId) : base(userId, chainId)
         {
         }
 
