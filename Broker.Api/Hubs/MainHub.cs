@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.SignalR;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Broker.Api.Contracts;
@@ -13,6 +15,11 @@ namespace PhotoBank.Broker.Api.Hubs
         public MainHub(IQueueManager queueManager)
         {
             queueManager.AddMessageConsumer(BrokerSettings.ResultQueue, OnMessageConsume);
+        }
+
+        public override Task OnConnectedAsync()
+        {
+            return base.OnConnectedAsync();
         }
 
         private void OnMessageConsume(Message message)

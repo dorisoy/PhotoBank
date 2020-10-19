@@ -47,6 +47,9 @@
     <Content Include="src\config.js" />
     <Content Include="src\cookies.js" />
     <Content Include="src\router.js" />
+    <Content Include="src\signalr.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\utils.js">
       <SubType>Code</SubType>
     </Content>

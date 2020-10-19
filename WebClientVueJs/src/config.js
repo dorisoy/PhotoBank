@@ -1,6 +1,5 @@
 
-var apiPath = "https://localhost:44363/api/";
-//var apiPath = "https://localhost:44363/api/stub/";
+var apiPath = "https://localhost:44364/api/";
 
 export default {
     loginApiPath: apiPath + "login",

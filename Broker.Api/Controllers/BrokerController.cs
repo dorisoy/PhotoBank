@@ -15,7 +15,7 @@ namespace PhotoBank.Broker.Api.Controllers
 {
     [ApiController]
     [Route("api")]
-    [EnableCors("TCAPolicy")]
+    [EnableCors]
     public class BrokerController : ControllerBase
     {
         private readonly IAuthenticationManager _authenticationManager;
@@ -28,6 +28,13 @@ namespace PhotoBank.Broker.Api.Controllers
             _queueManager = queueManager;
             _logger = logger;
             //_queueManager.Logger = _logger;
+        }
+
+        [HttpGet]
+        [Route("testAction")]
+        public IActionResult TestAction()
+        {
+            return new JsonResult(new { ok = true });
         }
 
         [HttpPost]

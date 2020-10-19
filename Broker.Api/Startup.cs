@@ -20,10 +20,10 @@ namespace PhotoBank.Broker.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(c => c.AddPolicy("TCAPolicy", builder =>
-            {
-                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            }));
+            //services.AddCors(c => c.AddPolicy("TCAPolicy", builder =>
+            //{
+            //    builder.WithOrigins("https://localhost:8080").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+            //}));
             services.AddSingleton(typeof(IAuthenticationManager), typeof(AuthenticationManager));
             var queueManagerFactory = new QueueManagerFactory();
             var queueManager = queueManagerFactory.Make();
@@ -41,7 +41,10 @@ namespace PhotoBank.Broker.Api
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseCors();
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("http://localhost:8080").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
