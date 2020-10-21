@@ -18,7 +18,7 @@
     import '@/cookies';
     import { HubConnectionBuilder } from '@microsoft/signalr';
 
-    const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44364/callback").build();
+    const hubConnection = new HubConnectionBuilder().withUrl(Config.host + "callback").build();
     hubConnection.start();
 
     export default {

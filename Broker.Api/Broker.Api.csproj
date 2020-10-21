@@ -17,5 +17,13 @@
     <ProjectReference Include="..\QueueLogic\QueueLogic.csproj" />
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="%25windir%25\system32\inetsrv\appcmd stop site /site.name:PhotoBank" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="%25windir%25\system32\inetsrv\appcmd start site /site.name:PhotoBank" />
+  </Target>
+
 
 </Project>

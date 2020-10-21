@@ -20,10 +20,6 @@ namespace PhotoBank.Broker.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddCors(c => c.AddPolicy("TCAPolicy", builder =>
-            //{
-            //    builder.WithOrigins("https://localhost:8080").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-            //}));
             services.AddSingleton(typeof(IAuthenticationManager), typeof(AuthenticationManager));
             var queueManagerFactory = new QueueManagerFactory();
             var queueManager = queueManagerFactory.Make();
