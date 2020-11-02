@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PhotoBank.Broker.Api.Authentication;
-using PhotoBank.Broker.Api.Hubs;
+using PhotoBank.Broker.Api.SignalR;
 using PhotoBank.QueueLogic.Manager;
 
 namespace PhotoBank.Broker.Api
@@ -24,6 +24,7 @@ namespace PhotoBank.Broker.Api
             var queueManagerFactory = new QueueManagerFactory();
             var queueManager = queueManagerFactory.Make();
             services.AddSingleton(typeof(IQueueManager), queueManager);
+            BrokerNotifier.Instance.SetQueueManager(queueManager);
             services.AddSignalR();
             services.AddControllers();
         }
@@ -44,7 +45,7 @@ namespace PhotoBank.Broker.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<MainHub>("/callback");
+                endpoints.MapHub<BrokerHub>("/hub");
             });
         }
     }

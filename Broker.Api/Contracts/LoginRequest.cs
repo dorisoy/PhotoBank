@@ -7,6 +7,8 @@ namespace PhotoBank.Broker.Api.Contracts
 {
     public class LoginRequest
     {
+        public string ClientId { get; set; }
+
         public string Login { get; set; }
 
         public string Password { get; set; }

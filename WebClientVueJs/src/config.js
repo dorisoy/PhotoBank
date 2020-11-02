@@ -1,6 +1,6 @@
 
-//var host = "https://localhost:44364/";
-var host = "https://localhost:44364/Broker.Api/";
+var host = "http://localhost:44364/";
+//var host = "http://localhost:44364/Broker.Api/";
 
 var apiPath = host + "api/";
 

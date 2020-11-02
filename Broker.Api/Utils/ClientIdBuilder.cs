@@ -7,7 +7,7 @@ using PhotoBank.QueueLogic.Contracts;
 
 namespace PhotoBank.Broker.Api.Utils
 {
-    public static class ClientIdBuidler
+    public static class ClientIdBuilder
     {
         public static MessageClientId Build(HttpContext httpContext)
         {

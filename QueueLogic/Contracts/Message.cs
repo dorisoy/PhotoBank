@@ -23,7 +23,26 @@ namespace PhotoBank.QueueLogic.Contracts
     [Serializable]
     public class MessageClientId
     {
-        public string Value { get; private set; }
+        private string _value;
+        public string Value
+        {
+            get { return _value; }
+            set
+            {
+                if (_value == null)
+                {
+                    _value = value;
+                }
+                else
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+        }
+
+        public MessageClientId()
+        {
+        }
 
         public MessageClientId(string value)
         {

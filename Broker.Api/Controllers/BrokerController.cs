@@ -41,7 +41,7 @@ namespace PhotoBank.Broker.Api.Controllers
         [Route("createUser")]
         public IActionResult CreateUser(CreateUserRequest request)
         {
-            var messageClientId = ClientIdBuidler.Build(HttpContext);
+            var messageClientId = ClientIdBuilder.Build(HttpContext);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var inputMessage = new CreateUserInputMessage(messageClientId, messageChainId)
             {
@@ -59,7 +59,7 @@ namespace PhotoBank.Broker.Api.Controllers
         [Route("login")]
         public IActionResult Login(LoginRequest request)
         {
-            var messageClientId = ClientIdBuidler.Build(HttpContext);
+            var messageClientId = new MessageClientId(request.ClientId);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var inputMessage = new LoginInputMessage(messageClientId, messageChainId)
             {
@@ -77,7 +77,7 @@ namespace PhotoBank.Broker.Api.Controllers
         [CheckAuthentication]
         public IActionResult GetPhotos(GetPhotosRequest request)
         {
-            var messageClientId = ClientIdBuidler.Build(HttpContext);
+            var messageClientId = ClientIdBuilder.Build(HttpContext);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var getPhotosInputMessage = new GetPhotosInputMessage(messageClientId, messageChainId)
             {
@@ -94,7 +94,7 @@ namespace PhotoBank.Broker.Api.Controllers
         [CheckAuthentication]
         public IActionResult GetPhoto(string login, string token, int photoId)
         {
-            var messageClientId = ClientIdBuidler.Build(HttpContext);
+            var messageClientId = ClientIdBuilder.Build(HttpContext);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var getPhotoInputMessage = new GetPhotoInputMessage(messageClientId, messageChainId)
             {
@@ -115,7 +115,7 @@ namespace PhotoBank.Broker.Api.Controllers
             {
                 return BadRequest();
             }
-            var messageClientId = ClientIdBuidler.Build(HttpContext);
+            var messageClientId = ClientIdBuilder.Build(HttpContext);
             var userId = _authenticationManager.GetUserId(request.Login, request.Token);
             foreach (var fileBase64Content in request.Files)
             {

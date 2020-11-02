@@ -18,22 +18,29 @@
     import '@/cookies';
     import { HubConnectionBuilder } from '@microsoft/signalr';
 
-    const hubConnection = new HubConnectionBuilder().withUrl(Config.host + "callback").build();
-    hubConnection.start();
-
     export default {
         name: 'Auth',
         props: {
         },
         data() {
             return {
+                clientId: "123213123123",
                 login: "vinge",
                 password: "12345"
             };
         },
         mounted() {
-            hubConnection.on("LoginResponse", function (response) {
-                alert(response.success);
+            var self = this;
+            self.hubConnection = new HubConnectionBuilder().withUrl(Config.host + "hub").build();
+            self.hubConnection.start().then(function () {
+                self.hubConnection.invoke("Register", self.clientId);
+            });
+            self.hubConnection.on("LoginResponse", function (response) {
+                if (response.Success) {
+                    self.$cookies.set('login', self.login);
+                    self.$cookies.set('token', response.Token);
+                    self.$router.push('photos');
+                }
             });
         },
         methods: {
@@ -41,13 +48,7 @@
                 Axios({
                     method: 'post',
                     url: Config.loginApiPath,
-                    data: { login: this.login, password: this.password }
-                }).then(response => {
-                    if (response.data.success) {
-                        this.$cookies.set('login', this.login);
-                        this.$cookies.set('token', response.data.token);
-                        this.$router.push('photos');
-                    }
+                    data: { clientId: this.clientId, login: this.login, password: this.password }
                 });
             }
         }
