@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Broker.Api.Authentication;
 using PhotoBank.Broker.Api.Contracts;
-using PhotoBank.Broker.Api.Utils;
 using PhotoBank.Photo.Contracts;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Manager;

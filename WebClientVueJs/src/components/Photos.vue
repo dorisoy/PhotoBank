@@ -41,16 +41,22 @@
                     } else if (response.success) {
                         self.loadPhotosContent(response.photoIds);
                     }
+                } else {
+                    this.$router.push('/');
                 }
             });
             SignalR.connection.on("GetPhotoResponse", function (response) {
                 if (response.success) {
                     self.photos.push('data:image/png;base64,' + response.fileBase64Content);
+                } else {
+                    this.$router.push('/');
                 }
             });
             SignalR.connection.on("UploadPhotosResponse", function (response) {
                 if (response.success) {
                     self.loadPhotosContent([response.photoId]);
+                } else {
+                    this.$router.push('/');
                 }
             });
             // получаем список id всех фоток

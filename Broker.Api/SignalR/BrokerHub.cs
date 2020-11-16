@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using PhotoBank.Broker.Api.Contracts;
-using PhotoBank.Broker.Api.Utils;
 using PhotoBank.QueueLogic.Contracts;
 
 namespace PhotoBank.Broker.Api.SignalR
@@ -39,29 +36,46 @@ namespace PhotoBank.Broker.Api.SignalR
         public async Task LoginResponse(object responseContainerJson)
         {
             var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
-            var connectionId = _connectionIdDictionary[responseContainer.MessageClientId];
-            await Clients.Client(connectionId).SendAsync("LoginResponse", responseContainer.Response);
+            var connectionId = GetConnectionIdOrNull(responseContainer.MessageClientId);
+            if (connectionId != null)
+            {
+                await Clients.Client(connectionId).SendAsync("LoginResponse", responseContainer.Response);
+            }
         }
 
         public async Task GetPhotosResponse(object responseContainerJson)
         {
             var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
-            var connectionId = _connectionIdDictionary[responseContainer.MessageClientId];
-            await Clients.Client(connectionId).SendAsync("GetPhotosResponse", responseContainer.Response);
+            var connectionId = GetConnectionIdOrNull(responseContainer.MessageClientId);
+            if (connectionId != null)
+            {
+                await Clients.Client(connectionId).SendAsync("GetPhotosResponse", responseContainer.Response);
+            }
         }
 
         public async Task GetPhotoResponse(object responseContainerJson)
         {
             var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
-            var connectionId = _connectionIdDictionary[responseContainer.MessageClientId];
-            await Clients.Client(connectionId).SendAsync("GetPhotoResponse", responseContainer.Response);
+            var connectionId = GetConnectionIdOrNull(responseContainer.MessageClientId);
+            if (connectionId != null)
+            {
+                await Clients.Client(connectionId).SendAsync("GetPhotoResponse", responseContainer.Response);
+            }
         }
 
         public async Task UploadPhotosResponse(object responseContainerJson)
         {
             var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
-            var connectionId = _connectionIdDictionary[responseContainer.MessageClientId];
-            await Clients.Client(connectionId).SendAsync("UploadPhotosResponse", responseContainer.Response);
+            var connectionId = GetConnectionIdOrNull(responseContainer.MessageClientId);
+            if (connectionId != null)
+            {
+                await Clients.Client(connectionId).SendAsync("UploadPhotosResponse", responseContainer.Response);
+            }
+        }
+
+        private string GetConnectionIdOrNull(MessageClientId messageClientId)
+        {
+            return _connectionIdDictionary.ContainsKey(messageClientId) ? _connectionIdDictionary[messageClientId] : null;
         }
     }
 }
