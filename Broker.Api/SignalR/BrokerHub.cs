@@ -35,41 +35,31 @@ namespace PhotoBank.Broker.Api.SignalR
 
         public async Task LoginResponse(object responseContainerJson)
         {
-            var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
-            var connectionId = GetConnectionIdOrNull(responseContainer.MessageClientId);
-            if (connectionId != null)
-            {
-                await Clients.Client(connectionId).SendAsync("LoginResponse", responseContainer.Response);
-            }
+            await SendAsync("LoginResponse", responseContainerJson);
         }
 
         public async Task GetPhotosResponse(object responseContainerJson)
         {
-            var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
-            var connectionId = GetConnectionIdOrNull(responseContainer.MessageClientId);
-            if (connectionId != null)
-            {
-                await Clients.Client(connectionId).SendAsync("GetPhotosResponse", responseContainer.Response);
-            }
+            await SendAsync("GetPhotosResponse", responseContainerJson);
         }
 
         public async Task GetPhotoResponse(object responseContainerJson)
         {
-            var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
-            var connectionId = GetConnectionIdOrNull(responseContainer.MessageClientId);
-            if (connectionId != null)
-            {
-                await Clients.Client(connectionId).SendAsync("GetPhotoResponse", responseContainer.Response);
-            }
+            await SendAsync("GetPhotoResponse", responseContainerJson);
         }
 
         public async Task UploadPhotosResponse(object responseContainerJson)
+        {
+            await SendAsync("UploadPhotosResponse", responseContainerJson);
+        }
+
+        private async Task SendAsync(string methodName, object responseContainerJson)
         {
             var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
             var connectionId = GetConnectionIdOrNull(responseContainer.MessageClientId);
             if (connectionId != null)
             {
-                await Clients.Client(connectionId).SendAsync("UploadPhotosResponse", responseContainer.Response);
+                await Clients.Client(connectionId).SendAsync(methodName, responseContainer.Response);
             }
         }
 
