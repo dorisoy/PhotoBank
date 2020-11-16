@@ -12,6 +12,8 @@ namespace PhotoBank.Auth.Contracts
         {
         }
 
+        public string Login { get; set; }
+
         public string Token { get; set; }
 
         public int UserId { get; set; }

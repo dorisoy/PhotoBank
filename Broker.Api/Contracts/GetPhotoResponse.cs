@@ -2,12 +2,12 @@
 
 namespace PhotoBank.Broker.Api.Contracts
 {
-    public class LoginResponse
+    public class GetPhotoResponse
     {
         [JsonPropertyName("success")]
         public bool Success { get; set; }
 
-        [JsonPropertyName("token")]
-        public string Token { get; set; }
+        [JsonPropertyName("fileBase64Content")]
+        public string FileBase64Content { get; set; }
     }
 }

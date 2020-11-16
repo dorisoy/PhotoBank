@@ -1,11 +1,11 @@
 <template>
     <div id="photos">
         <h1>Photos</h1>
-        <uploadPhoto v-on:onUpload="onUpload" />
+        <uploadPhoto />
         <div>
             <ul>
-                <li v-for="photoUrl in photoUrls" v-bind:key="photoUrl">
-                    <img v-bind:src="photoUrl" width="250" />
+                <li v-for="photo in photos">
+                    <img v-bind:src="photo" width="250" />
                 </li>
             </ul>
         </div>
@@ -16,6 +16,7 @@
     import Axios from 'axios';
     import Config from '@/config';
     import '@/cookies';
+    import SignalR from '@/signalr';
     import UploadPhoto from '@/components/UploadPhoto.vue';
 
     export default {
@@ -25,33 +26,48 @@
         },
         data() {
             return {
-                photoUrls: []
+                clientId: "123213123123",
+                photos: []
             }
         },
         mounted() {
+            var self = this;
+            SignalR.start(self.clientId);
+            SignalR.connection.on("GetPhotosResponse", function (response) {
+                if (response.success) {
+                    if (response.isAuthenticated == false) {
+                        this.$router.push('/');
+                    } else if (response.success) {
+                        self.loadPhotosContent(response.photoIds);
+                    }
+                }
+            });
+            SignalR.connection.on("GetPhotoResponse", function (response) {
+                if (response.success) {
+                    self.photos.push('data:image/png;base64,' + response.fileBase64Content);
+                }
+            });
+            SignalR.connection.on("UploadPhotosResponse", function (response) {
+                if (response.success) {
+                    self.loadPhotosContent([response.photoId]);
+                }
+            });
             // получаем список id всех фоток
             Axios({
                 method: 'post',
                 url: Config.getPhotosApiPath,
-                data: { login: this.$cookies.get('login'), token: this.$cookies.get('token') }
-            }).then(response => {
-                if (response.data.isAuthenticated == false) {
-                    this.$router.push('/');
-                } else if (response.data.success) {
-                    var photoIds = response.data.photoIds;
-                    this.loadPhotosAndAddToPhotoUrls(photoIds);
-                }
+                data: { clientId: this.clientId, login: this.$cookies.get('login'), token: this.$cookies.get('token') }
             });
         },
         methods: {
-            onUpload(photoIds) {
-                this.loadPhotosAndAddToPhotoUrls(photoIds);
-            },
-            loadPhotosAndAddToPhotoUrls(photoIds) {
+            loadPhotosContent(photoIds) {
                 for (var photoIdIndex in photoIds) {
-                    // формируем адрес для получения содержимого каждой фотки
-                    var photoUrl = Config.getPhotoApiPath + '?login=' + this.$cookies.get('login') + '&token=' + this.$cookies.get('token') + '&photoId=' + photoIds[photoIdIndex];
-                    this.photoUrls.push(photoUrl);
+                    // получаем содержимое каждой фотки
+                    Axios({
+                        method: 'post',
+                        url: Config.getPhotoApiPath,
+                        data: { clientId: this.clientId, login: this.$cookies.get('login'), token: this.$cookies.get('token'), photoId: photoIds[photoIdIndex] }
+                    });
                 }
             }
         }

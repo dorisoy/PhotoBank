@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using PhotoBank.Photo.Contracts;
 using PhotoBank.Photo.Service.Data;
 using PhotoBank.QueueLogic.Contracts;
@@ -16,8 +17,12 @@ namespace PhotoBank.Photo.Service.MessageProcessors
             var photo = _context.RepositoryFactory.Get<IPhotoRepository>().GetPhoto(inputMessage.PhotoId);
             if (photo != null && File.Exists(photo.Path))
             {
-                var photoBytes = File.ReadAllBytes(photo.Path);
-                outputMessage = new GetPhotoOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success) { PhotoBytes = photoBytes };
+                var fileContent = File.ReadAllBytes(photo.Path);
+                var fileBase64Content = Convert.ToBase64String(fileContent);
+                outputMessage = new GetPhotoOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)
+                {
+                    FileBase64Content = fileBase64Content
+                };
             }
             else
             {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.SignalR.Client;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Broker.Api.Contracts;
+using PhotoBank.Photo.Contracts;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Manager;
 
@@ -11,12 +12,16 @@ namespace PhotoBank.Broker.Api.SignalR
     {
         public static readonly BrokerNotifier Instance = new BrokerNotifier();
 
+        private HubConnection _hubConnection;
+
         private BrokerNotifier()
         {
         }
 
-        public void SetQueueManager(IQueueManager queueManager)
+        public async void Init(IQueueManager queueManager)
         {
+            _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:44364/hub").Build();
+            await _hubConnection.StartAsync();
             queueManager.AddMessageConsumer(BrokerSettings.ResultQueue, OnMessageConsume);
         }
 
@@ -24,17 +29,17 @@ namespace PhotoBank.Broker.Api.SignalR
         {
             var callbackMethodName = GetCallbackMethodName(message);
             var response = MakeResponse(message);
-            var hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:44364/hub").Build();
-            await hubConnection.StartAsync();
-            await hubConnection.InvokeAsync(callbackMethodName, JsonSerializer.Serialize(new ReponseContainer { MessageClientId = message.ClientId, Response = response }));
+            var reponseContainer = new ReponseContainer { MessageClientId = message.ClientId, Response = response };
+            var reponseContainerSerialized = JsonSerializer.Serialize(reponseContainer);
+            await _hubConnection.InvokeAsync(callbackMethodName, reponseContainerSerialized);
         }
 
         private string GetCallbackMethodName(Message message)
         {
-            if (message is LoginOutputMessage)
-            {
-                return "LoginResponse";
-            }
+            if (message is LoginOutputMessage) return "LoginResponse";
+            if (message is GetPhotosOutputMessage) return "GetPhotosResponse";
+            if (message is GetPhotoOutputMessage) return "GetPhotoResponse";
+            if (message is UploadPhotoOutputMessage) return "UploadPhotosResponse";
 
             return null;
         }
@@ -48,6 +53,36 @@ namespace PhotoBank.Broker.Api.SignalR
                 {
                     Success = loginOutputMessage.Result == OutputMessageResult.Success,
                     Token = loginOutputMessage.Token
+                };
+            }
+
+            if (message is GetPhotosOutputMessage)
+            {
+                var getPhotosOutputMessage = (GetPhotosOutputMessage)message;
+                return new GetPhotosResponse
+                {
+                    Success = getPhotosOutputMessage.Result == OutputMessageResult.Success,
+                    PhotoIds = getPhotosOutputMessage.PhotoIds
+                };
+            }
+
+            if (message is GetPhotoOutputMessage)
+            {
+                var getPhotosOutputMessage = (GetPhotoOutputMessage)message;
+                return new GetPhotoResponse
+                {
+                    Success = getPhotosOutputMessage.Result == OutputMessageResult.Success,
+                    FileBase64Content = getPhotosOutputMessage.FileBase64Content
+                };
+            }
+
+            if (message is UploadPhotoOutputMessage)
+            {
+                var uploadPhotoOutputMessage = (UploadPhotoOutputMessage)message;
+                return new UploadPhotosReponse
+                {
+                    Success = uploadPhotoOutputMessage.Result == OutputMessageResult.Success,
+                    PhotoId = uploadPhotoOutputMessage.PhotoId
                 };
             }
 

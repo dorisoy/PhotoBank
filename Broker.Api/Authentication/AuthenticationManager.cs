@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
+using PhotoBank.Auth.Contracts;
+using PhotoBank.Broker.Api.Contracts;
+using PhotoBank.QueueLogic.Contracts;
+using PhotoBank.QueueLogic.Manager;
 
 namespace PhotoBank.Broker.Api.Authentication
 {
@@ -18,6 +19,20 @@ namespace PhotoBank.Broker.Api.Authentication
     public class AuthenticationManager : IAuthenticationManager
     {
         private List<UserAuthenticationInfo> _userAuthenticationInfo = new List<UserAuthenticationInfo>();
+
+        public AuthenticationManager(IQueueManager queueManager)
+        {
+            queueManager.AddMessageConsumer(BrokerSettings.ResultQueue, OnLoginOutputMessage);
+        }
+
+        private void OnLoginOutputMessage(Message message)
+        {
+            var loginOutputMessage = message as LoginOutputMessage;
+            if (loginOutputMessage != null)
+            {
+                this.Add(loginOutputMessage.Login, loginOutputMessage.Token, loginOutputMessage.UserId);
+            }
+        }
 
         public void Add(string login, string token, int userId)
         {

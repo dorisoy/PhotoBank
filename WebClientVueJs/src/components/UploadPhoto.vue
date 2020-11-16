@@ -17,6 +17,7 @@
     export default {
         data() {
             return {
+                clientId: "123213123123",
                 files: []
             }
         },
@@ -30,19 +31,10 @@
                     Axios({
                         method: 'post',
                         url: Config.uploadPhotosApiPath,
-                        data: { login: self.$cookies.get('login'), token: self.$cookies.get('token'), files: filesBase64 }
-                    }).then(response => {
-                        if (response.data.isAuthenticated == false) {
-                            this.$router.push('/');
-                        } else if (response.data.success) {
-                            self.submitFilesCompleted(response.data.photoIds);
-                        }
+                        data: { clientId: self.clientId, login: self.$cookies.get('login'), token: self.$cookies.get('token'), files: filesBase64 }
                     });
                 };
                 Utils.filesToBase64(this.files, uploadFunc);
-            },
-            submitFilesCompleted(photoIds) {
-                this.$emit('onUpload', photoIds);
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,8 +25,11 @@ namespace PhotoBank.Broker.Api
             var queueManagerFactory = new QueueManagerFactory();
             var queueManager = queueManagerFactory.Make();
             services.AddSingleton(typeof(IQueueManager), queueManager);
-            BrokerNotifier.Instance.SetQueueManager(queueManager);
-            services.AddSignalR();
+            BrokerNotifier.Instance.Init(queueManager);
+            services.AddSignalR(options =>
+            {
+                options.MaximumReceiveMessageSize = Int64.MaxValue;
+            });
             services.AddControllers();
         }
 

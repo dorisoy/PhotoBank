@@ -16,12 +16,10 @@
     import Axios from 'axios';
     import Config from '@/config';
     import '@/cookies';
-    import { HubConnectionBuilder } from '@microsoft/signalr';
+    import SignalR from '@/signalr';
 
     export default {
         name: 'Auth',
-        props: {
-        },
         data() {
             return {
                 clientId: "123213123123",
@@ -31,14 +29,11 @@
         },
         mounted() {
             var self = this;
-            self.hubConnection = new HubConnectionBuilder().withUrl(Config.host + "hub").build();
-            self.hubConnection.start().then(function () {
-                self.hubConnection.invoke("Register", self.clientId);
-            });
-            self.hubConnection.on("LoginResponse", function (response) {
-                if (response.Success) {
+            SignalR.start(self.clientId);
+            SignalR.connection.on("LoginResponse", function (response) {
+                if (response.success) {
                     self.$cookies.set('login', self.login);
-                    self.$cookies.set('token', response.Token);
+                    self.$cookies.set('token', response.token);
                     self.$router.push('photos');
                 }
             });

@@ -38,9 +38,30 @@ namespace PhotoBank.Broker.Api.SignalR
 
         public async Task LoginResponse(object responseContainerJson)
         {
-            var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString(), new JsonSerializerOptions());
+            var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
             var connectionId = _connectionIdDictionary[responseContainer.MessageClientId];
             await Clients.Client(connectionId).SendAsync("LoginResponse", responseContainer.Response);
+        }
+
+        public async Task GetPhotosResponse(object responseContainerJson)
+        {
+            var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
+            var connectionId = _connectionIdDictionary[responseContainer.MessageClientId];
+            await Clients.Client(connectionId).SendAsync("GetPhotosResponse", responseContainer.Response);
+        }
+
+        public async Task GetPhotoResponse(object responseContainerJson)
+        {
+            var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
+            var connectionId = _connectionIdDictionary[responseContainer.MessageClientId];
+            await Clients.Client(connectionId).SendAsync("GetPhotoResponse", responseContainer.Response);
+        }
+
+        public async Task UploadPhotosResponse(object responseContainerJson)
+        {
+            var responseContainer = JsonSerializer.Deserialize<ReponseContainer>(responseContainerJson.ToString());
+            var connectionId = _connectionIdDictionary[responseContainer.MessageClientId];
+            await Clients.Client(connectionId).SendAsync("UploadPhotosResponse", responseContainer.Response);
         }
     }
 }

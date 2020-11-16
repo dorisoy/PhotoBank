@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace PhotoBank.Broker.Api.Contracts
 {
     public class UploadPhotosReponse
     {
+        [JsonPropertyName("success")]
         public bool Success { get; set; }
 
-        public IEnumerable<int> PhotoIds { get; set; }
-    }
-
-    public enum UploadPhotoResult
-    {
-        AllPhotos = 1,
-        Partially = 2,
-        NoOne = 2
+        [JsonPropertyName("photoId")]
+        public int PhotoId { get; set; }
     }
 }

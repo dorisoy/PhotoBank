@@ -12,6 +12,6 @@ namespace PhotoBank.Photo.Contracts
         {
         }
 
-        public byte[] PhotoBytes { get; set; }
+        public string FileBase64Content { get; set; }
     }
 }

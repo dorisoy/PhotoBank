@@ -41,7 +41,7 @@ namespace PhotoBank.Broker.Api.Controllers
         [Route("createUser")]
         public IActionResult CreateUser(CreateUserRequest request)
         {
-            var messageClientId = ClientIdBuilder.Build(HttpContext);
+            var messageClientId = new MessageClientId(request.ClientId);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var inputMessage = new CreateUserInputMessage(messageClientId, messageChainId)
             {
@@ -77,7 +77,7 @@ namespace PhotoBank.Broker.Api.Controllers
         [CheckAuthentication]
         public IActionResult GetPhotos(GetPhotosRequest request)
         {
-            var messageClientId = ClientIdBuilder.Build(HttpContext);
+            var messageClientId = new MessageClientId(request.ClientId);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var getPhotosInputMessage = new GetPhotosInputMessage(messageClientId, messageChainId)
             {
@@ -89,16 +89,16 @@ namespace PhotoBank.Broker.Api.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getPhoto")]
         [CheckAuthentication]
-        public IActionResult GetPhoto(string login, string token, int photoId)
+        public IActionResult GetPhoto(GetPhotoRequest request)
         {
-            var messageClientId = ClientIdBuilder.Build(HttpContext);
+            var messageClientId = new MessageClientId(request.ClientId);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var getPhotoInputMessage = new GetPhotoInputMessage(messageClientId, messageChainId)
             {
-                PhotoId = photoId
+                PhotoId = request.PhotoId
             };
             _logger.LogInformation("Broker. GetPhoto. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
@@ -115,7 +115,7 @@ namespace PhotoBank.Broker.Api.Controllers
             {
                 return BadRequest();
             }
-            var messageClientId = ClientIdBuilder.Build(HttpContext);
+            var messageClientId = new MessageClientId(request.ClientId);
             var userId = _authenticationManager.GetUserId(request.Login, request.Token);
             foreach (var fileBase64Content in request.Files)
             {
