@@ -18,6 +18,7 @@
     import '@/cookies';
     import SignalR from '@/signalr';
     import UploadPhoto from '@/components/UploadPhoto.vue';
+    import Utils from '@/utils';
 
     export default {
         name: 'Photos',
@@ -26,12 +27,12 @@
         },
         data() {
             return {
-                clientId: "123213123123",
                 photos: []
             }
         },
         mounted() {
             var self = this;
+            self.clientId = Utils.getClientId();
             SignalR.start(self.clientId);
             SignalR.connection.on("GetPhotosResponse", function (response) {
                 if (response.success) {

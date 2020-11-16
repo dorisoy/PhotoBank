@@ -17,9 +17,12 @@
     export default {
         data() {
             return {
-                clientId: "123213123123",
                 files: []
             }
+        },
+        mounted() {
+            var self = this;
+            self.clientId = Utils.getClientId();
         },
         methods: {
             handleFilesUpload() {

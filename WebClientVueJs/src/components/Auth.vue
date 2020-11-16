@@ -17,18 +17,19 @@
     import Config from '@/config';
     import '@/cookies';
     import SignalR from '@/signalr';
+    import Utils from '@/utils';
 
     export default {
         name: 'Auth',
         data() {
             return {
-                clientId: "123213123123",
                 login: "vinge",
                 password: "12345"
             };
         },
         mounted() {
             var self = this;
+            self.clientId = Utils.getClientId();
             SignalR.start(self.clientId);
             SignalR.connection.on("LoginResponse", function (response) {
                 if (response.success) {

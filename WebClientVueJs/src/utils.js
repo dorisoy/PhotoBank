@@ -1,6 +1,10 @@
 
 export default {
 
+    getClientId: function () {
+        return Date.now().toString();
+    },
+
     fileToBase64: function (file, callback) {
         var reader = new FileReader();
         reader.onload = function (readerEvt) {
