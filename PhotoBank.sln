@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{5296
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "WebClientVueJs", "WebClientVueJs\WebClientVueJs.njsproj", "{0A9D85CA-59B7-42D9-99B6-BB1B607A86AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClientAngular", "WebClientAngular\WebClientAngular.csproj", "{A0A2263C-9159-4C43-AF1D-9783E05820AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{0A9D85CA-59B7-42D9-99B6-BB1B607A86AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0A9D85CA-59B7-42D9-99B6-BB1B607A86AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A9D85CA-59B7-42D9-99B6-BB1B607A86AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0A2263C-9159-4C43-AF1D-9783E05820AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0A2263C-9159-4C43-AF1D-9783E05820AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0A2263C-9159-4C43-AF1D-9783E05820AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0A2263C-9159-4C43-AF1D-9783E05820AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{ACDA99B3-1797-4CD4-BE63-A6D50D66A6BE} = {BF5BE6FF-343C-46FF-B1E2-B396E732A2CC}
 		{8A534DAB-8698-48C7-94FB-8DE6C3F16B19} = {63B7C063-5FEF-4AE6-8187-B2E8998F314C}
 		{0A9D85CA-59B7-42D9-99B6-BB1B607A86AA} = {5296E089-CCDB-4412-9E37-313E1C447A65}
+		{A0A2263C-9159-4C43-AF1D-9783E05820AD} = {5296E089-CCDB-4412-9E37-313E1C447A65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52821D7F-A86E-4784-9637-F090A53C4F27}

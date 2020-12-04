@@ -2,6 +2,8 @@
 */bin
 */obj
 */Database
+WebClientVueJs/dist
 WebClientVueJs/node_modules
 WebClientVueJs/node_modules/.bin
 WebClientVueJs/node_modules/.cache
+WebClientAngular/node_modules
