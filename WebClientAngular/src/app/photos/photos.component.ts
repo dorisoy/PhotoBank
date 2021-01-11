@@ -33,19 +33,19 @@ export class PhotosComponent implements OnInit {
     var authData = self.localStorage.getAuthData();
     self.signalr.start(authData.clientId);
 
-    self.signalr.connection.on("GetPhotoResponse", function (response) {
-      if (!response || !response.success) {
-        self.router.navigate(['/']);
-      } else {
-        self.photos.push('data:image/png;base64,' + response.fileBase64Content);
-      }
-    });
-
     self.signalr.connection.on("GetPhotosResponse", function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
         self.loadPhotosContent(response.photoIds);
+      }
+    });
+
+    self.signalr.connection.on("GetPhotoResponse", function (response) {
+      if (!response || !response.success) {
+        self.router.navigate(['/']);
+      } else {
+        self.photos.push('data:image/png;base64,' + response.fileBase64Content);
       }
     });
   }
