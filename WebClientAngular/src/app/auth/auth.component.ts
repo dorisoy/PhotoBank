@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { SignalRService } from 'src/app/services/signalr.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 import Config from 'src/config';
 import Utils from 'src/utils';
 
@@ -16,26 +18,33 @@ export class AuthComponent implements OnInit {
   password: string = "12345";
 
   constructor(
-    private signalR: SignalRService,
+    private router: Router,
+    private signalr: SignalRService,
+    private localStorage: LocalStorageService,
     private httpClient: HttpClient) {
   }
 
   ngOnInit(): void {
     var self = this;
-    self.signalR.start(self.clientId);
-    self.signalR.connection.on("LoginResponse", function (response) {
-      if (response.success) {
-        alert('login signal r');
-        //self.$cookies.set('login', self.login);
-        //self.$cookies.set('token', response.token);
-        //self.$router.push('photos');
+    self.onLoginResponse();
+  }
+
+  onLoginResponse(): void {
+    var self = this;
+    self.signalr.start(self.clientId);
+    self.signalr.connection.on("LoginResponse", function (response) {
+      if (!response || !response.success) {
+        self.router.navigate(['/']);
+      } else {
+        self.localStorage.setAuthData({ login: self.login, token: response.token, clientId: self.clientId });
+        self.router.navigate(['/photos']);
       }
     });
   }
 
-  send(): void {
+  sendAuth(): void {
     var self = this;
-    var postData = { clientId: self.clientId, login: self.login, password: self.password };
+    var postData = { login: self.login, password: self.password, clientId: self.clientId };
     self.httpClient.post(Config.loginApiPath, postData).toPromise();
   }
 }
