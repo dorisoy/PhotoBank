@@ -24,16 +24,9 @@ export class PhotosComponent implements OnInit {
 
   ngOnInit(): void {
     var self = this;
-    self.onGetPhotosResponse();
-    self.loadPhotosId();
-  }
-
-  onGetPhotosResponse(): void {
-    var self = this;
     var authData = self.localStorage.getAuthData();
-    self.signalr.start(authData.clientId);
 
-    self.signalr.connection.on("GetPhotosResponse", function (response) {
+    self.signalr.addHandler("GetPhotosResponse", function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
@@ -41,7 +34,7 @@ export class PhotosComponent implements OnInit {
       }
     });
 
-    self.signalr.connection.on("GetPhotoResponse", function (response) {
+    self.signalr.addHandler("GetPhotoResponse", function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
@@ -49,12 +42,16 @@ export class PhotosComponent implements OnInit {
       }
     });
 
-    self.signalr.connection.on("UploadPhotosResponse", function (response) {
+    self.signalr.addHandler("UploadPhotosResponse", function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
         self.loadPhotosContent([response.photoId]);
       }
+    });
+
+    self.signalr.start(authData.clientId).then(function () {
+      self.loadPhotosId();
     });
   }
 

@@ -31,8 +31,7 @@ export class AuthComponent implements OnInit {
 
   onLoginResponse(): void {
     var self = this;
-    self.signalr.start(self.clientId);
-    self.signalr.connection.on("LoginResponse", function (response) {
+    self.signalr.addHandler("LoginResponse", function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
@@ -40,6 +39,7 @@ export class AuthComponent implements OnInit {
         self.router.navigate(['/photos']);
       }
     });
+    self.signalr.start(self.clientId);
   }
 
   sendAuth(): void {
