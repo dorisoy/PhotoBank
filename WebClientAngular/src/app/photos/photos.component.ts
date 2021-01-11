@@ -48,6 +48,14 @@ export class PhotosComponent implements OnInit {
         self.photos.push('data:image/png;base64,' + response.fileBase64Content);
       }
     });
+
+    self.signalr.connection.on("UploadPhotosResponse", function (response) {
+      if (!response || !response.success) {
+        self.router.navigate(['/']);
+      } else {
+        self.loadPhotosContent([response.photoId]);
+      }
+    });
   }
 
   loadPhotosId(): void {

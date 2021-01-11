@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthComponent } from './auth/auth.component';
 import { PhotosComponent } from './photos/photos.component';
+import { UploadPhotoComponent } from './upload-photo/upload-photo.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
-    PhotosComponent
+    PhotosComponent,
+    UploadPhotoComponent
   ],
   imports: [
     BrowserModule,

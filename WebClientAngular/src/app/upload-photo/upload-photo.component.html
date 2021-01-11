@@ -1,0 +1,7 @@
+<div>
+  <label>
+    Upload photos:
+    <input type="file" id="files" ref="files" multiple (change)="handleFilesUpload($event.target.files)" />
+  </label>
+  <button (click)="submitFiles()">Send</button>
+</div>
