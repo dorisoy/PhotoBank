@@ -31,10 +31,10 @@ const Auth = React.createClass({
         const signalr = new SignalR()
         signalr.addHandler('LoginResponse', function (response) {
             if (!response || !response.success) {
-                //self.router.navigate(['/'])
+                self.context.router.push('/')
             } else {
+                self.context.router.push('/photos')
                 //self.localStorage.setAuthData({ login: self.login, token: response.token, clientId: self.clientId })
-                //self.router.navigate(['/photos'])
             }
         })
         signalr.start(self.clientId)
@@ -58,5 +58,9 @@ const Auth = React.createClass({
         )
     }
 })
+
+Auth.contextTypes = {
+    router: React.PropTypes.object.isRequired
+}
 
 export default Auth
