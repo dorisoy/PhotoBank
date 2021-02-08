@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import SignalR from '../api/signalr';
+import UploadPhotos from '../components/UploadPhoto'
 import Utils from '../api/utils';
 import Config from '../config';
 
@@ -18,26 +19,26 @@ function Photos() {
     const history = useHistory();
     const [photos, setPhotos] = React.useState([]);
 
-    React.useEffect(() => {
-        function loadPhotosId() {
+    function loadPhotosId() {
+        Axios({
+            method: 'post',
+            url: Config.getPhotosApiPath,
+            data: { login: login, token: token, clientId: clientId }
+        })
+    };
+    
+    function loadPhotosContent(photoIds) {
+        for (let photoIdIndex in photoIds) {
+            // получаем содержимое каждой фотки
             Axios({
                 method: 'post',
-                url: Config.getPhotosApiPath,
-                data: { login: login, token: token, clientId: clientId }
-            })
-        };
+                url: Config.getPhotoApiPath,
+                data: { photoId: photoIds[photoIdIndex], login: login, token: token, clientId: clientId }
+            });
+        }
+    };
 
-        function loadPhotosContent(photoIds) {
-            for (let photoIdIndex in photoIds) {
-                // получаем содержимое каждой фотки
-                Axios({
-                    method: 'post',
-                    url: Config.getPhotoApiPath,
-                    data: { photoId: photoIds[photoIdIndex], login: login, token: token, clientId: clientId }
-                });
-            }
-        };
-
+    function initSignalRResponses() {
         const signalr = new SignalR();
         signalr.addHandler('GetPhotosResponse', function (response) {
             if (!response || !response.success) {
@@ -54,12 +55,22 @@ function Photos() {
                 setPhotos(photos => photos.concat(photo));
             }
         });
+        signalr.addHandler('UploadPhotosResponse', function (response) {
+            if (!response || !response.success) {
+                history.push('/');
+            } else {
+                loadPhotosContent([response.photoId]);
+            }
+        });
         signalr.start(clientId).then(() => loadPhotosId());
-    }, []);
+    }
+
+    React.useEffect(() => { initSignalRResponses(); }, []);
 
     return (
         <div>
             <h1>Photos</h1>
+            <UploadPhotos />
             {photos.length > 0 ?
                 <ul>
                     {photos.map((photo, index) => { return <li key={index} style={styles.li}><img src={photo} width='200' /></li> })}
