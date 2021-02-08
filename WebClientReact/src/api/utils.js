@@ -1,4 +1,3 @@
-
 export default {
 
     getClientId: function () {

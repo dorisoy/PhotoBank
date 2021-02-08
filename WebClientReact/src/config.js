@@ -1,4 +1,3 @@
-
 const host = 'http://localhost:44364/'
 
 const apiPath = host + 'api/'
