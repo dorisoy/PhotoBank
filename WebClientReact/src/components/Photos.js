@@ -38,6 +38,14 @@ function Photos() {
         }
     };
 
+    function deletePhoto(photoId) {
+        Axios({
+            method: 'post',
+            url: Config.deletePhotoApiPath,
+            data: { photoId: photoId, login: login, token: token, clientId: clientId }
+        });
+    }
+
     function initSignalRResponses() {
         const signalr = new SignalR();
         signalr.addHandler('GetPhotosResponse', function (response) {
@@ -51,7 +59,7 @@ function Photos() {
             if (!response || !response.success) {
                 history.push('/');
             } else {
-                const photo = 'data:image/png;base64,' + response.fileBase64Content;
+                const photo = { id: response.photoId, image: 'data:image/png;base64,' + response.fileBase64Content };
                 setPhotos(photos => photos.concat(photo));
             }
         });
@@ -60,6 +68,13 @@ function Photos() {
                 history.push('/');
             } else {
                 loadPhotosContent([response.photoId]);
+            }
+        });
+        signalr.addHandler('DeletePhotoResponse', function (response) {
+            if (!response || !response.success) {
+                history.push('/');
+            } else {
+                setPhotos(photos => photos.filter(photo => photo.id !== response.photoId));
             }
         });
         signalr.start(clientId).then(() => loadPhotosId());
@@ -73,7 +88,14 @@ function Photos() {
             <UploadPhotos />
             {photos.length > 0 ?
                 <ul>
-                    {photos.map((photo, index) => { return <li key={index} style={styles.li}><img src={photo} width='200' /></li> })}
+                    {photos.map((photo, index) => {
+                        return  <li key={index} style={styles.li}>
+                                    <div>
+                                        <img src={photo.image} width='200' />
+                                        <a href='#' onClick={() => deletePhoto(photo.id)}><img src='/trash.png' /></a>
+                                    </div>
+                                </li>
+                    })}
                 </ul>
             :'нет фоток'}
         </div >

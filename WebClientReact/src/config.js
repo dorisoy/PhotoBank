@@ -8,5 +8,6 @@ export default {
     loginApiPath: apiPath + 'login',
     getPhotosApiPath: apiPath + 'getPhotos',
     getPhotoApiPath: apiPath + 'getPhoto',
-    uploadPhotosApiPath: apiPath + 'uploadPhotos'
+    uploadPhotosApiPath: apiPath + 'uploadPhotos',
+    deletePhotoApiPath: apiPath + 'deletePhoto'
 }

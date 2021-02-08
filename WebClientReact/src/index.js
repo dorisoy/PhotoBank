@@ -13,6 +13,7 @@ ReactDOM.render(
         <Switch>
           <Route exact path="/" component={Auth} />
           <Route exact path="/photos" component={Photos} />
+          <Route path="/trash.png" />
         </Switch>
     </Router>
   </React.StrictMode>,

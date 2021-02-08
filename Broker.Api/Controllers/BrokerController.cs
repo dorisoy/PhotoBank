@@ -130,5 +130,22 @@ namespace PhotoBank.Broker.Api.Controllers
 
             return Ok();
         }
+
+        [HttpPost]
+        [Route("DeletePhoto")]
+        [CheckAuthentication]
+        public IActionResult DeletePhoto(DeletePhotoRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var deletePhotoInputMessage = new DeletePhotoInputMessage(messageClientId, messageChainId)
+            {
+                PhotoId = request.PhotoId
+            };
+            _logger.LogInformation("Broker. DeletePhoto. Send input message: " + messageChainId.Value);
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, deletePhotoInputMessage);
+
+            return Ok();
+        }
     }
 }

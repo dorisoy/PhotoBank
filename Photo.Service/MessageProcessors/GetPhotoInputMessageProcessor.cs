@@ -21,6 +21,7 @@ namespace PhotoBank.Photo.Service.MessageProcessors
                 var fileBase64Content = Convert.ToBase64String(fileContent);
                 outputMessage = new GetPhotoOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)
                 {
+                    PhotoId = photo.Id,
                     FileBase64Content = fileBase64Content
                 };
             }

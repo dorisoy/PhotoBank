@@ -31,6 +31,12 @@ namespace PhotoBank.Photo.Service.Data
             return poco.Id;
         }
 
+        public void DeletePhoto(PhotoPoco photo)
+        {
+            _context.Photos.Remove(photo);
+            _context.SaveChanges();
+        }
+
         public void Dispose()
         {
             if (_context != null) _context.Dispose();
