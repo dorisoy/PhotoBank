@@ -64,6 +64,16 @@ namespace PhotoBank.Broker.Api.SignalR
             await SendAsync("DeletePhotoResponse", responseContainerJson);
         }
 
+        public async Task GetPhotoAdditionalInfoResponse(object responseContainerJson)
+        {
+            await SendAsync("GetPhotoAdditionalInfoResponse", responseContainerJson);
+        }
+
+        public async Task SetPhotoAdditionalInfoResponse(object responseContainerJson)
+        {
+            await SendAsync("SetPhotoAdditionalInfoResponse", responseContainerJson);
+        }
+
         private async Task SendAsync(string methodName, object responseContainerJson)
         {
             string connectionId;

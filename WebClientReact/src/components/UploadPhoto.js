@@ -5,10 +5,10 @@ import Config from '../config';
 
 function UploadPhotos() {
 
-    const login = localStorage.getItem('auth-data-login');
-    const token = localStorage.getItem('auth-data-token');
-    const clientId = localStorage.getItem('auth-data-clientId');
-    const [selectedFiles, setSelectedFiles] = React.useState();
+    const login = localStorage.getItem('auth-data-login')
+    const token = localStorage.getItem('auth-data-token')
+    const clientId = localStorage.getItem('auth-data-clientId')
+    const [selectedFiles, setSelectedFiles] = React.useState()
 
     function submitFiles() {
         var uploadFunc = function (filesBase64) {
@@ -16,13 +16,13 @@ function UploadPhotos() {
                 method: 'post',
                 url: Config.uploadPhotosApiPath,
                 data: { login: login, token: token, clientId: clientId, files: filesBase64 }
-            });
-        };
-        Utils.filesToBase64(selectedFiles, uploadFunc);
+            })
+        }
+        Utils.filesToBase64(selectedFiles, uploadFunc)
     }
 
     function handleFilesUpload(event) {
-        setSelectedFiles(event.target.files);
+        setSelectedFiles(event.target.files)
     }
 
     return (
@@ -36,4 +36,4 @@ function UploadPhotos() {
     )
 }
 
-export default UploadPhotos;
+export default UploadPhotos

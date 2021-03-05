@@ -132,7 +132,7 @@ namespace PhotoBank.Broker.Api.Controllers
         }
 
         [HttpPost]
-        [Route("DeletePhoto")]
+        [Route("deletePhoto")]
         [CheckAuthentication]
         public IActionResult DeletePhoto(DeletePhotoRequest request)
         {
@@ -144,6 +144,41 @@ namespace PhotoBank.Broker.Api.Controllers
             };
             _logger.LogInformation("Broker. DeletePhoto. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, deletePhotoInputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("getPhotoAdditionalInfo")]
+        [CheckAuthentication]
+        public IActionResult GetPhotoAdditionalInfo(GetPhotoAdditionalInfoRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var getPhotoAdditionalInfoInputMessage = new GetPhotoAdditionalInfoInputMessage(messageClientId, messageChainId)
+            {
+                PhotoId = request.PhotoId
+            };
+            _logger.LogInformation("Broker. GetPhotoAdditionalInfo. Send input message: " + messageChainId.Value);
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, getPhotoAdditionalInfoInputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("setPhotoAdditionalInfo")]
+        [CheckAuthentication]
+        public IActionResult SetPhotoAdditionalInfo(SetPhotoAdditionalInfoRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var setPhotoAdditionalInfoInputMessage = new SetPhotoAdditionalInfoInputMessage(messageClientId, messageChainId)
+            {
+                PhotoId = request.PhotoId,
+                AdditionalInfo = request.AdditionalInfo
+            };
+            _logger.LogInformation("Broker. SetPhotoAdditionalInfo. Send input message: " + messageChainId.Value);
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, setPhotoAdditionalInfoInputMessage);
 
             return Ok();
         }

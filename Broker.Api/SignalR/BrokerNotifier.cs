@@ -41,6 +41,8 @@ namespace PhotoBank.Broker.Api.SignalR
             if (message is GetPhotoOutputMessage) return "GetPhotoResponse";
             if (message is UploadPhotoOutputMessage) return "UploadPhotosResponse";
             if (message is DeletePhotoOutputMessage) return "DeletePhotoResponse";
+            if (message is GetPhotoAdditionalInfoOutputMessage) return "GetPhotoAdditionalInfoResponse";
+            if (message is SetPhotoAdditionalInfoOutputMessage) return "SetPhotoAdditionalInfoResponse";
 
             return null;
         }
@@ -95,6 +97,27 @@ namespace PhotoBank.Broker.Api.SignalR
                 {
                     Success = deletePhotoOutputMessage.Result == OutputMessageResult.Success,
                     PhotoId = deletePhotoOutputMessage.PhotoId
+                };
+            }
+
+            if (message is GetPhotoAdditionalInfoOutputMessage)
+            {
+                var getPhotoAdditionalInfoOutputMessage = (GetPhotoAdditionalInfoOutputMessage)message;
+                return new GetPhotoAdditionalInfoResponse
+                {
+                    Success = getPhotoAdditionalInfoOutputMessage.Result == OutputMessageResult.Success,
+                    PhotoId = getPhotoAdditionalInfoOutputMessage.PhotoId,
+                    AdditionalInfo = getPhotoAdditionalInfoOutputMessage.AdditionalInfo
+                };
+            }
+
+            if (message is SetPhotoAdditionalInfoOutputMessage)
+            {
+                var setPhotoAdditionalInfoOutputMessage = (SetPhotoAdditionalInfoOutputMessage)message;
+                return new SetPhotoAdditionalInfoResponse
+                {
+                    Success = setPhotoAdditionalInfoOutputMessage.Result == OutputMessageResult.Success,
+                    PhotoId = setPhotoAdditionalInfoOutputMessage.PhotoId
                 };
             }
 

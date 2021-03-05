@@ -6,10 +6,10 @@ import Utils from '../api/utils';
 import Config from '../config';
 
 function Auth() {
-    const clientId = Utils.getClientId();
-    const login = 'vinge';
-    const password = '12345';
-    const history = useHistory();
+    const clientId = Utils.getClientId()
+    const login = 'vinge'
+    const password = '12345'
+    const history = useHistory()
     
     function send() {
         Axios({
@@ -17,20 +17,20 @@ function Auth() {
             url: Config.loginApiPath,
             data: { clientId: clientId, login: login, password: password }
         })
-    };
+    }
 
     const signalr = new SignalR();
     signalr.addHandler('LoginResponse', function (response) {
         if (!response || !response.success) {
-            history.push('/');
+            history.push('/')
         } else {
-            localStorage.setItem('auth-data-login', login);
-            localStorage.setItem('auth-data-token', response.token);
-            localStorage.setItem('auth-data-clientId', clientId);
-            history.push('/photos');
+            localStorage.setItem('auth-data-login', login)
+            localStorage.setItem('auth-data-token', response.token)
+            localStorage.setItem('auth-data-clientId', clientId)
+            history.push('/photos')
         }
-    });
-    signalr.start(clientId);
+    })
+    signalr.start(clientId)
 
     return (
         <div>
@@ -47,4 +47,4 @@ function Auth() {
     );
 }
 
-export default Auth;
+export default Auth

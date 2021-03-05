@@ -36,14 +36,44 @@ const confirmDeletePhotoModalStyles = {
     }
 }
 
+const showPhotoDescriptionModalStyles = {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)'
+    },
+    content: {
+        position: 'absolute',
+        margin: 'auto',
+        width: '500px',
+        height: '300px',
+        border: '1px solid #ccc',
+        background: '#fff',
+        overflow: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        borderRadius: '4px',
+        outline: 'none'
+    }
+}
+
+const controlButtonStyle = {
+    width: '16px',
+    height: '16px'
+}
+
 function Photos() {
     const login = localStorage.getItem('auth-data-login')
     const token = localStorage.getItem('auth-data-token')
     const clientId = localStorage.getItem('auth-data-clientId')
     const history = useHistory()
     const [photos, setPhotos] = React.useState([])
-    const [selectedDeletePhotoId, setSelectedDeletePhotoId] = React.useState()
+    const [selectedPhotoId, setSelectedPhotoId] = React.useState()
     const [isDeletePhotoConfirmOpen, setIsDeletePhotoConfirmOpen] = React.useState(false)
+    const [isPhotoDescriptionOpen, setIsPhotoDescriptionOpen] = React.useState(false)
+    const [selectedPhotoDescription, setSelectedPhotoDescription] = React.useState('')
 
     function loadPhotosId() {
         Axios({
@@ -65,7 +95,7 @@ function Photos() {
     }
 
     function confirmDeletePhoto(photoId) {
-        setSelectedDeletePhotoId(photoId)
+        setSelectedPhotoId(photoId)
         setIsDeletePhotoConfirmOpen(true)
     }
     
@@ -73,7 +103,28 @@ function Photos() {
         Axios({
             method: 'post',
             url: Config.deletePhotoApiPath,
-            data: { photoId: selectedDeletePhotoId, login: login, token: token, clientId: clientId }
+            data: { photoId: selectedPhotoId, login: login, token: token, clientId: clientId }
+        })
+    }
+
+    function showPhotoDescription(photoId) {
+        setSelectedPhotoId(photoId)
+        setIsPhotoDescriptionOpen(true)
+        Axios({
+            method: 'post',
+            url: Config.getPhotoAdditionalInfoApiPath,
+            data: { photoId: selectedPhotoId, login: login, token: token, clientId: clientId }
+        })
+    }
+
+    function savePhotoDescription() {
+        var additionalInfo = {
+            description: selectedPhotoDescription
+        }
+        Axios({
+            method: 'post',
+            url: Config.setPhotoAdditionalInfoApiPath,
+            data: { photoId: selectedPhotoId, additionalInfo: additionalInfo, login: login, token: token, clientId: clientId }
         })
     }
 
@@ -81,34 +132,48 @@ function Photos() {
         const signalr = new SignalR();
         signalr.addHandler('GetPhotosResponse', function (response) {
             if (!response || !response.success) {
-                history.push('/');
+                history.push('/')
             } else {
-                loadPhotosContent(response.photoIds);
+                loadPhotosContent(response.photoIds)
             }
         })
         signalr.addHandler('GetPhotoResponse', function (response) {
             if (!response || !response.success) {
-                history.push('/');
+                history.push('/')
             } else {
-                const photo = { id: response.photoId, image: 'data:image/png;base64,' + response.fileBase64Content };
-                setPhotos(photos => photos.concat(photo));
+                const photo = { id: response.photoId, image: 'data:image/png;base64,' + response.fileBase64Content }
+                setPhotos(photos => photos.concat(photo))
             }
         })
         signalr.addHandler('UploadPhotosResponse', function (response) {
             if (!response || !response.success) {
-                history.push('/');
+                history.push('/')
             } else {
-                loadPhotosContent([response.photoId]);
+                loadPhotosContent([response.photoId])
             }
         })
         signalr.addHandler('DeletePhotoResponse', function (response) {
             if (!response || !response.success) {
-                history.push('/');
+                history.push('/')
             } else {
-                setPhotos(photos => photos.filter(photo => photo.id !== response.photoId));
+                setPhotos(photos => photos.filter(photo => photo.id !== response.photoId))
             }
         })
-        signalr.start(clientId).then(() => loadPhotosId());
+        signalr.addHandler('GetPhotoAdditionalInfoResponse', function (response) {
+            if (!response || !response.success) {
+                history.push('/')
+            } else {
+                setSelectedPhotoDescription(response.additionalInfo.description)
+            }
+        })
+        signalr.addHandler('SetPhotoAdditionalInfoResponse', function (response) {
+            if (!response || !response.success) {
+                history.push('/')
+            } else {
+                alert('сохранено')
+            }
+        })
+        signalr.start(clientId).then(() => loadPhotosId())
     }
 
     React.useEffect(() => { initSignalRResponses(); }, [])
@@ -123,7 +188,8 @@ function Photos() {
                         return  <li key={index} style={styles.li}>
                                     <div>
                                         <img src={photo.image} width='200' />
-                                        <a href='#' onClick={() => confirmDeletePhoto(photo.id)}><img src='/trash.png' /></a>
+                                        <a href='#' onClick={() => confirmDeletePhoto(photo.id)}><img src='/trash.png' style={controlButtonStyle} /></a>
+                                        <a href='#' onClick={() => showPhotoDescription(photo.id)}><img src='/edit.png' style={controlButtonStyle} /></a>
                                     </div>
                                 </li>
                     })}
@@ -143,8 +209,23 @@ function Photos() {
                     </div>
                 </div>
             </Modal>
-        </div >
+
+            <Modal appElement={document.getElementById('root')}
+                isOpen={isPhotoDescriptionOpen}
+                onRequestClose={() => setIsPhotoDescriptionOpen(false)}
+                shouldCloseOnOverlayClick={false}
+                style={showPhotoDescriptionModalStyles}>
+                <div>
+                    <p>Описание фотографии</p>
+                    <textarea defaultValue={selectedPhotoDescription} onChange={(e) => setSelectedPhotoDescription(e.target.value)} maxLength='500' style={{width: '100%', height: '200px'}} />
+                    <div style={{position: 'absolute', bottom: '16px', right: '16px'}}>
+                        <button onClick={() => { savePhotoDescription(); setIsPhotoDescriptionOpen(false) }} style={{width: '100px', height: '24px'}}>Сохранить</button>
+                        <button onClick={() => setIsPhotoDescriptionOpen(false)} style={{width: '75px', height: '24px', marginLeft: '8px'}}>Отмена</button>
+                    </div>
+                </div>
+            </Modal>
+        </div>
     )
 }
 
-export default Photos;
+export default Photos

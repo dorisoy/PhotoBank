@@ -11,5 +11,7 @@ namespace PhotoBank.Photo.Service.Data
         public int UserId { get; set; }
 
         public string Path { get; set; }
+
+        public string Description { get; set; }
     }
 }

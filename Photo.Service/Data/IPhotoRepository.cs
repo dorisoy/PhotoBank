@@ -12,5 +12,7 @@ namespace PhotoBank.Photo.Service.Data
         int SavePhoto(int userId, string path);
 
         void DeletePhoto(PhotoPoco photo);
+
+        void UpdatePhoto(PhotoPoco photo);
     }
 }

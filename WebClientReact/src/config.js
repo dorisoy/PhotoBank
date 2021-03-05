@@ -9,5 +9,7 @@ export default {
     getPhotosApiPath: apiPath + 'getPhotos',
     getPhotoApiPath: apiPath + 'getPhoto',
     uploadPhotosApiPath: apiPath + 'uploadPhotos',
-    deletePhotoApiPath: apiPath + 'deletePhoto'
+    deletePhotoApiPath: apiPath + 'deletePhoto',
+    getPhotoAdditionalInfoApiPath: apiPath + 'getPhotoAdditionalInfo',
+    setPhotoAdditionalInfoApiPath: apiPath + 'setPhotoAdditionalInfo',
 }

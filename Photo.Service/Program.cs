@@ -45,6 +45,8 @@ namespace PhotoBank.Photo.Service
                 processorFactory.Add(typeof(GetPhotosInputMessageProcessor));
                 processorFactory.Add(typeof(UploadPhotoInputMessageProcessor));
                 processorFactory.Add(typeof(DeletePhotoInputMessageProcessor));
+                processorFactory.Add(typeof(GetPhotoAdditionalInfoInputMessageProcessor));
+                processorFactory.Add(typeof(SetPhotoAdditionalInfoInputMessageProcessor));
                 services.AddSingleton(typeof(IMessageProcessorFactory), processorFactory);
 
                 services.AddHostedService<PhotoWorker>();

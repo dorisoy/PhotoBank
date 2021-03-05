@@ -37,6 +37,12 @@ namespace PhotoBank.Photo.Service.Data
             _context.SaveChanges();
         }
 
+        public void UpdatePhoto(PhotoPoco photo)
+        {
+            _context.Update(photo);
+            _context.SaveChanges();
+        }
+
         public void Dispose()
         {
             if (_context != null) _context.Dispose();
