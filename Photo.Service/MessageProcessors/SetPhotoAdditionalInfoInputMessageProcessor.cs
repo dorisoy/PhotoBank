@@ -18,7 +18,7 @@ namespace PhotoBank.Photo.Service.MessageProcessors
                 bool needToSave = false;
                 if (inputMessage.AdditionalInfo.Description != null)
                 {
-                    photo.Description = inputMessage.AdditionalInfo.Description.Substring(0, 500);
+                    photo.Description = inputMessage.AdditionalInfo.Description;
                     needToSave = true;
                 }
                 if (needToSave)

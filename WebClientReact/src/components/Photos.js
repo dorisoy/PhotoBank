@@ -84,8 +84,7 @@ function Photos() {
     }
     
     function loadPhotosContent(photoIds) {
-        for (let photoIdIndex in photoIds) {
-            // получаем содержимое каждой фотки
+        for (let photoIdIndex in photoIds) { // получаем содержимое каждой фотки
             Axios({
                 method: 'post',
                 url: Config.getPhotoApiPath,
@@ -113,7 +112,7 @@ function Photos() {
         Axios({
             method: 'post',
             url: Config.getPhotoAdditionalInfoApiPath,
-            data: { photoId: selectedPhotoId, login: login, token: token, clientId: clientId }
+            data: { photoId: photoId, login: login, token: token, clientId: clientId }
         })
     }
 
@@ -170,7 +169,7 @@ function Photos() {
             if (!response || !response.success) {
                 history.push('/')
             } else {
-                alert('сохранено')
+                alert('сохранено') // bubble popup !
             }
         })
         signalr.start(clientId).then(() => loadPhotosId())
@@ -186,15 +185,19 @@ function Photos() {
                 <ul>
                     {photos.map((photo, index) => {
                         return  <li key={index} style={styles.li}>
-                                    <div>
-                                        <img src={photo.image} width='200' />
-                                        <a href='#' onClick={() => confirmDeletePhoto(photo.id)}><img src='/trash.png' style={controlButtonStyle} /></a>
-                                        <a href='#' onClick={() => showPhotoDescription(photo.id)}><img src='/edit.png' style={controlButtonStyle} /></a>
+                                    <div style={{width: '216px', height: '155px', margin: '8px', background: 'rgb(230,230,230)'}}>
+                                        <div style={{ padding: '8px' }}>
+                                            <img src={photo.image} style={{width: '200px', display: 'block', margin: 'auto'}} />
+                                        </div>
+                                        <div style={{ float: 'right', marginRight: '8px' }}>
+                                            <a href='#' onClick={() => showPhotoDescription(photo.id)} style={{marginRight: '8px'}}><img src='/edit.png' style={controlButtonStyle} /></a>
+                                            <a href='#' onClick={() => confirmDeletePhoto(photo.id)}><img src='/trash.png' style={controlButtonStyle} /></a>
+                                        </div>
                                     </div>
                                 </li>
                     })}
                 </ul>
-            :'нет фоток'}
+                :'нет фоток'}
 
             <Modal appElement={document.getElementById('root')}
                 isOpen={isDeletePhotoConfirmOpen}
@@ -217,7 +220,7 @@ function Photos() {
                 style={showPhotoDescriptionModalStyles}>
                 <div>
                     <p>Описание фотографии</p>
-                    <textarea defaultValue={selectedPhotoDescription} onChange={(e) => setSelectedPhotoDescription(e.target.value)} maxLength='500' style={{width: '100%', height: '200px'}} />
+                    <textarea value={selectedPhotoDescription} onChange={(e) => setSelectedPhotoDescription(e.target.value)} maxLength='500' style={{width: '100%', height: '200px'}} />
                     <div style={{position: 'absolute', bottom: '16px', right: '16px'}}>
                         <button onClick={() => { savePhotoDescription(); setIsPhotoDescriptionOpen(false) }} style={{width: '100px', height: '24px'}}>Сохранить</button>
                         <button onClick={() => setIsPhotoDescriptionOpen(false)} style={{width: '75px', height: '24px', marginLeft: '8px'}}>Отмена</button>

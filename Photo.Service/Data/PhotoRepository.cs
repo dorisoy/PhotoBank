@@ -24,7 +24,7 @@ namespace PhotoBank.Photo.Service.Data
 
         public int SavePhoto(int userId, string path)
         {
-            var poco = new PhotoPoco { UserId = userId, Path = path };
+            var poco = new PhotoPoco { UserId = userId, Path = path, Description = "" };
             _context.Photos.Add(poco);
             _context.SaveChanges();
 
