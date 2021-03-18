@@ -13,5 +13,7 @@ namespace PhotoBank.Photo.Service.Data
         public string Path { get; set; }
 
         public string Description { get; set; }
+
+        public DateTime CreateDate { get; set; }
     }
 }

@@ -15,5 +15,7 @@ namespace PhotoBank.Photo.Contracts
         public int PhotoId { get; set; }
 
         public string FileBase64Content { get; set; }
+
+        public DateTime CreateDate { get; set; }
     }
 }

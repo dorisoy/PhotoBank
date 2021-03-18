@@ -22,7 +22,8 @@ namespace PhotoBank.Photo.Service.MessageProcessors
                 outputMessage = new GetPhotoOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)
                 {
                     PhotoId = photo.Id,
-                    FileBase64Content = fileBase64Content
+                    FileBase64Content = fileBase64Content,
+                    CreateDate = photo.CreateDate
                 };
             }
             else

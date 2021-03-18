@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PhotoBank.Photo.Service.Data
@@ -24,7 +25,7 @@ namespace PhotoBank.Photo.Service.Data
 
         public int SavePhoto(int userId, string path)
         {
-            var poco = new PhotoPoco { UserId = userId, Path = path, Description = "" };
+            var poco = new PhotoPoco { UserId = userId, Path = path, Description = "", CreateDate = DateTime.Now };
             _context.Photos.Add(poco);
             _context.SaveChanges();
 

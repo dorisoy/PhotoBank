@@ -1,6 +1,7 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import Axios from 'axios'
+import Moment from 'react-moment';
 import SignalR from '../api/signalr'
 import UploadPhotos from '../components/UploadPhoto'
 import DeletePhotoConfirmModal from '../modals/DeletePhotoConfirmModal'
@@ -10,6 +11,9 @@ import Config from '../config'
 const styles = {
     li: {
         display: 'inline-block'
+    },
+    dateTime: {
+        fontSize: 12
     }
 }
 
@@ -94,7 +98,7 @@ function Photos() {
             if (!response || !response.success) {
                 history.push('/')
             } else {
-                const photo = { id: response.photoId, image: 'data:image/png;base64,' + response.fileBase64Content }
+                const photo = { id: response.photoId, image: 'data:image/png;base64,' + response.fileBase64Content, createDate: new Date(Date.parse(response.createDate)) }
                 setPhotos(photos => photos.concat(photo))
             }
         })
@@ -142,10 +146,13 @@ function Photos() {
                                     <div style={{width: '216px', height: '155px', margin: '8px', background: 'rgb(230,230,230)'}}>
                                         <div style={{ padding: '8px' }}>
                                             <img src={photo.image} style={{width: '200px', display: 'block', margin: 'auto'}} />
-                                        </div>
-                                        <div style={{ float: 'right', marginRight: '8px' }}>
-                                            <a href='#' onClick={() => showPhotoDescription(photo.id)} style={{marginRight: '8px'}}><img src='/edit.png' style={controlButtonStyle} /></a>
-                                            <a href='#' onClick={() => confirmDeletePhoto(photo.id)}><img src='/trash.png' style={controlButtonStyle} /></a>
+                                            <div>
+                                                <Moment style={styles.dateTime} format='DD.MM.YYYY HH:mm'>{photo.createDate}</Moment>
+                                                <div style={{ float: 'right', marginTop: '4px' }}>
+                                                    <a href='#' onClick={() => showPhotoDescription(photo.id)} style={{marginRight: '8px'}}><img src='/edit.png' style={controlButtonStyle} /></a>
+                                                    <a href='#' onClick={() => confirmDeletePhoto(photo.id)}><img src='/trash.png' style={controlButtonStyle} /></a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </li>

@@ -76,7 +76,8 @@ namespace PhotoBank.Broker.Api.SignalR
                 {
                     Success = getPhotosOutputMessage.Result == OutputMessageResult.Success,
                     PhotoId = getPhotosOutputMessage.PhotoId,
-                    FileBase64Content = getPhotosOutputMessage.FileBase64Content
+                    FileBase64Content = getPhotosOutputMessage.FileBase64Content,
+                    CreateDate = getPhotosOutputMessage.CreateDate
                 };
             }
 
