@@ -1,9 +1,9 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import Axios from 'axios';
-import SignalR from '../api/signalr';
-import Utils from '../api/utils';
-import Config from '../config';
+import React from 'react'
+import { useHistory } from 'react-router-dom'
+import Axios from 'axios'
+import SignalR from '../api/signalr'
+import Utils from '../api/utils'
+import Config from '../config'
 
 function Auth() {
     const clientId = Utils.getClientId()

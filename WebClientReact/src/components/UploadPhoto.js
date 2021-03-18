@@ -1,7 +1,7 @@
-import React from 'react';
-import Axios from 'axios';
-import Utils from '../api/utils';
-import Config from '../config';
+import React from 'react'
+import Axios from 'axios'
+import Utils from '../api/utils'
+import Config from '../config'
 
 function UploadPhotos() {
 

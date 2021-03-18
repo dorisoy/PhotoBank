@@ -1,7 +1,7 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import Axios from 'axios'
-import Moment from 'react-moment';
+import Moment from 'react-moment'
 import SignalR from '../api/signalr'
 import UploadPhotos from '../components/UploadPhoto'
 import DeletePhotoConfirmModal from '../modals/DeletePhotoConfirmModal'
