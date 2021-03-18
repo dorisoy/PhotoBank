@@ -6,6 +6,7 @@ import SignalR from '../api/signalr'
 import UploadPhotos from '../components/UploadPhoto'
 import DeletePhotoConfirmModal from '../modals/DeletePhotoConfirmModal'
 import PhotoDescriptionModal from '../modals/PhotoDescriptionModal'
+import Notification from '../components/Notification'
 import Config from '../config'
 
 const styles = {
@@ -29,9 +30,10 @@ function Photos() {
     const history = useHistory()
     const [photos, setPhotos] = React.useState([])
     const [selectedPhotoId, setSelectedPhotoId] = React.useState()
-    const [isDeletePhotoConfirmOpen, setIsDeletePhotoConfirmOpen] = React.useState(false)
-    const [isPhotoDescriptionOpen, setIsPhotoDescriptionOpen] = React.useState(false)
+    const [isDeletePhotoConfirmOpen, setDeletePhotoConfirmOpen] = React.useState(false)
+    const [isPhotoDescriptionOpen, setPhotoDescriptionOpen] = React.useState(false)
     const [selectedPhotoDescription, setSelectedPhotoDescription] = React.useState('')
+    const [isSavedNotificationShow, setSavedNotificationShow] = React.useState(false)
 
     function loadPhotosId() {
         Axios({
@@ -53,7 +55,7 @@ function Photos() {
 
     function confirmDeletePhoto(photoId) {
         setSelectedPhotoId(photoId)
-        setIsDeletePhotoConfirmOpen(true)
+        setDeletePhotoConfirmOpen(true)
     }
     
     function deleteSelectedPhoto() {
@@ -66,7 +68,7 @@ function Photos() {
 
     function showPhotoDescription(photoId) {
         setSelectedPhotoId(photoId)
-        setIsPhotoDescriptionOpen(true)
+        setPhotoDescriptionOpen(true)
         Axios({
             method: 'post',
             url: Config.getPhotoAdditionalInfoApiPath,
@@ -127,7 +129,7 @@ function Photos() {
             if (!response || !response.success) {
                 history.push('/')
             } else {
-                alert('сохранено') // bubble popup !
+                setSavedNotificationShow(true)
             }
         })
         signalr.start(clientId).then(() => loadPhotosId())
@@ -137,6 +139,7 @@ function Photos() {
 
     return (
         <div>
+            <Notification isShow={isSavedNotificationShow} onComplete={() => setSavedNotificationShow(false)} message='Изменения сохранены' />
             <h1>Photos</h1>
             <UploadPhotos />
             {photos.length > 0 ?
@@ -162,12 +165,12 @@ function Photos() {
 
             <DeletePhotoConfirmModal
                 isOpen={isDeletePhotoConfirmOpen}
-                setIsOpen={setIsDeletePhotoConfirmOpen}
+                setIsOpen={setDeletePhotoConfirmOpen}
                 deleteSelectedPhoto={deleteSelectedPhoto} />
 
             <PhotoDescriptionModal
                 isOpen={isPhotoDescriptionOpen}
-                setIsOpen={setIsPhotoDescriptionOpen}
+                setIsOpen={setPhotoDescriptionOpen}
                 selectedPhotoDescription={selectedPhotoDescription}
                 setSelectedPhotoDescription={setSelectedPhotoDescription}
                 savePhotoDescription={savePhotoDescription} />
