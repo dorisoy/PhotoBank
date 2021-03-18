@@ -99,7 +99,7 @@ function Photos() {
                 history.push('/')
             } else {
                 const photo = { id: response.photoId, image: 'data:image/png;base64,' + response.fileBase64Content, createDate: new Date(Date.parse(response.createDate)) }
-                setPhotos(photos => photos.concat(photo))
+                setPhotos(photos => { photos = photos.concat(photo); photos.sort((x,y) => x.createDate - y.createDate); return photos; })
             }
         })
         signalr.addHandler('UploadPhotosResponse', function (response) {
