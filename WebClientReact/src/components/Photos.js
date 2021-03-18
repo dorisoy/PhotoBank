@@ -1,61 +1,15 @@
-import React from 'react';
-import Modal from 'react-modal';
-import { useHistory } from 'react-router-dom';
-import Axios from 'axios';
-import SignalR from '../api/signalr';
+import React from 'react'
+import { useHistory } from 'react-router-dom'
+import Axios from 'axios'
+import SignalR from '../api/signalr'
 import UploadPhotos from '../components/UploadPhoto'
-import Utils from '../api/utils';
-import Config from '../config';
+import DeletePhotoConfirmModal from '../modals/DeletePhotoConfirmModal'
+import PhotoDescriptionModal from '../modals/PhotoDescriptionModal'
+import Config from '../config'
 
 const styles = {
     li: {
         display: 'inline-block'
-    }
-}
-
-const confirmDeletePhotoModalStyles = {
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)'
-    },
-    content: {
-        position: 'absolute',
-        margin: 'auto',
-        width: '450px',
-        height: '120px',
-        border: '1px solid #ccc',
-        background: '#fff',
-        overflow: 'auto',
-        WebkitOverflowScrolling: 'touch',
-        borderRadius: '4px',
-        outline: 'none'
-    }
-}
-
-const showPhotoDescriptionModalStyles = {
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)'
-    },
-    content: {
-        position: 'absolute',
-        margin: 'auto',
-        width: '500px',
-        height: '300px',
-        border: '1px solid #ccc',
-        background: '#fff',
-        overflow: 'auto',
-        WebkitOverflowScrolling: 'touch',
-        borderRadius: '4px',
-        outline: 'none'
     }
 }
 
@@ -199,34 +153,17 @@ function Photos() {
                 </ul>
                 :'нет фоток'}
 
-            <Modal appElement={document.getElementById('root')}
+            <DeletePhotoConfirmModal
                 isOpen={isDeletePhotoConfirmOpen}
-                onRequestClose={() => setIsDeletePhotoConfirmOpen(false)}
-                shouldCloseOnOverlayClick={false}
-                style={confirmDeletePhotoModalStyles}>
-                <div>
-                    <p>Вы действительно хотите удалить выбранную фотографию?</p>
-                    <div style={{position: 'absolute', bottom: '16px', right: '16px'}}>
-                        <button onClick={() => { deleteSelectedPhoto(); setIsDeletePhotoConfirmOpen(false) }} style={{width: '75px', height: '24px'}}>Да</button>
-                        <button onClick={() => setIsDeletePhotoConfirmOpen(false)} style={{width: '75px', height: '24px', marginLeft: '8px'}}>Нет</button>
-                    </div>
-                </div>
-            </Modal>
+                setIsOpen={setIsDeletePhotoConfirmOpen}
+                deleteSelectedPhoto={deleteSelectedPhoto} />
 
-            <Modal appElement={document.getElementById('root')}
+            <PhotoDescriptionModal
                 isOpen={isPhotoDescriptionOpen}
-                onRequestClose={() => setIsPhotoDescriptionOpen(false)}
-                shouldCloseOnOverlayClick={false}
-                style={showPhotoDescriptionModalStyles}>
-                <div>
-                    <p>Описание фотографии</p>
-                    <textarea value={selectedPhotoDescription} onChange={(e) => setSelectedPhotoDescription(e.target.value)} maxLength='500' style={{width: '100%', height: '200px'}} />
-                    <div style={{position: 'absolute', bottom: '16px', right: '16px'}}>
-                        <button onClick={() => { savePhotoDescription(); setIsPhotoDescriptionOpen(false) }} style={{width: '100px', height: '24px'}}>Сохранить</button>
-                        <button onClick={() => setIsPhotoDescriptionOpen(false)} style={{width: '75px', height: '24px', marginLeft: '8px'}}>Отмена</button>
-                    </div>
-                </div>
-            </Modal>
+                setIsOpen={setIsPhotoDescriptionOpen}
+                selectedPhotoDescription={selectedPhotoDescription}
+                setSelectedPhotoDescription={setSelectedPhotoDescription}
+                savePhotoDescription={savePhotoDescription} />
         </div>
     )
 }
