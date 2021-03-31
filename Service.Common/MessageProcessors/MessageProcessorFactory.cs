@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using PhotoBank.QueueLogic.Contracts;
@@ -28,6 +29,17 @@ namespace PhotoBank.Service.Common.MessageProcessors
         {
             var attr = messageProcessorType.GetCustomAttribute<MessageProcessorAttribute>();
             _messageProcessors.Add(attr.MessageType, messageProcessorType);
+        }
+
+        public void AddFromAssembly(Assembly assembly)
+        {
+            foreach (var messageProcessorType in assembly.GetTypes())
+            {
+                if (messageProcessorType.GetCustomAttribute<MessageProcessorAttribute>() != null)
+                {
+                    Add(messageProcessorType);
+                }
+            }
         }
 
         public MessageProcessor MakeProcessorFor(Message message)

@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -42,13 +43,7 @@ namespace PhotoBank.Auth.Service
                     RepositoryFactory = repositoryFactory
                 };
                 var processorFactory = new MessageProcessorFactory(processorContext);
-                processorFactory.Add(typeof(CreateUserInputMessageProcessor));
-                processorFactory.Add(typeof(LoginInputMessageProcessor));
-                processorFactory.Add(typeof(CheckTokenInputMessageProcessor));
-                processorFactory.Add(typeof(GetUserInfoInputMessageProcessor));
-                processorFactory.Add(typeof(SetUserInfoInputMessageProcessor));
-                processorFactory.Add(typeof(LoadUserPictureInputMessageProcessor));
-                processorFactory.Add(typeof(SetUserPictureInputMessageProcessor));
+                processorFactory.AddFromAssembly(Assembly.GetExecutingAssembly());
                 services.AddSingleton(typeof(IMessageProcessorFactory), processorFactory);
 
                 services.AddHostedService<AuthWorker>();

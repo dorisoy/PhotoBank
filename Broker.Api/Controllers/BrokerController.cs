@@ -62,7 +62,7 @@ namespace PhotoBank.Broker.Api.Controllers
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var inputMessage = new GetUserInfoInputMessage(messageClientId, messageChainId)
             {
-                Login = request.Login
+                UserId = _authenticationManager.GetUserId(request.Login, request.Token)
             };
             _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
 
@@ -78,7 +78,7 @@ namespace PhotoBank.Broker.Api.Controllers
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var inputMessage = new SetUserInfoInputMessage(messageClientId, messageChainId)
             {
-                Login = request.Login,
+                UserId = _authenticationManager.GetUserId(request.Login, request.Token),
                 Name = request.Name,
                 EMail = request.EMail,
                 About = request.About

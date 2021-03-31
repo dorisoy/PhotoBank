@@ -15,7 +15,7 @@ namespace PhotoBank.Auth.Service.MessageProcessors
         public override void Execute()
         {
             var inputMessage = GetMessageAs<SetUserInfoInputMessage>();
-            var user = _context.RepositoryFactory.Get<IUserRepository>().GetUser(inputMessage.Login);
+            var user = _context.RepositoryFactory.Get<IUserRepository>().GetUser(inputMessage.UserId);
             if (user != null)
             {
                 user.Name = inputMessage.Name;

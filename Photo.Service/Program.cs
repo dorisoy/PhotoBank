@@ -1,9 +1,9 @@
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PhotoBank.DataAccess;
 using PhotoBank.Photo.Service.Data;
-using PhotoBank.Photo.Service.MessageProcessors;
 using PhotoBank.QueueLogic.Manager;
 using PhotoBank.Service.Common.MessageProcessors;
 
@@ -41,12 +41,7 @@ namespace PhotoBank.Photo.Service
                     RepositoryFactory = repositoryFactory
                 };
                 var processorFactory = new MessageProcessorFactory(processorContext);
-                processorFactory.Add(typeof(GetPhotoInputMessageProcessor));
-                processorFactory.Add(typeof(GetPhotosInputMessageProcessor));
-                processorFactory.Add(typeof(UploadPhotoInputMessageProcessor));
-                processorFactory.Add(typeof(DeletePhotoInputMessageProcessor));
-                processorFactory.Add(typeof(GetPhotoAdditionalInfoInputMessageProcessor));
-                processorFactory.Add(typeof(SetPhotoAdditionalInfoInputMessageProcessor));
+                processorFactory.AddFromAssembly(Assembly.GetExecutingAssembly());
                 services.AddSingleton(typeof(IMessageProcessorFactory), processorFactory);
 
                 services.AddHostedService<PhotoWorker>();

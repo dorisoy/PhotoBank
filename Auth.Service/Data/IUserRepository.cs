@@ -13,8 +13,6 @@ namespace PhotoBank.Auth.Service.Data
 
         UserPoco GetUser(string login, string password);
 
-        UserPoco GetUser(string login);
-
         void UpdateUser(UserPoco user);
     }
 }
