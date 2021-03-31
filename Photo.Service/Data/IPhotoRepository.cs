@@ -14,5 +14,7 @@ namespace PhotoBank.Photo.Service.Data
         void DeletePhoto(PhotoPoco photo);
 
         void UpdatePhoto(PhotoPoco photo);
+
+        IEnumerable<string> GetAllPhotos();
     }
 }

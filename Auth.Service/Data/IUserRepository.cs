@@ -14,5 +14,7 @@ namespace PhotoBank.Auth.Service.Data
         UserPoco GetUser(string login, string password);
 
         void UpdateUser(UserPoco user);
+
+        IEnumerable<string> GetAllUsersPictures();
     }
 }

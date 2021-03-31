@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace PhotoBank.Auth.Service.Data
 {
@@ -9,6 +10,11 @@ namespace PhotoBank.Auth.Service.Data
         public UserRepository(AuthServiceDBContextFactory contextFactory)
         {
             _context = contextFactory.Make();
+        }
+
+        public void Dispose()
+        {
+            if (_context != null) _context.Dispose();
         }
 
         public void AddUser(UserPoco user)
@@ -33,9 +39,9 @@ namespace PhotoBank.Auth.Service.Data
             _context.SaveChanges();
         }
 
-        public void Dispose()
+        public IEnumerable<string> GetAllUsersPictures()
         {
-            if (_context != null) _context.Dispose();
+            return _context.Users.Select(x => x.Picture);
         }
     }
 }

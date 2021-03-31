@@ -13,6 +13,11 @@ namespace PhotoBank.Photo.Service.Data
             _context = contextFactory.Make();
         }
 
+        public void Dispose()
+        {
+            if (_context != null) _context.Dispose();
+        }
+
         public IEnumerable<PhotoPoco> GetUserPhotos(int userId)
         {
             return _context.Photos.Where(x => x.UserId == userId).ToList();
@@ -44,9 +49,9 @@ namespace PhotoBank.Photo.Service.Data
             _context.SaveChanges();
         }
 
-        public void Dispose()
+        public IEnumerable<string> GetAllPhotos()
         {
-            if (_context != null) _context.Dispose();
+            return _context.Photos.Select(x => x.Path);
         }
     }
 }

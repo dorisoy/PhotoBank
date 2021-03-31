@@ -4,7 +4,15 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>dotnet-Photo.Service-3464393C-2C1A-469F-807A-9A0CBBE13C07</UserSecretsId>
     <RootNamespace>PhotoBank.Photo.Service</RootNamespace>
+    <AssemblyName>PhotoBank.Photo.Service</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Database\**" />
+    <Content Remove="Database\**" />
+    <EmbeddedResource Remove="Database\**" />
+    <None Remove="Database\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.5" />

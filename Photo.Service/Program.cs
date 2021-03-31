@@ -44,6 +44,9 @@ namespace PhotoBank.Photo.Service
                 processorFactory.AddFromAssembly(Assembly.GetExecutingAssembly());
                 services.AddSingleton(typeof(IMessageProcessorFactory), processorFactory);
 
+                var obsoletePhotoRemover = new ObsoletePhotoRemover(repositoryFactory);
+                obsoletePhotoRemover.Remove();
+
                 services.AddHostedService<PhotoWorker>();
             });
     }

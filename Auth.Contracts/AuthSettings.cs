@@ -8,6 +8,6 @@ namespace PhotoBank.Auth.Contracts
     {
         public static readonly string AuthInputQueue = "AuthQueue";
         public static readonly string AuthOutputQueue = "ResultQueue";
-        public static readonly string UserPicturePath = @"D:\Projects\PhotoBank\Auth.Service\Database";
+        public static readonly string UserPicturePath = @"D:\Projects\PhotoBank\Auth.Service\Database\UserPictures";
     }
 }

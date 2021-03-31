@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>PhotoBank.Broker.Api</RootNamespace>
+    <AssemblyName>PhotoBank.Broker.Api</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

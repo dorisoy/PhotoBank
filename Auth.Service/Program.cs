@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PhotoBank.Auth.Service.Data;
-using PhotoBank.Auth.Service.MessageProcessors;
 using PhotoBank.DataAccess;
 using PhotoBank.QueueLogic.Manager;
 using PhotoBank.Service.Common.MessageProcessors;
@@ -45,6 +44,9 @@ namespace PhotoBank.Auth.Service
                 var processorFactory = new MessageProcessorFactory(processorContext);
                 processorFactory.AddFromAssembly(Assembly.GetExecutingAssembly());
                 services.AddSingleton(typeof(IMessageProcessorFactory), processorFactory);
+
+                var obsoleteUserPictureRemover = new ObsoleteUserPictureRemover(repositoryFactory);
+                obsoleteUserPictureRemover.Remove();
 
                 services.AddHostedService<AuthWorker>();
             });
