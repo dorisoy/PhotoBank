@@ -16,7 +16,8 @@ namespace PhotoBank.Photo.Service.MessageProcessors
             if (photo != null)
             {
                 _context.RepositoryFactory.Get<IPhotoRepository>().DeletePhoto(photo);
-                File.Delete(photo.Path);
+                var fullPhotoPath = Path.Combine(PhotoSettings.RootPhotoPath, photo.Path);
+                File.Delete(fullPhotoPath);
             }
             var outputMessage = new DeletePhotoOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)
             {

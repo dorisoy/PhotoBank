@@ -12,7 +12,8 @@ namespace PhotoBank.Auth.Service.MessageProcessors
         public override void Execute()
         {
             var inputMessage = GetMessageAs<LoadUserPictureInputMessage>();
-            var filePath = Path.Combine(AuthSettings.UserPicturePath, inputMessage.ChainId.Value);
+            var fileName = inputMessage.ChainId.Value;
+            var filePath = Path.Combine(AuthSettings.RootUserPictures, fileName);
             var fileBytes = Convert.FromBase64String(inputMessage.PictureBase64Content);
             File.WriteAllBytes(filePath, fileBytes);
             var outputMessage = new LoadUserPictureOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)

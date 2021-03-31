@@ -30,11 +30,19 @@ namespace PhotoBank.Photo.Service.Data
 
         public int SavePhoto(int userId, string path)
         {
-            var poco = new PhotoPoco { UserId = userId, Path = path, Description = "", CreateDate = DateTime.Now };
-            _context.Photos.Add(poco);
+            var photo = new PhotoPoco { UserId = userId, Path = path, Description = "", CreateDate = DateTime.Now };
+            _context.Photos.Add(photo);
             _context.SaveChanges();
 
-            return poco.Id;
+            return photo.Id;
+        }
+
+        public int SavePhoto(PhotoPoco photo)
+        {
+            _context.Photos.Add(photo);
+            _context.SaveChanges();
+
+            return photo.Id;
         }
 
         public void DeletePhoto(PhotoPoco photo)

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Auth.Service.Data;
 using PhotoBank.QueueLogic.Contracts;
@@ -18,7 +16,8 @@ namespace PhotoBank.Auth.Service.MessageProcessors
             var user = _context.RepositoryFactory.Get<IUserRepository>().GetUser(inputMessage.UserId);
             if (user != null)
             {
-                var pictureFileContent = File.ReadAllBytes(user.Picture);
+                var pictureFilePath = Path.Combine(AuthSettings.RootUserPictures, user.Picture);
+                var pictureFileContent = File.ReadAllBytes(pictureFilePath);
                 var pictureFileBase64Content = Convert.ToBase64String(pictureFileContent);
                 var outputMessage = new GetUserInfoOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)
                 {

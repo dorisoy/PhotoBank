@@ -17,8 +17,8 @@ namespace PhotoBank.Auth.Service.Data
 
         public void Remove()
         {
-            var allUsersPicturesFromDatabase = _repositoryFactory.Get<IUserRepository>().GetAllUsersPictures().ToHashSet();
-            var allUsersPicturesFromDisk = Directory.GetFiles(AuthSettings.UserPicturePath).ToList();
+            var allUsersPicturesFromDatabase = _repositoryFactory.Get<IUserRepository>().GetAllUsersPictures().Select(path => Path.Combine(AuthSettings.RootUserPictures, path)).ToHashSet();
+            var allUsersPicturesFromDisk = Directory.GetFiles(AuthSettings.RootUserPictures).ToList();
             foreach (var picturesFromDisk in allUsersPicturesFromDisk)
             {
                 if (allUsersPicturesFromDatabase.Contains(picturesFromDisk) == false)

@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PhotoBank.Auth.Contracts;
 using PhotoBank.Auth.Service.Data;
 using PhotoBank.DataAccess;
 using PhotoBank.QueueLogic.Manager;
@@ -28,6 +29,8 @@ namespace PhotoBank.Auth.Service
                 var queueManagerFactory = new QueueManagerFactory();
                 var queueManager = queueManagerFactory.Make();
                 services.AddSingleton(typeof(IQueueManager), queueManager);
+
+                AuthSettings.RootUserPictures = hostContext.Configuration["rootUserPictures"];
 
                 var connectionString = hostContext.Configuration["connectionString"];
                 var contextFactory = new AuthServiceDBContextFactory(connectionString);

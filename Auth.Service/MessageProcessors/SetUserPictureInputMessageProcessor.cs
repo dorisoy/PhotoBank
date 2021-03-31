@@ -16,10 +16,10 @@ namespace PhotoBank.Auth.Service.MessageProcessors
             if (user != null)
             {
                 // удаляем с диска старуют картинку
-                File.Delete(user.Picture);
+                var oldPictureFullPath = Path.Combine(AuthSettings.RootUserPictures, user.Picture);
+                File.Delete(oldPictureFullPath);
                 // меняем на новую
-                var pictureFilePath = Path.Combine(AuthSettings.UserPicturePath, inputMessage.NewPictureId);
-                user.Picture = pictureFilePath;
+                user.Picture = inputMessage.NewPictureId;
                 _context.RepositoryFactory.Get<IUserRepository>().UpdateUser(user);
                 var outputMessage = new SetUserPictureOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success);
                 _context.QueueManager.SendMessage(AuthSettings.AuthOutputQueue, outputMessage);

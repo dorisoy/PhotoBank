@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PhotoBank.DataAccess;
+using PhotoBank.Photo.Contracts;
 using PhotoBank.Photo.Service.Data;
 using PhotoBank.QueueLogic.Manager;
 using PhotoBank.Service.Common.MessageProcessors;
@@ -28,6 +29,8 @@ namespace PhotoBank.Photo.Service
                 var queueManagerFactory = new QueueManagerFactory();
                 var queueManager = queueManagerFactory.Make();
                 services.AddSingleton(typeof(IQueueManager), queueManager);
+
+                PhotoSettings.RootPhotoPath = hostContext.Configuration["rootPhotoPath"];
 
                 var connectionString = hostContext.Configuration["connectionString"];
                 var contextFactory = new PhotoServiceDBContextFactory(connectionString);
