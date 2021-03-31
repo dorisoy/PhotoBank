@@ -9,6 +9,12 @@ namespace PhotoBank.Auth.Service.Data
     {
         void AddUser(UserPoco user);
 
+        UserPoco GetUser(int id);
+
         UserPoco GetUser(string login, string password);
+
+        UserPoco GetUser(string login);
+
+        void UpdateUser(UserPoco user);
     }
 }

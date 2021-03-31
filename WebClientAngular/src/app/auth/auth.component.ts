@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { SignalRService } from 'src/app/services/signalr.service';
@@ -14,8 +14,8 @@ import Utils from 'src/utils';
 export class AuthComponent implements OnInit {
 
   clientId: string = Utils.getClientId();
-  login: string = "vinge";
-  password: string = "12345";
+  @Input()  login: string = "vinge";
+  @Input()  password: string = "12345";
 
   constructor(
     private router: Router,

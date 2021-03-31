@@ -15,5 +15,9 @@ namespace PhotoBank.Auth.Service.Data
         public string Password { get; set; }
 
         public string EMail { get; set; }
+
+        public string About { get; set; }
+
+        public string Picture { get; set; }
     }
 }

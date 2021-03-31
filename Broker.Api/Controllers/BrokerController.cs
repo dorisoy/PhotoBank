@@ -26,7 +26,6 @@ namespace PhotoBank.Broker.Api.Controllers
             _authenticationManager = authenticationManager;
             _queueManager = queueManager;
             _logger = logger;
-            //_queueManager.Logger = _logger;
         }
 
         [HttpGet]
@@ -50,6 +49,77 @@ namespace PhotoBank.Broker.Api.Controllers
                 EMail = request.EMail
             };
             _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("getUserInfo")]
+        [CheckAuthentication]
+        public IActionResult GetUserInfo(GetUserInfoRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new GetUserInfoInputMessage(messageClientId, messageChainId)
+            {
+                Login = request.Login
+            };
+            _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("setUserInfo")]
+        [CheckAuthentication]
+        public IActionResult SetUserInfo(SetUserInfoRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new SetUserInfoInputMessage(messageClientId, messageChainId)
+            {
+                Login = request.Login,
+                Name = request.Name,
+                EMail = request.EMail,
+                About = request.About
+            };
+            _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("loadUserPicture")]
+        [CheckAuthentication]
+        public IActionResult LoadUserPicture(LoadUserPictureRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new LoadUserPictureInputMessage(messageClientId, messageChainId)
+            {
+                PictureBase64Content = request.PictureFile
+            };
+            _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("setUserPicture")]
+        [CheckAuthentication]
+        public IActionResult SetUserPicture(SetUserPictureRequest request)
+        {
+            if (String.IsNullOrWhiteSpace(request.NewPictureId) == false)
+            {
+                var messageClientId = new MessageClientId(request.ClientId);
+                var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+                var inputMessage = new SetUserPictureInputMessage(messageClientId, messageChainId)
+                {
+                    UserId = _authenticationManager.GetUserId(request.Login, request.Token),
+                    NewPictureId = request.NewPictureId
+                };
+                _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
+            }
 
             return Ok();
         }

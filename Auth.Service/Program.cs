@@ -45,6 +45,10 @@ namespace PhotoBank.Auth.Service
                 processorFactory.Add(typeof(CreateUserInputMessageProcessor));
                 processorFactory.Add(typeof(LoginInputMessageProcessor));
                 processorFactory.Add(typeof(CheckTokenInputMessageProcessor));
+                processorFactory.Add(typeof(GetUserInfoInputMessageProcessor));
+                processorFactory.Add(typeof(SetUserInfoInputMessageProcessor));
+                processorFactory.Add(typeof(LoadUserPictureInputMessageProcessor));
+                processorFactory.Add(typeof(SetUserPictureInputMessageProcessor));
                 services.AddSingleton(typeof(IMessageProcessorFactory), processorFactory);
 
                 services.AddHostedService<AuthWorker>();

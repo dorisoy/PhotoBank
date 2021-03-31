@@ -1,9 +1,29 @@
 <div>
-  <h1>Photos</h1>
-  <app-upload-photo></app-upload-photo>
-  <ul>
-    <li *ngFor="let photo of photos">
-      <img [src]="photo" width="250" />
-    </li>
-  </ul>
+  <div>
+    <div style="float: left;">
+      <h1>Photos</h1>
+    </div>
+    <div style="float: right; width: 20%;">
+      <div style="float: left;">
+        <div><span>{{ userName }}</span></div>
+        <div><span>{{ userEmail }}</span></div>
+        <div><button (click)="openUserEditModal()">редактировать</button></div>
+      </div>
+      <div>
+        <img [src]="userPicture" style="width: 60px; height: 60px;" />
+      </div>
+    </div>
+  </div>
+  <div style="float: left;">
+    <div>
+      <app-upload-photo></app-upload-photo>
+    </div>
+    <div>
+      <ul>
+        <li *ngFor="let photo of photos">
+          <img [src]="photo" width="250" />
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>

@@ -37,6 +37,10 @@ namespace PhotoBank.Broker.Api.SignalR
         private string GetCallbackMethodName(Message message)
         {
             if (message is LoginOutputMessage) return "LoginResponse";
+            if (message is GetUserInfoOutputMessage) return "GetUserInfoResponse";
+            if (message is SetUserInfoOutputMessage) return "SetUserInfoResponse";
+            if (message is LoadUserPictureOutputMessage) return "LoadUserPictureResponse";
+            if (message is SetUserPictureOutputMessage) return "SetUserPictureResponse";
             if (message is GetPhotosOutputMessage) return "GetPhotosResponse";
             if (message is GetPhotoOutputMessage) return "GetPhotoResponse";
             if (message is UploadPhotoOutputMessage) return "UploadPhotosResponse";
@@ -51,74 +55,116 @@ namespace PhotoBank.Broker.Api.SignalR
         {
             if (message is LoginOutputMessage)
             {
-                var loginOutputMessage = (LoginOutputMessage)message;
+                var outputMessage = (LoginOutputMessage)message;
                 return new LoginResponse
                 {
-                    Success = loginOutputMessage.Result == OutputMessageResult.Success,
-                    Token = loginOutputMessage.Token
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    Token = outputMessage.Token
+                };
+            }
+
+            if (message is GetUserInfoOutputMessage)
+            {
+                var outputMessage = (GetUserInfoOutputMessage)message;
+                return new GetUserInfoResponse
+                {
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    Name = outputMessage.Name,
+                    EMail = outputMessage.EMail,
+                    About = outputMessage.About,
+                    PictureBase64Content = outputMessage.PictureBase64Content
+                };
+            }
+
+            if (message is SetUserInfoOutputMessage)
+            {
+                var outputMessage = (SetUserInfoOutputMessage)message;
+                return new GetUserInfoResponse
+                {
+                    Success = outputMessage.Result == OutputMessageResult.Success
+                };
+            }
+
+            if (message is LoadUserPictureOutputMessage)
+            {
+                var outputMessage = (LoadUserPictureOutputMessage)message;
+                return new LoadUserPictureResponse
+                {
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    PictureBase64Content = outputMessage.PictureBase64Content,
+                    NewPictureId = outputMessage.NewPictureId
+                };
+            }
+
+            if (message is SetUserPictureOutputMessage)
+            {
+                var outputMessage = (SetUserPictureOutputMessage)message;
+                return new SetUserPictureResponse
+                {
+                    Success = outputMessage.Result == OutputMessageResult.Success
                 };
             }
 
             if (message is GetPhotosOutputMessage)
             {
-                var getPhotosOutputMessage = (GetPhotosOutputMessage)message;
+                var outputMessage = (GetPhotosOutputMessage)message;
                 return new GetPhotosResponse
                 {
-                    Success = getPhotosOutputMessage.Result == OutputMessageResult.Success,
-                    PhotoIds = getPhotosOutputMessage.PhotoIds
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    PhotoIds = outputMessage.PhotoIds
                 };
             }
 
             if (message is GetPhotoOutputMessage)
             {
-                var getPhotosOutputMessage = (GetPhotoOutputMessage)message;
+                var outputMessage = (GetPhotoOutputMessage)message;
                 return new GetPhotoResponse
                 {
-                    Success = getPhotosOutputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = getPhotosOutputMessage.PhotoId,
-                    FileBase64Content = getPhotosOutputMessage.FileBase64Content,
-                    CreateDate = getPhotosOutputMessage.CreateDate
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    PhotoId = outputMessage.PhotoId,
+                    FileBase64Content = outputMessage.FileBase64Content,
+                    CreateDate = outputMessage.CreateDate
                 };
             }
 
             if (message is UploadPhotoOutputMessage)
             {
-                var uploadPhotoOutputMessage = (UploadPhotoOutputMessage)message;
+                var outputMessage = (UploadPhotoOutputMessage)message;
                 return new UploadPhotosResponse
                 {
-                    Success = uploadPhotoOutputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = uploadPhotoOutputMessage.PhotoId
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    PhotoId = outputMessage.PhotoId
                 };
             }
 
             if (message is DeletePhotoOutputMessage)
             {
-                var deletePhotoOutputMessage = (DeletePhotoOutputMessage)message;
+                var outputMessage = (DeletePhotoOutputMessage)message;
                 return new DeletePhotoResponse
                 {
-                    Success = deletePhotoOutputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = deletePhotoOutputMessage.PhotoId
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    PhotoId = outputMessage.PhotoId
                 };
             }
 
             if (message is GetPhotoAdditionalInfoOutputMessage)
             {
-                var getPhotoAdditionalInfoOutputMessage = (GetPhotoAdditionalInfoOutputMessage)message;
+                var outputMessage = (GetPhotoAdditionalInfoOutputMessage)message;
                 return new GetPhotoAdditionalInfoResponse
                 {
-                    Success = getPhotoAdditionalInfoOutputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = getPhotoAdditionalInfoOutputMessage.PhotoId,
-                    AdditionalInfo = getPhotoAdditionalInfoOutputMessage.AdditionalInfo
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    PhotoId = outputMessage.PhotoId,
+                    AdditionalInfo = outputMessage.AdditionalInfo
                 };
             }
 
             if (message is SetPhotoAdditionalInfoOutputMessage)
             {
-                var setPhotoAdditionalInfoOutputMessage = (SetPhotoAdditionalInfoOutputMessage)message;
+                var outputMessage = (SetPhotoAdditionalInfoOutputMessage)message;
                 return new SetPhotoAdditionalInfoResponse
                 {
-                    Success = setPhotoAdditionalInfoOutputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = setPhotoAdditionalInfoOutputMessage.PhotoId
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    PhotoId = outputMessage.PhotoId
                 };
             }
 

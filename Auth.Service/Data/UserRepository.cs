@@ -17,9 +17,25 @@ namespace PhotoBank.Auth.Service.Data
             _context.SaveChanges();
         }
 
+        public UserPoco GetUser(int id)
+        {
+            return _context.Users.FirstOrDefault(x => x.Id == id);
+        }
+
+        public UserPoco GetUser(string login)
+        {
+            return _context.Users.FirstOrDefault(x => x.Login == login);
+        }
+
         public UserPoco GetUser(string login, string password)
         {
             return _context.Users.FirstOrDefault(x => x.Login == login && x.Password == password);
+        }
+
+        public void UpdateUser(UserPoco user)
+        {
+            _context.Update(user);
+            _context.SaveChanges();
         }
 
         public void Dispose()
