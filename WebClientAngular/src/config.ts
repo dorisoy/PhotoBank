@@ -14,5 +14,6 @@ export default {
   setUserPicture: apiPath + "setUserPicture",
   getPhotosApiPath: apiPath + "getPhotos",
   getPhotoApiPath: apiPath + "getPhoto",
-  uploadPhotosApiPath: apiPath + "uploadPhotos"
+  uploadPhotosApiPath: apiPath + "uploadPhotos",
+  deletePhotoApiPath: apiPath + 'deletePhoto',
 }

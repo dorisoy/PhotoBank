@@ -10,6 +10,7 @@ import { PhotosComponent } from './photos/photos.component';
 import { UploadPhotoComponent } from './upload-photo/upload-photo.component';
 import { UserEditModalComponent } from './modals/user-edit-modal/user-edit-modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PhotoDeleteConfirmModalComponent } from './modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AuthComponent,
     PhotosComponent,
     UploadPhotoComponent,
-    UserEditModalComponent
+    UserEditModalComponent,
+    PhotoDeleteConfirmModalComponent
   ],
   imports: [
     BrowserModule,

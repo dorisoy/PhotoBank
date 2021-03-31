@@ -7,6 +7,12 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 import Config from 'src/config';
 import Utils from 'src/utils';
 import { UserEditModalComponent } from '../modals/user-edit-modal/user-edit-modal.component';
+import { PhotoDeleteConfirmModalComponent } from '../modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
+
+interface Photo {
+  id: number,
+  content: string
+}
 
 @Component({
   selector: 'app-photos',
@@ -18,7 +24,7 @@ export class PhotosComponent implements OnInit {
   userName: string = "";
   userEmail: string = "";
   userPicture: string = "";
-  photos: string[] = [];
+  photos: Photo[] = [];
 
   constructor(
     private router: Router,
@@ -53,7 +59,11 @@ export class PhotosComponent implements OnInit {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
-        self.photos.push('data:image/png;base64,' + response.fileBase64Content);
+        var photo = {
+          id: response.photoId,
+          content: 'data:image/png;base64,' + response.fileBase64Content
+        };
+        self.photos.push(photo);
       }
     });
     
@@ -64,7 +74,15 @@ export class PhotosComponent implements OnInit {
         self.loadPhotosContent([response.photoId]);
       }
     });
-    
+
+    self.signalr.addHandler("DeletePhotoResponse", function (response) {
+      if (!response || !response.success) {
+        self.router.navigate(['/']);
+      } else {
+        self.photos = self.photos.filter(photo => photo.id !== response.photoId);
+      }
+    });
+
     var authData = self.localStorage.getAuthData();
     self.signalr.start(authData.clientId).then(function () {
       self.getUserInfo();
@@ -122,6 +140,18 @@ export class PhotosComponent implements OnInit {
           newPictureId: ref.componentInstance.newUserPictureId,
         };
         self.httpClient.post(Config.setUserPicture, setUserPicturePostData).toPromise();
+      }
+    });
+  }
+
+  deletePhoto(photoId): void {
+    var self = this;
+    var ref = self.modalService.open(PhotoDeleteConfirmModalComponent);
+    ref.afterClosed().subscribe(result => {
+      if (result) {
+        var authData = self.localStorage.getAuthData();
+        var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, photoId: photoId };
+        self.httpClient.post(Config.deletePhotoApiPath, postData).toPromise();
       }
     });
   }
