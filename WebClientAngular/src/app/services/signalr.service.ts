@@ -7,9 +7,6 @@ interface EventHandler {
   handler: any
 }
 
-@Injectable({
-  providedIn: 'root'
-})
 export class SignalRService {
 
   private connection: HubConnection

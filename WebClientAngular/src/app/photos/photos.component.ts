@@ -5,9 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { SignalRService } from 'src/app/services/signalr.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import Config from 'src/config';
-import Utils from 'src/utils';
 import { UserEditModalComponent } from '../modals/user-edit-modal/user-edit-modal.component';
 import { PhotoDeleteConfirmModalComponent } from '../modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
+import { PhotoDescriptionModalComponent } from '../modals/photo-description-modal/photo-description-modal.component';
 
 interface Photo {
   id: number,
@@ -17,7 +17,8 @@ interface Photo {
 @Component({
   selector: 'app-photos',
   templateUrl: './photos.component.html',
-  styleUrls: ['./photos.component.css']
+  styleUrls: ['./photos.component.css'],
+  providers: [{ provide: SignalRService }]
 })
 export class PhotosComponent implements OnInit {
 
@@ -152,6 +153,17 @@ export class PhotosComponent implements OnInit {
         var authData = self.localStorage.getAuthData();
         var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, photoId: photoId };
         self.httpClient.post(Config.deletePhotoApiPath, postData).toPromise();
+      }
+    });
+  }
+
+  editPhotoDescription(photoId): void {
+    var self = this;
+    var ref = self.modalService.open(PhotoDescriptionModalComponent);
+    ref.componentInstance.setPhotoId(photoId);
+    ref.afterClosed().subscribe(result => {
+      if (result) {
+        ref.componentInstance.save();
       }
     });
   }

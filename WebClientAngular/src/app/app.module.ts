@@ -11,6 +11,7 @@ import { UploadPhotoComponent } from './upload-photo/upload-photo.component';
 import { UserEditModalComponent } from './modals/user-edit-modal/user-edit-modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PhotoDeleteConfirmModalComponent } from './modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
+import { PhotoDescriptionModalComponent } from './modals/photo-description-modal/photo-description-modal.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { PhotoDeleteConfirmModalComponent } from './modals/photo-delete-confirm-
     PhotosComponent,
     UploadPhotoComponent,
     UserEditModalComponent,
-    PhotoDeleteConfirmModalComponent
+    PhotoDeleteConfirmModalComponent,
+    PhotoDescriptionModalComponent
   ],
   imports: [
     BrowserModule,

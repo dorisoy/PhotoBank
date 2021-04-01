@@ -9,7 +9,8 @@ import Utils from 'src/utils';
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css']
+  styleUrls: ['./auth.component.css'],
+  providers: [{ provide: SignalRService }]
 })
 export class AuthComponent implements OnInit {
 
