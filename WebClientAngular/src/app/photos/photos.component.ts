@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { SignalRService } from 'src/app/services/signalr.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
-import Config from 'src/config';
+import { SignalRService } from 'src/app/services/signalr.service';
+import { PhotoApiService } from '../services/photo-api.service';
 import { UserEditModalComponent } from '../modals/user-edit-modal/user-edit-modal.component';
 import { PhotoDeleteConfirmModalComponent } from '../modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
 import { PhotoDescriptionModalComponent } from '../modals/photo-description-modal/photo-description-modal.component';
@@ -29,9 +28,9 @@ export class PhotosComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private signalr: SignalRService,
     private localStorage: LocalStorageService,
-    private httpClient: HttpClient,
+    private signalr: SignalRService,
+    private photoApiService: PhotoApiService,
     private modalService: MatDialog) {
   }
 
@@ -86,31 +85,15 @@ export class PhotosComponent implements OnInit {
 
     var authData = self.localStorage.getAuthData();
     self.signalr.start(authData.clientId).then(function () {
-      self.getUserInfo();
-      self.loadPhotosId();
+      self.photoApiService.getUserInfo();
+      self.photoApiService.getPhotos();
     });
-  }
-
-  getUserInfo(): void {
-    var self = this;
-    var authData = self.localStorage.getAuthData();
-    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId };
-    self.httpClient.post(Config.getUserInfo, postData).toPromise();
-  }
-
-  loadPhotosId(): void {
-    var self = this;
-    var authData = self.localStorage.getAuthData();
-    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId };
-    self.httpClient.post(Config.getPhotosApiPath, postData).toPromise();
   }
 
   loadPhotosContent(photoIds): void {
     var self = this;
-    var authData = self.localStorage.getAuthData();
-    for (var photoIdIndex in photoIds) { // получаем содержимое каждой фотки
-      var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, photoId: photoIds[photoIdIndex] };
-      self.httpClient.post(Config.getPhotoApiPath, postData).toPromise();
+    for (var photoIdIndex in photoIds) {
+      self.photoApiService.getPhoto(photoIds[photoIdIndex]); // получаем содержимое каждой фотки
     }
   }
 
@@ -122,25 +105,10 @@ export class PhotosComponent implements OnInit {
         self.userName = ref.componentInstance.userName;
         self.userEmail = ref.componentInstance.userEmail;
         self.userPicture = ref.componentInstance.userPicture;
-        var authData = self.localStorage.getAuthData();
         // сохраняем данные пользователя
-        var setUserInfoPostData = {
-          login: authData.login,
-          token: authData.token,
-          clientId: authData.clientId,
-          name: ref.componentInstance.userName,
-          email: ref.componentInstance.userEmail,
-          about: ref.componentInstance.userAbout
-        };
-        self.httpClient.post(Config.setUserInfo, setUserInfoPostData).toPromise();
+        self.photoApiService.setUserInfo(ref.componentInstance.userName, ref.componentInstance.userEmail, ref.componentInstance.userAbout);
         // сохраняем новую картинку пользователя
-        var setUserPicturePostData = {
-          login: authData.login,
-          token: authData.token,
-          clientId: authData.clientId,
-          newPictureId: ref.componentInstance.newUserPictureId,
-        };
-        self.httpClient.post(Config.setUserPicture, setUserPicturePostData).toPromise();
+        self.photoApiService.setUserPicture(ref.componentInstance.newUserPictureId);
       }
     });
   }
@@ -150,9 +118,7 @@ export class PhotosComponent implements OnInit {
     var ref = self.modalService.open(PhotoDeleteConfirmModalComponent);
     ref.afterClosed().subscribe(result => {
       if (result) {
-        var authData = self.localStorage.getAuthData();
-        var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, photoId: photoId };
-        self.httpClient.post(Config.deletePhotoApiPath, postData).toPromise();
+        self.photoApiService.deletePhoto(photoId);
       }
     });
   }

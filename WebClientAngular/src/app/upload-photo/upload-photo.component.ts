@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { LocalStorageService } from 'src/app/services/local-storage.service';
-import Config from 'src/config';
+import { PhotoApiService } from '../services/photo-api.service';
 import Utils from 'src/utils';
 
 @Component({
@@ -14,8 +12,7 @@ export class UploadPhotoComponent implements OnInit {
   files: FileList
 
   constructor(
-    private localStorage: LocalStorageService,
-    private httpClient: HttpClient
+    private photoApiService: PhotoApiService
   ) { }
 
   ngOnInit(): void {
@@ -28,10 +25,8 @@ export class UploadPhotoComponent implements OnInit {
 
   submitFiles(): void {
     var self = this;
-    var authData = self.localStorage.getAuthData();
     var uploadFunc = function (filesBase64) {
-      var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, files: filesBase64 };
-      self.httpClient.post(Config.uploadPhotosApiPath, postData).toPromise();
+      self.photoApiService.uploadPhotos(filesBase64);
     };
     Utils.filesToBase64(self.files, uploadFunc);
   }

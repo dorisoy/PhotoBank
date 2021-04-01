@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { SignalRService } from 'src/app/services/signalr.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
-import Config from 'src/config';
+import { SignalRService } from 'src/app/services/signalr.service';
+import { PhotoApiService } from 'src/app/services/photo-api.service';
 
 @Component({
   selector: 'app-photo-description-modal',
@@ -16,9 +15,9 @@ export class PhotoDescriptionModalComponent implements OnInit {
   @Input() photoDescription: string = "";
 
   constructor(
-    private signalr: SignalRService,
     private localStorage: LocalStorageService,
-    private httpClient: HttpClient
+    private signalr: SignalRService,
+    private photoApiService: PhotoApiService
   ) { }
 
   ngOnInit(): void {
@@ -33,22 +32,13 @@ export class PhotoDescriptionModalComponent implements OnInit {
       }
     });
     var authData = self.localStorage.getAuthData();
-    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, photoId: self.photoId };
     self.signalr.start(authData.clientId).then(function () {
-      self.httpClient.post(Config.getPhotoAdditionalInfo, postData).toPromise();
+      self.photoApiService.getPhotoAdditionalInfo(self.photoId);
     });
   }
 
   save(): void {
     var self = this;
-    var authData = self.localStorage.getAuthData();
-    var postData = {
-      login: authData.login,
-      token: authData.token,
-      clientId: authData.clientId,
-      photoId: self.photoId,
-      additionalInfo: { description: self.photoDescription }
-    };
-    self.httpClient.post(Config.setPhotoAdditionalInfo, postData).toPromise();
+    self.photoApiService.setPhotoAdditionalInfo(self.photoId, { description: self.photoDescription });
   }
 }

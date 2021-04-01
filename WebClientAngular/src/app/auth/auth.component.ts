@@ -1,9 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { SignalRService } from 'src/app/services/signalr.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
-import Config from 'src/config';
+import { SignalRService } from 'src/app/services/signalr.service';
+import { PhotoApiService } from '../services/photo-api.service';
 import Utils from 'src/utils';
 
 @Component({
@@ -20,9 +19,9 @@ export class AuthComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private signalr: SignalRService,
     private localStorage: LocalStorageService,
-    private httpClient: HttpClient) {
+    private signalr: SignalRService,
+    private photoApiService: PhotoApiService) {
   }
 
   ngOnInit(): void {
@@ -45,7 +44,6 @@ export class AuthComponent implements OnInit {
 
   sendAuth(): void {
     var self = this;
-    var postData = { login: self.login, password: self.password, clientId: self.clientId };
-    self.httpClient.post(Config.loginApiPath, postData).toPromise();
+    self.photoApiService.login(self.login, self.password, self.clientId);
   }
 }

@@ -1,14 +1,14 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { SignalRService } from 'src/app/services/signalr.service';
-import Config from 'src/config';
+import { PhotoApiService } from 'src/app/services/photo-api.service';
 import Utils from 'src/utils';
 
 @Component({
   selector: 'app-user-edit-modal',
   templateUrl: './user-edit-modal.component.html',
-  styleUrls: ['./user-edit-modal.component.css']
+  styleUrls: ['./user-edit-modal.component.css'],
+  providers: [{ provide: SignalRService }]
 })
 export class UserEditModalComponent implements OnInit {
 
@@ -19,9 +19,9 @@ export class UserEditModalComponent implements OnInit {
   newUserPictureId: string = "";
 
   constructor(
-    private signalr: SignalRService,
     private localStorage: LocalStorageService,
-    private httpClient: HttpClient
+    private signalr: SignalRService,
+    private photoApiService: PhotoApiService
   ) { }
 
   ngOnInit(): void {
@@ -45,23 +45,14 @@ export class UserEditModalComponent implements OnInit {
 
     var authData = self.localStorage.getAuthData();
     self.signalr.start(authData.clientId).then(function () {
-      self.getUserInfo();
+      self.photoApiService.getUserInfo();
     });
-  }
-
-  getUserInfo(): void {
-    var self = this;
-    var authData = self.localStorage.getAuthData();
-    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId };
-    self.httpClient.post(Config.getUserInfo, postData).toPromise();
   }
 
   handleFilesUpload(files: FileList): void {
     var self = this;
-    var authData = self.localStorage.getAuthData();
     var uploadFunc = function (fileBase64) {
-      var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, pictureFile: fileBase64 };
-      self.httpClient.post(Config.loadUserPicture, postData).toPromise();
+      self.photoApiService.loadUserPicture(fileBase64);
     };
     Utils.fileToBase64(files[0], uploadFunc);
   }
