@@ -23,7 +23,40 @@ export class PhotoApiService {
     var self = this;
     var authData = self.localStorage.getAuthData();
     var postData = { login: authData.login, token: authData.token, clientId: authData.clientId };
-    self.httpClient.post(Config.getUserInfo, postData).toPromise();
+    self.httpClient.post(Config.getUserInfoApiPath, postData).toPromise();
+  }
+  
+  setUserInfo(userName, userEmail, userAbout): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = {
+      login: authData.login,
+      token: authData.token,
+      clientId: authData.clientId,
+      name: userName,
+      email: userEmail,
+      about: userAbout
+    };
+    self.httpClient.post(Config.setUserInfoApiPath, postData).toPromise();
+  }
+
+  loadUserPicture(pictureFile): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, pictureFile: pictureFile };
+    self.httpClient.post(Config.loadUserPictureApiPath, postData).toPromise();
+  }
+
+  setUserPicture(newUserPictureId): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = {
+      login: authData.login,
+      token: authData.token,
+      clientId: authData.clientId,
+      newPictureId: newUserPictureId,
+    };
+    self.httpClient.post(Config.setUserPictureApiPath, postData).toPromise();
   }
 
   getPhotos(): void {
@@ -40,58 +73,11 @@ export class PhotoApiService {
     self.httpClient.post(Config.getPhotoApiPath, postData).toPromise();
   }
 
-  setUserInfo(userName, userEmail, userAbout): void {
-    var self = this;
-    var authData = self.localStorage.getAuthData();
-    var postData = {
-      login: authData.login,
-      token: authData.token,
-      clientId: authData.clientId,
-      name: userName,
-      email: userEmail,
-      about: userAbout
-    };
-    self.httpClient.post(Config.setUserInfo, postData).toPromise();
-  }
-
-  loadUserPicture(pictureFile): void {
-    var self = this;
-    var authData = self.localStorage.getAuthData();
-    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, pictureFile: pictureFile };
-    self.httpClient.post(Config.loadUserPicture, postData).toPromise();
-  }
-
-  setUserPicture(newUserPictureId): void {
-    var self = this;
-    var authData = self.localStorage.getAuthData();
-    var postData = {
-      login: authData.login,
-      token: authData.token,
-      clientId: authData.clientId,
-      newPictureId: newUserPictureId,
-    };
-    self.httpClient.post(Config.setUserPicture, postData).toPromise();
-  }
-
-  deletePhoto(photoId): void {
-    var self = this;
-    var authData = self.localStorage.getAuthData();
-    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, photoId: photoId };
-    self.httpClient.post(Config.deletePhotoApiPath, postData).toPromise();
-  }
-
-  uploadPhotos(files): void {
-    var self = this;
-    var authData = self.localStorage.getAuthData();
-    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, files: files };
-    self.httpClient.post(Config.uploadPhotosApiPath, postData).toPromise();
-  }
-
   getPhotoAdditionalInfo(photoId): void {
     var self = this;
     var authData = self.localStorage.getAuthData();
     var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, photoId: photoId };
-    self.httpClient.post(Config.getPhotoAdditionalInfo, postData).toPromise();
+    self.httpClient.post(Config.getPhotoAdditionalInfoApiPath, postData).toPromise();
   }
 
   setPhotoAdditionalInfo(photoId, additionalInfo): void {
@@ -104,6 +90,20 @@ export class PhotoApiService {
       photoId: photoId,
       additionalInfo: additionalInfo
     };
-    self.httpClient.post(Config.setPhotoAdditionalInfo, postData).toPromise();
+    self.httpClient.post(Config.setPhotoAdditionalInfoApiPath, postData).toPromise();
+  }
+
+  uploadPhotos(files): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, files: files };
+    self.httpClient.post(Config.uploadPhotosApiPath, postData).toPromise();
+  }
+
+  deletePhoto(photoId): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = { login: authData.login, token: authData.token, clientId: authData.clientId, photoId: photoId };
+    self.httpClient.post(Config.deletePhotoApiPath, postData).toPromise();
   }
 }

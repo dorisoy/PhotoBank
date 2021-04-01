@@ -1,21 +1,17 @@
-
 var host = "http://localhost:44364/";
-//var host = "http://localhost:44364/Broker.Api/";
-
 var apiPath = host + "api/";
 
 export default {
   host: host,
-  getClientId: apiPath + "getClientId",
   loginApiPath: apiPath + "login",
-  getUserInfo: apiPath + "getUserInfo",
-  setUserInfo: apiPath + "setUserInfo",
-  loadUserPicture: apiPath + "loadUserPicture",
-  setUserPicture: apiPath + "setUserPicture",
+  getUserInfoApiPath: apiPath + "getUserInfo",
+  setUserInfoApiPath: apiPath + "setUserInfo",
+  loadUserPictureApiPath: apiPath + "loadUserPicture",
+  setUserPictureApiPath: apiPath + "setUserPicture",
   getPhotosApiPath: apiPath + "getPhotos",
   getPhotoApiPath: apiPath + "getPhoto",
-  getPhotoAdditionalInfo: apiPath + "getPhotoAdditionalInfo",
-  setPhotoAdditionalInfo: apiPath + "setPhotoAdditionalInfo",
+  getPhotoAdditionalInfoApiPath: apiPath + "getPhotoAdditionalInfo",
+  setPhotoAdditionalInfoApiPath: apiPath + "setPhotoAdditionalInfo",
   uploadPhotosApiPath: apiPath + "uploadPhotos",
   deletePhotoApiPath: apiPath + 'deletePhoto',
 }
