@@ -26,5 +26,9 @@ export default {
     for (var i = 0; i < files.length; i++) {
       this.fileToBase64(files[i], fileToBase64Callback);
     }
+  },
+
+  getImageFromBase64: function(base64Image) {
+    return 'data:image/jpg;base64,' + base64Image;
   }
 }

@@ -34,13 +34,13 @@ export class UserEditModalComponent implements OnInit {
         self.userName = response.name;
         self.userEmail = response.email;
         self.userAbout = response.about;
-        self.userPicture = 'data:image/png;base64,' + response.pictureBase64Content;
+        self.userPicture = Utils.getImageFromBase64(response.pictureBase64Content);
       }
     });
 
     self.photoApiNotifier.onLoadUserPictureResponse(function (response) {
       if (response && response.success) {
-        self.userPicture = 'data:image/png;base64,' + response.pictureBase64Content;
+        self.userPicture = Utils.getImageFromBase64(response.pictureBase64Content);
         self.newUserPictureId = response.newPictureId;
       }
     });

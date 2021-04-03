@@ -45,7 +45,7 @@ export class PhotosComponent implements OnInit {
       } else {
         self.userName = response.name;
         self.userEmail = response.email;
-        self.userPicture = 'data:image/png;base64,' + response.pictureBase64Content;
+        self.userPicture = Utils.getImageFromBase64(response.pictureBase64Content);
       }
     });
     
@@ -63,7 +63,7 @@ export class PhotosComponent implements OnInit {
       } else {
         var photo = {
           id: response.photoId,
-          content: 'data:image/png;base64,' + response.fileBase64Content
+          content: Utils.getImageFromBase64(response.fileBase64Content)
         };
         self.photos.push(photo);
       }
