@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
-import { PhotoApiService } from '../services/photo-api.service';
-import { PhotoApiNotifierService } from '../services/photo-api-notifier.service';
+import { PhotoApiService } from 'src/app/services/photo-api.service';
+import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
 import Utils from 'src/utils';
 
 @Component({

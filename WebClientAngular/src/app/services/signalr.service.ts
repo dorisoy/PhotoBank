@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { HubConnectionBuilder, HubConnection } from '@microsoft/signalr';
 import Config from 'src/config';
 

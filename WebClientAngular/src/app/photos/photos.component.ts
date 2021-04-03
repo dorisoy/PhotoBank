@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { PhotoApiService } from '../services/photo-api.service';
-import { PhotoApiNotifierService } from '../services/photo-api-notifier.service';
-import { UserEditModalComponent } from '../modals/user-edit-modal/user-edit-modal.component';
-import { PhotoDeleteConfirmModalComponent } from '../modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
-import { PhotoDescriptionModalComponent } from '../modals/photo-description-modal/photo-description-modal.component';
+import { PhotoApiService } from 'src/app/services/photo-api.service';
+import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
+import { UserEditModalComponent } from 'src/app/modals/user-edit-modal/user-edit-modal.component';
+import { PhotoDeleteConfirmModalComponent } from 'src/app/modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
+import { PhotoDescriptionModalComponent } from 'src/app/modals/photo-description-modal/photo-description-modal.component';
 
 interface Photo {
   id: number,

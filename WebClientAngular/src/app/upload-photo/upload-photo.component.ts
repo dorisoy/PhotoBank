@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PhotoApiService } from '../services/photo-api.service';
+import { PhotoApiService } from 'src/app/services/photo-api.service';
 import Utils from 'src/utils';
 
 @Component({
