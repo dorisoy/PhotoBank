@@ -3,8 +3,7 @@ import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 
 interface AuthDataObject {
   login: string,
-  token: string,
-  clientId: string
+  token: string
 }
 
 @Injectable({

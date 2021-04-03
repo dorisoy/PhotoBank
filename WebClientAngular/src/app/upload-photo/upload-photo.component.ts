@@ -13,7 +13,8 @@ export class UploadPhotoComponent implements OnInit {
 
   constructor(
     private photoApi: PhotoApiService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }

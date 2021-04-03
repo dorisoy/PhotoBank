@@ -6,6 +6,7 @@ import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.ser
 import { UserEditModalComponent } from 'src/app/modals/user-edit-modal/user-edit-modal.component';
 import { PhotoDeleteConfirmModalComponent } from 'src/app/modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
 import { PhotoDescriptionModalComponent } from 'src/app/modals/photo-description-modal/photo-description-modal.component';
+import Utils from 'src/utils';
 
 interface Photo {
   id: number,
@@ -16,7 +17,7 @@ interface Photo {
   selector: 'app-photos',
   templateUrl: './photos.component.html',
   styleUrls: ['./photos.component.css'],
-  providers: [PhotoApiNotifierService]
+  providers: [PhotoApiService, PhotoApiNotifierService]
 })
 export class PhotosComponent implements OnInit {
 
@@ -24,12 +25,15 @@ export class PhotosComponent implements OnInit {
   userEmail: string = "";
   userPicture: string = "";
   photos: Photo[] = [];
-
+  
   constructor(
     private router: Router,
     private photoApi: PhotoApiService,
     private photoApiNotifier: PhotoApiNotifierService,
     private modalService: MatDialog) {
+      const clientId = Utils.getClientId();
+      this.photoApi.setClientId(clientId);
+      this.photoApiNotifier.setClientId(clientId);
   }
 
   ngOnInit(): void {
@@ -96,24 +100,24 @@ export class PhotosComponent implements OnInit {
 
   openUserEditModal(): void {
     var self = this;
-    var ref = self.modalService.open(UserEditModalComponent);
-    ref.afterClosed().subscribe(result => {
+    var modal = self.modalService.open(UserEditModalComponent);
+    modal.afterClosed().subscribe(result => {
       if (result) {
-        self.userName = ref.componentInstance.userName;
-        self.userEmail = ref.componentInstance.userEmail;
-        self.userPicture = ref.componentInstance.userPicture;
+        self.userName = modal.componentInstance.userName;
+        self.userEmail = modal.componentInstance.userEmail;
+        self.userPicture = modal.componentInstance.userPicture;
         // сохраняем данные пользователя
-        self.photoApi.setUserInfo(ref.componentInstance.userName, ref.componentInstance.userEmail, ref.componentInstance.userAbout);
+        self.photoApi.setUserInfo(modal.componentInstance.userName, modal.componentInstance.userEmail, modal.componentInstance.userAbout);
         // сохраняем новую картинку пользователя
-        self.photoApi.setUserPicture(ref.componentInstance.newUserPictureId);
+        self.photoApi.setUserPicture(modal.componentInstance.newUserPictureId);
       }
     });
   }
 
   deletePhoto(photoId): void {
     var self = this;
-    var ref = self.modalService.open(PhotoDeleteConfirmModalComponent);
-    ref.afterClosed().subscribe(result => {
+    var modal = self.modalService.open(PhotoDeleteConfirmModalComponent);
+    modal.afterClosed().subscribe(result => {
       if (result) {
         self.photoApi.deletePhoto(photoId);
       }
@@ -122,11 +126,11 @@ export class PhotosComponent implements OnInit {
 
   editPhotoDescription(photoId): void {
     var self = this;
-    var ref = self.modalService.open(PhotoDescriptionModalComponent);
-    ref.componentInstance.setPhotoId(photoId);
-    ref.afterClosed().subscribe(result => {
+    var modal = self.modalService.open(PhotoDescriptionModalComponent);
+    modal.componentInstance.setPhotoId(photoId);
+    modal.afterClosed().subscribe(result => {
       if (result) {
-        ref.componentInstance.save();
+        modal.componentInstance.save();
       }
     });
   }

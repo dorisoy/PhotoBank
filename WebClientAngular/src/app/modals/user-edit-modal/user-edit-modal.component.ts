@@ -7,7 +7,7 @@ import Utils from 'src/utils';
   selector: 'app-user-edit-modal',
   templateUrl: './user-edit-modal.component.html',
   styleUrls: ['./user-edit-modal.component.css'],
-  providers: [{ provide: PhotoApiNotifierService }]
+  providers: [PhotoApiService, PhotoApiNotifierService]
 })
 export class UserEditModalComponent implements OnInit {
 
@@ -16,11 +16,15 @@ export class UserEditModalComponent implements OnInit {
   @Input() userAbout: string = "";
   userPicture: string = "";
   newUserPictureId: string = "";
-
+  
   constructor(
     private photoApi: PhotoApiService,
     private photoApiNotifier: PhotoApiNotifierService,
-  ) { }
+    ) {
+    const clientId = Utils.getClientId();
+    this.photoApi.setClientId(clientId);
+    this.photoApiNotifier.setClientId(clientId);
+  }
 
   ngOnInit(): void {
     var self = this;

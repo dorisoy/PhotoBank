@@ -1,25 +1,22 @@
 import { Injectable } from '@angular/core';
-import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { SignalRService } from 'src/app/services/signalr.service';
 
 @Injectable()
 export class PhotoApiNotifierService {
 
+  private clientId: string = "";
   private signalr: SignalRService
 
-  constructor(
-    private localStorage: LocalStorageService
-  ) {
+  constructor() {
     this.signalr = new SignalRService();
   }
 
-  start(clientId?: string): Promise<void> {
-    var self = this;
-    if (!clientId) {
-      var authData = self.localStorage.getAuthData();
-      clientId = authData.clientId
-    };
-    return self.signalr.start(clientId);
+  setClientId(clientId): void {
+    this.clientId = clientId;
+  }
+
+  start(): Promise<void> {
+    return this.signalr.start(this.clientId);
   }
 
   onLoginResponse(handler: any): void {
