@@ -12,6 +12,7 @@ import { UserEditModalComponent } from './modals/user-edit-modal/user-edit-modal
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PhotoDeleteConfirmModalComponent } from './modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
 import { PhotoDescriptionModalComponent } from './modals/photo-description-modal/photo-description-modal.component';
+import { UserEditComponent } from './user-edit/user-edit.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { PhotoDescriptionModalComponent } from './modals/photo-description-modal
     UploadPhotoComponent,
     UserEditModalComponent,
     PhotoDeleteConfirmModalComponent,
-    PhotoDescriptionModalComponent
+    PhotoDescriptionModalComponent,
+    UserEditComponent
   ],
   imports: [
     BrowserModule,

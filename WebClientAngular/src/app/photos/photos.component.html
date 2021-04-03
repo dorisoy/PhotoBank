@@ -4,14 +4,7 @@
       <h1>Photos</h1>
     </div>
     <div style="float: right; width: 210px;">
-      <div style="float: left;">
-        <div><span>{{ userName }}</span></div>
-        <div><span>{{ userEmail }}</span></div>
-        <div><button (click)="openUserEditModal()">редактировать</button></div>
-      </div>
-      <div>
-        <img [src]="userPicture" style="width: 60px; height: 60px;" />
-      </div>
+      <app-user-edit></app-user-edit>
     </div>
   </div>
   <div>

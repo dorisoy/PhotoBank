@@ -21,11 +21,8 @@ interface Photo {
 })
 export class PhotosComponent implements OnInit {
 
-  userName: string = "";
-  userEmail: string = "";
-  userPicture: string = "";
   photos: Photo[] = [];
-  
+
   constructor(
     private router: Router,
     private photoApi: PhotoApiService,
@@ -39,16 +36,6 @@ export class PhotosComponent implements OnInit {
   ngOnInit(): void {
     var self = this;
     
-    self.photoApiNotifier.onGetUserInfoResponse(function (response) {
-      if (!response || !response.success) {
-        self.router.navigate(['/']);
-      } else {
-        self.userName = response.name;
-        self.userEmail = response.email;
-        self.userPicture = Utils.getImageFromBase64(response.pictureBase64Content);
-      }
-    });
-    
     self.photoApiNotifier.onGetPhotosResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
@@ -56,7 +43,7 @@ export class PhotosComponent implements OnInit {
         self.loadPhotosContent(response.photoIds);
       }
     });
-    
+
     self.photoApiNotifier.onGetPhotoResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
@@ -68,7 +55,7 @@ export class PhotosComponent implements OnInit {
         self.photos.push(photo);
       }
     });
-    
+
     self.photoApiNotifier.onUploadPhotosResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
@@ -86,7 +73,6 @@ export class PhotosComponent implements OnInit {
     });
 
     self.photoApiNotifier.start().then(function () {
-      self.photoApi.getUserInfo();
       self.photoApi.getPhotos();
     });
   }
@@ -96,22 +82,6 @@ export class PhotosComponent implements OnInit {
     for (var photoIdIndex in photoIds) {
       self.photoApi.getPhoto(photoIds[photoIdIndex]); // получаем содержимое каждой фотки
     }
-  }
-
-  openUserEditModal(): void {
-    var self = this;
-    var modal = self.modalService.open(UserEditModalComponent);
-    modal.afterClosed().subscribe(result => {
-      if (result) {
-        self.userName = modal.componentInstance.userName;
-        self.userEmail = modal.componentInstance.userEmail;
-        self.userPicture = modal.componentInstance.userPicture;
-        // сохраняем данные пользователя
-        self.photoApi.setUserInfo(modal.componentInstance.userName, modal.componentInstance.userEmail, modal.componentInstance.userAbout);
-        // сохраняем новую картинку пользователя
-        self.photoApi.setUserPicture(modal.componentInstance.newUserPictureId);
-      }
-    });
   }
 
   deletePhoto(photoId): void {
