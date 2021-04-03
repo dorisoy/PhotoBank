@@ -3,14 +3,14 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { PhotoApiService } from 'src/app/services/photo-api.service';
 import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
-import { UserEditModalComponent } from 'src/app/modals/user-edit-modal/user-edit-modal.component';
 import { PhotoDeleteConfirmModalComponent } from 'src/app/modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
 import { PhotoDescriptionModalComponent } from 'src/app/modals/photo-description-modal/photo-description-modal.component';
 import Utils from 'src/utils';
 
 interface Photo {
   id: number,
-  content: string
+  content: string,
+  createDate: Date
 }
 
 @Component({
@@ -50,9 +50,11 @@ export class PhotosComponent implements OnInit {
       } else {
         var photo = {
           id: response.photoId,
-          content: Utils.getImageFromBase64(response.fileBase64Content)
+          content: Utils.getImageFromBase64(response.fileBase64Content),
+          createDate: response.createDate
         };
         self.photos.push(photo);
+        self.photos.sort((x,y) => x.createDate < y.createDate ? -1 : (x.createDate > y.createDate ? 1 : 0));
       }
     });
 

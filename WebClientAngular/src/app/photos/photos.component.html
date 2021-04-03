@@ -14,16 +14,23 @@
         <li *ngFor="let photo of photos">
           <div style="width: '216px'; height: '155px'; margin: '8px'; background: 'rgb(230,230,230)'">
             <div style="padding: '8px'">
-                <img [src]="photo.content" style="width: '200px'; display: 'block'; margin: 'auto'" />
+                <div style="display: 'block'; margin: 'auto'">
+                  <img [src]="photo.content" width="200px" />
+                </div>
                 <div>
+                  <div style="float: left;">
+                    <span>{{ photo.createDate | date:'dd.MM.yyyy HH:mm:ss' }}</span>
+                  </div>
+                  <div>
                     <div style="float: 'right'; margin-top: '4px'">
-                        <a (click)="editPhotoDescription(photo.id)" style="cursor: pointer; margin-right: '8px'">
-                          <img src='/assets/edit.png' style="width: '16px'; height: '16px';" />
-                        </a>
-                        <a (click)="deletePhoto(photo.id)" style="cursor: pointer;">
-                          <img src='/assets/trash.png' style="width: '16px'; height: '16px';" />
-                        </a>
+                      <a (click)="editPhotoDescription(photo.id)" style="cursor: pointer; margin-right: '8px'">
+                        <img src='/assets/edit.png' style="width: '16px'; height: '16px';" />
+                      </a>
+                      <a (click)="deletePhoto(photo.id)" style="cursor: pointer;">
+                        <img src='/assets/trash.png' style="width: '16px'; height: '16px';" />
+                      </a>
                     </div>
+                  </div>
                 </div>
             </div>
           </div>
