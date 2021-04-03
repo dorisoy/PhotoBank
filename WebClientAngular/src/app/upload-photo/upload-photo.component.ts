@@ -12,7 +12,7 @@ export class UploadPhotoComponent implements OnInit {
   files: FileList
 
   constructor(
-    private photoApiService: PhotoApiService
+    private photoApi: PhotoApiService
   ) { }
 
   ngOnInit(): void {
@@ -26,7 +26,7 @@ export class UploadPhotoComponent implements OnInit {
   submitFiles(): void {
     var self = this;
     var uploadFunc = function (filesBase64) {
-      self.photoApiService.uploadPhotos(filesBase64);
+      self.photoApi.uploadPhotos(filesBase64);
     };
     Utils.filesToBase64(self.files, uploadFunc);
   }

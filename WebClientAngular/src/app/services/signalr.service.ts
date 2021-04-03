@@ -13,6 +13,7 @@ export class SignalRService {
   private handlers: EventHandler[] = []
 
   constructor() {
+    //console.log("SignalRService constructor");
   }
 
   addHandler(methodName: string, handler: any): void {

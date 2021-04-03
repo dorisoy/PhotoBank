@@ -1,13 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { LocalStorageService } from 'src/app/services/local-storage.service';
-import { SignalRService } from 'src/app/services/signalr.service';
+import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
 import { PhotoApiService } from 'src/app/services/photo-api.service';
 
 @Component({
   selector: 'app-photo-description-modal',
   templateUrl: './photo-description-modal.component.html',
   styleUrls: ['./photo-description-modal.component.css'],
-  providers: [{ provide: SignalRService }]
+  providers: [PhotoApiNotifierService]
 })
 export class PhotoDescriptionModalComponent implements OnInit {
 
@@ -15,9 +14,8 @@ export class PhotoDescriptionModalComponent implements OnInit {
   @Input() photoDescription: string = "";
 
   constructor(
-    private localStorage: LocalStorageService,
-    private signalr: SignalRService,
-    private photoApiService: PhotoApiService
+    private photoApi: PhotoApiService,
+    private photoApiNotifier: PhotoApiNotifierService,
   ) { }
 
   ngOnInit(): void {
@@ -26,19 +24,18 @@ export class PhotoDescriptionModalComponent implements OnInit {
   setPhotoId(photoId): void {
     var self = this;
     self.photoId = photoId;
-    self.signalr.addHandler("GetPhotoAdditionalInfoResponse", function (response) {
+    self.photoApiNotifier.onGetPhotoAdditionalInfoResponse(function (response) {
       if (response && response.success) {
         self.photoDescription = response.additionalInfo.description;
       }
     });
-    var authData = self.localStorage.getAuthData();
-    self.signalr.start(authData.clientId).then(function () {
-      self.photoApiService.getPhotoAdditionalInfo(self.photoId);
+    self.photoApiNotifier.start().then(function () {
+      self.photoApi.getPhotoAdditionalInfo(self.photoId);
     });
   }
 
   save(): void {
     var self = this;
-    self.photoApiService.setPhotoAdditionalInfo(self.photoId, { description: self.photoDescription });
+    self.photoApi.setPhotoAdditionalInfo(self.photoId, { description: self.photoDescription });
   }
 }

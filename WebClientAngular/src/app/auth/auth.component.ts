@@ -1,15 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
-import { SignalRService } from 'src/app/services/signalr.service';
 import { PhotoApiService } from '../services/photo-api.service';
+import { PhotoApiNotifierService } from '../services/photo-api-notifier.service';
 import Utils from 'src/utils';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css'],
-  providers: [{ provide: SignalRService }]
+  providers: [PhotoApiNotifierService]
 })
 export class AuthComponent implements OnInit {
 
@@ -20,18 +20,13 @@ export class AuthComponent implements OnInit {
   constructor(
     private router: Router,
     private localStorage: LocalStorageService,
-    private signalr: SignalRService,
-    private photoApiService: PhotoApiService) {
+    private photoApi: PhotoApiService,
+    private photoApiNotifier: PhotoApiNotifierService) {
   }
 
   ngOnInit(): void {
     var self = this;
-    self.onLoginResponse();
-  }
-
-  onLoginResponse(): void {
-    var self = this;
-    self.signalr.addHandler("LoginResponse", function (response) {
+    self.photoApiNotifier.onLoginResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
@@ -39,11 +34,11 @@ export class AuthComponent implements OnInit {
         self.router.navigate(['/photos']);
       }
     });
-    self.signalr.start(self.clientId);
+    self.photoApiNotifier.start(self.clientId);
   }
 
   sendAuth(): void {
     var self = this;
-    self.photoApiService.login(self.login, self.password, self.clientId);
+    self.photoApi.login(self.login, self.password, self.clientId);
   }
 }

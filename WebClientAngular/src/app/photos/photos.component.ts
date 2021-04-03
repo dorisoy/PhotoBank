@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { LocalStorageService } from 'src/app/services/local-storage.service';
-import { SignalRService } from 'src/app/services/signalr.service';
 import { PhotoApiService } from '../services/photo-api.service';
+import { PhotoApiNotifierService } from '../services/photo-api-notifier.service';
 import { UserEditModalComponent } from '../modals/user-edit-modal/user-edit-modal.component';
 import { PhotoDeleteConfirmModalComponent } from '../modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
 import { PhotoDescriptionModalComponent } from '../modals/photo-description-modal/photo-description-modal.component';
@@ -17,7 +16,7 @@ interface Photo {
   selector: 'app-photos',
   templateUrl: './photos.component.html',
   styleUrls: ['./photos.component.css'],
-  providers: [{ provide: SignalRService }]
+  providers: [PhotoApiNotifierService]
 })
 export class PhotosComponent implements OnInit {
 
@@ -28,16 +27,15 @@ export class PhotosComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private localStorage: LocalStorageService,
-    private signalr: SignalRService,
-    private photoApiService: PhotoApiService,
+    private photoApi: PhotoApiService,
+    private photoApiNotifier: PhotoApiNotifierService,
     private modalService: MatDialog) {
   }
 
   ngOnInit(): void {
     var self = this;
     
-    self.signalr.addHandler("GetUserInfoResponse", function (response) {
+    self.photoApiNotifier.onGetUserInfoResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
@@ -47,7 +45,7 @@ export class PhotosComponent implements OnInit {
       }
     });
     
-    self.signalr.addHandler("GetPhotosResponse", function (response) {
+    self.photoApiNotifier.onGetPhotosResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
@@ -55,7 +53,7 @@ export class PhotosComponent implements OnInit {
       }
     });
     
-    self.signalr.addHandler("GetPhotoResponse", function (response) {
+    self.photoApiNotifier.onGetPhotoResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
@@ -67,7 +65,7 @@ export class PhotosComponent implements OnInit {
       }
     });
     
-    self.signalr.addHandler("UploadPhotosResponse", function (response) {
+    self.photoApiNotifier.onUploadPhotosResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
@@ -75,7 +73,7 @@ export class PhotosComponent implements OnInit {
       }
     });
 
-    self.signalr.addHandler("DeletePhotoResponse", function (response) {
+    self.photoApiNotifier.onDeletePhotoResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
@@ -83,17 +81,16 @@ export class PhotosComponent implements OnInit {
       }
     });
 
-    var authData = self.localStorage.getAuthData();
-    self.signalr.start(authData.clientId).then(function () {
-      self.photoApiService.getUserInfo();
-      self.photoApiService.getPhotos();
+    self.photoApiNotifier.start().then(function () {
+      self.photoApi.getUserInfo();
+      self.photoApi.getPhotos();
     });
   }
 
   loadPhotosContent(photoIds): void {
     var self = this;
     for (var photoIdIndex in photoIds) {
-      self.photoApiService.getPhoto(photoIds[photoIdIndex]); // получаем содержимое каждой фотки
+      self.photoApi.getPhoto(photoIds[photoIdIndex]); // получаем содержимое каждой фотки
     }
   }
 
@@ -106,9 +103,9 @@ export class PhotosComponent implements OnInit {
         self.userEmail = ref.componentInstance.userEmail;
         self.userPicture = ref.componentInstance.userPicture;
         // сохраняем данные пользователя
-        self.photoApiService.setUserInfo(ref.componentInstance.userName, ref.componentInstance.userEmail, ref.componentInstance.userAbout);
+        self.photoApi.setUserInfo(ref.componentInstance.userName, ref.componentInstance.userEmail, ref.componentInstance.userAbout);
         // сохраняем новую картинку пользователя
-        self.photoApiService.setUserPicture(ref.componentInstance.newUserPictureId);
+        self.photoApi.setUserPicture(ref.componentInstance.newUserPictureId);
       }
     });
   }
@@ -118,7 +115,7 @@ export class PhotosComponent implements OnInit {
     var ref = self.modalService.open(PhotoDeleteConfirmModalComponent);
     ref.afterClosed().subscribe(result => {
       if (result) {
-        self.photoApiService.deletePhoto(photoId);
+        self.photoApi.deletePhoto(photoId);
       }
     });
   }
