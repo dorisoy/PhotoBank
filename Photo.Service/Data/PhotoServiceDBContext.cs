@@ -20,6 +20,10 @@ namespace PhotoBank.Photo.Service.Data
 
         public DbSet<PhotoPoco> Photos { get; set; }
 
+        public DbSet<AlbumPoco> Albums { get; set; }
+
+        public DbSet<PhotoAlbumPoco> PhotoAlbums { get; set; }
+
         public string ConnectionString { get; }
     }
 }

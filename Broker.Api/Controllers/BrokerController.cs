@@ -148,12 +148,12 @@ namespace PhotoBank.Broker.Api.Controllers
         {
             var messageClientId = new MessageClientId(request.ClientId);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
-            var getPhotosInputMessage = new GetPhotosInputMessage(messageClientId, messageChainId)
+            var inputMessage = new GetPhotosInputMessage(messageClientId, messageChainId)
             {
                 UserId = _authenticationManager.GetUserId(request.Login, request.Token)
             };
             _logger.LogInformation("Broker. GetPhotos. Send input message: " + messageChainId.Value);
-            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, getPhotosInputMessage);
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
 
             return Ok();
         }
@@ -165,12 +165,12 @@ namespace PhotoBank.Broker.Api.Controllers
         {
             var messageClientId = new MessageClientId(request.ClientId);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
-            var getPhotoInputMessage = new GetPhotoInputMessage(messageClientId, messageChainId)
+            var inputMessage = new GetPhotoInputMessage(messageClientId, messageChainId)
             {
                 PhotoId = request.PhotoId
             };
             _logger.LogInformation("Broker. GetPhoto. Send input message: " + messageChainId.Value);
-            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, getPhotoInputMessage);
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
 
             return Ok();
         }
@@ -189,13 +189,13 @@ namespace PhotoBank.Broker.Api.Controllers
             foreach (var fileBase64Content in request.Files)
             {
                 var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
-                var uploadPhotoInputMessage = new UploadPhotoInputMessage(messageClientId, messageChainId)
+                var inputMessage = new UploadPhotoInputMessage(messageClientId, messageChainId)
                 {
                     UserId = userId,
                     FileBase64Content = fileBase64Content
                 };
                 _logger.LogInformation("Broker. UploadPhotos. Send input message: " + messageChainId.Value);
-                _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, uploadPhotoInputMessage);
+                _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
             }
 
             return Ok();
@@ -208,12 +208,12 @@ namespace PhotoBank.Broker.Api.Controllers
         {
             var messageClientId = new MessageClientId(request.ClientId);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
-            var deletePhotoInputMessage = new DeletePhotoInputMessage(messageClientId, messageChainId)
+            var inputMessage = new DeletePhotoInputMessage(messageClientId, messageChainId)
             {
                 PhotoId = request.PhotoId
             };
             _logger.LogInformation("Broker. DeletePhoto. Send input message: " + messageChainId.Value);
-            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, deletePhotoInputMessage);
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
 
             return Ok();
         }
@@ -242,13 +242,99 @@ namespace PhotoBank.Broker.Api.Controllers
         {
             var messageClientId = new MessageClientId(request.ClientId);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
-            var setPhotoAdditionalInfoInputMessage = new SetPhotoAdditionalInfoInputMessage(messageClientId, messageChainId)
+            var inputMessage = new SetPhotoAdditionalInfoInputMessage(messageClientId, messageChainId)
             {
                 PhotoId = request.PhotoId,
                 AdditionalInfo = request.AdditionalInfo
             };
             _logger.LogInformation("Broker. SetPhotoAdditionalInfo. Send input message: " + messageChainId.Value);
-            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, setPhotoAdditionalInfoInputMessage);
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("getUserAlbums")]
+        [CheckAuthentication]
+        public IActionResult GetUserAlbums(GetUserAlbumsRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new GetUserAlbumsInputMessage(messageClientId, messageChainId)
+            {
+                UserId = _authenticationManager.GetUserId(request.Login, request.Token)
+            };
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("createUserAlbums")]
+        [CheckAuthentication]
+        public IActionResult CreateUserAlbums(CreateUserAlbumsRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new CreateUserAlbumsInputMessage(messageClientId, messageChainId)
+            {
+                UserId = _authenticationManager.GetUserId(request.Login, request.Token),
+                NewAlbums = request.NewAlbums
+            };
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("deleteUserAlbums")]
+        [CheckAuthentication]
+        public IActionResult DeleteUserAlbums(DeleteUserAlbumsRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new DeleteUserAlbumsInputMessage(messageClientId, messageChainId)
+            {
+                UserId = _authenticationManager.GetUserId(request.Login, request.Token),
+                AlbumsId = request.AlbumsId
+            };
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("getPhotoAlbums")]
+        [CheckAuthentication]
+        public IActionResult GetPhotoAlbums(GetPhotoAlbumsRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new GetPhotoAlbumsInputMessage(messageClientId, messageChainId)
+            {
+                UserId = _authenticationManager.GetUserId(request.Login, request.Token),
+                PhotoId = request.PhotoId
+            };
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("setPhotoAlbums")]
+        [CheckAuthentication]
+        public IActionResult SetPhotoAlbums(SetPhotoAlbumsRequest request)
+        {
+            var messageClientId = new MessageClientId(request.ClientId);
+            var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            var inputMessage = new SetPhotoAlbumsInputMessage(messageClientId, messageChainId)
+            {
+                UserId = _authenticationManager.GetUserId(request.Login, request.Token),
+                PhotoId = request.PhotoId,
+                AlbumsId = request.AlbumsId,
+                AlbumsName = request.AlbumsName
+            };
+            _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
 
             return Ok();
         }

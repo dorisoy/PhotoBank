@@ -94,6 +94,31 @@ namespace PhotoBank.Broker.Api.SignalR
             await SendAsync("SetPhotoAdditionalInfoResponse", responseContainerJson);
         }
 
+        public async Task GetUserAlbumsResponse(object responseContainerJson)
+        {
+            await SendAsync("GetUserAlbumsResponse", responseContainerJson);
+        }
+
+        public async Task CreateUserAlbumsResponse(object responseContainerJson)
+        {
+            await SendAsync("CreateUserAlbumsResponse", responseContainerJson);
+        }
+
+        public async Task DeleteUserAlbumsResponse(object responseContainerJson)
+        {
+            await SendAsync("DeleteUserAlbumsResponse", responseContainerJson);
+        }
+
+        public async Task GetPhotoAlbumsResponse(object responseContainerJson)
+        {
+            await SendAsync("GetPhotoAlbumsResponse", responseContainerJson);
+        }
+
+        public async Task SetPhotoAlbumsResponse(object responseContainerJson)
+        {
+            await SendAsync("SetPhotoAlbumsResponse", responseContainerJson);
+        }
+
         private async Task SendAsync(string methodName, object responseContainerJson)
         {
             string connectionId;

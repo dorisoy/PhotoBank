@@ -47,6 +47,11 @@ namespace PhotoBank.Broker.Api.SignalR
             if (message is DeletePhotoOutputMessage) return "DeletePhotoResponse";
             if (message is GetPhotoAdditionalInfoOutputMessage) return "GetPhotoAdditionalInfoResponse";
             if (message is SetPhotoAdditionalInfoOutputMessage) return "SetPhotoAdditionalInfoResponse";
+            if (message is GetUserAlbumsOutputMessage) return "GetUserAlbumsResponse";
+            if (message is CreateUserAlbumsOutputMessage) return "CreateUserAlbumsResponse";
+            if (message is DeleteUserAlbumsOutputMessage) return "DeleteUserAlbumsResponse";
+            if (message is GetPhotoAlbumsOutputMessage) return "GetPhotoAlbumsResponse";
+            if (message is SetPhotoAlbumsOutputMessage) return "SetPhotoAlbumsResponse";
 
             return null;
         }
@@ -165,6 +170,54 @@ namespace PhotoBank.Broker.Api.SignalR
                 {
                     Success = outputMessage.Result == OutputMessageResult.Success,
                     PhotoId = outputMessage.PhotoId
+                };
+            }
+
+            if (message is GetUserAlbumsOutputMessage)
+            {
+                var outputMessage = (GetUserAlbumsOutputMessage)message;
+                return new GetUserAlbumsResponse
+                {
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    Albums = outputMessage.Albums
+                };
+            }
+
+            if (message is CreateUserAlbumsOutputMessage)
+            {
+                var outputMessage = (CreateUserAlbumsOutputMessage)message;
+                return new CreateUserAlbumsResponse
+                {
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    Albums = outputMessage.Albums
+                };
+            }
+
+            if (message is DeleteUserAlbumsOutputMessage)
+            {
+                var outputMessage = (DeleteUserAlbumsOutputMessage)message;
+                return new DeleteUserAlbumsResponse
+                {
+                    Success = outputMessage.Result == OutputMessageResult.Success
+                };
+            }
+
+            if (message is GetPhotoAlbumsOutputMessage)
+            {
+                var outputMessage = (GetPhotoAlbumsOutputMessage)message;
+                return new GetPhotoAlbumsResponse
+                {
+                    Success = outputMessage.Result == OutputMessageResult.Success,
+                    AlbumsId = outputMessage.AlbumsId
+                };
+            }
+
+            if (message is SetPhotoAlbumsOutputMessage)
+            {
+                var outputMessage = (SetPhotoAlbumsOutputMessage)message;
+                return new SetPhotoAlbumsResponse
+                {
+                    Success = outputMessage.Result == OutputMessageResult.Success
                 };
             }
 
