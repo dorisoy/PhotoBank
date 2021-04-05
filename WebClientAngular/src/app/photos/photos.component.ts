@@ -3,8 +3,9 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { PhotoApiService } from 'src/app/services/photo-api.service';
 import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
-import { PhotoDeleteConfirmModalComponent } from 'src/app/modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
+import { PhotoAlbumsModalComponent } from 'src/app/modals/photo-albums-modal/photo-albums-modal.component';
 import { PhotoDescriptionModalComponent } from 'src/app/modals/photo-description-modal/photo-description-modal.component';
+import { PhotoDeleteConfirmModalComponent } from 'src/app/modals/photo-delete-confirm-modal/photo-delete-confirm-modal.component';
 import Utils from 'src/utils';
 
 interface Photo {
@@ -86,12 +87,13 @@ export class PhotosComponent implements OnInit {
     }
   }
 
-  deletePhoto(photoId): void {
+  editPhotoAlbums(photoId): void {
     var self = this;
-    var modal = self.modalService.open(PhotoDeleteConfirmModalComponent);
+    var modal = self.modalService.open(PhotoAlbumsModalComponent);
+    modal.componentInstance.setPhotoId(photoId);
     modal.afterClosed().subscribe(result => {
       if (result) {
-        self.photoApi.deletePhoto(photoId);
+        modal.componentInstance.save();
       }
     });
   }
@@ -103,6 +105,16 @@ export class PhotosComponent implements OnInit {
     modal.afterClosed().subscribe(result => {
       if (result) {
         modal.componentInstance.save();
+      }
+    });
+  }
+
+  deletePhoto(photoId): void {
+    var self = this;
+    var modal = self.modalService.open(PhotoDeleteConfirmModalComponent);
+    modal.afterClosed().subscribe(result => {
+      if (result) {
+        self.photoApi.deletePhoto(photoId);
       }
     });
   }

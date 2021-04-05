@@ -1,0 +1,42 @@
+<div style="width: 250px; height: 450px;">
+    <div style="height: 420px;">
+        <div>
+            <ul>
+                <li *ngFor="let album of loadedAlbums">
+                    <div>
+                        <input type="checkbox" [checked]="album.isSelected" (change)="selectAlbum(album)" />
+                        <label>{{ album.name }}</label>
+                        <a (click)="deleteLoadedAlbum(album)" style="cursor: pointer;">
+                            <img src="/assets/red_cross.png" style="width: '16px'; height: '16px';" />
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <div>
+                <ul>
+                    <li *ngFor="let album of addedAlbums">
+                        <div>
+                            <input type="checkbox" [checked]="album.isSelected" (change)="selectAlbum(album)" />
+                            <label>{{ album.name }}</label>
+                            <a (click)="deleteAddedAlbum(album)" style="cursor: pointer;">
+                                <img src="/assets/red_cross.png" style="width: '16px'; height: '16px';" />
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <input type="text" [value]="newAlbumName" (change)="newAlbumName = $event.target.value" />
+            </div>
+            <div>
+                <button (click)="addAlbum()">добавить</button>
+            </div>
+        </div>
+    </div>
+    <div style="float: right; width: 158px;">
+        <div style="float: left; margin-right: 8px;"><button [mat-dialog-close]="true" style="width: 75px;">OK</button></div>
+        <div><button mat-dialog-close style="width: 75px;">Отмена</button></div>
+    </div>
+</div>

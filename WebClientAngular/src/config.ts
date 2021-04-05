@@ -14,4 +14,9 @@ export default {
   setPhotoAdditionalInfoApiPath: apiPath + "setPhotoAdditionalInfo",
   uploadPhotosApiPath: apiPath + "uploadPhotos",
   deletePhotoApiPath: apiPath + 'deletePhoto',
+  getUserAlbums: apiPath + 'getUserAlbums',
+  createUserAlbums: apiPath + 'createUserAlbums',
+  deleteUserAlbums: apiPath + 'deleteUserAlbums',
+  getPhotoAlbums: apiPath + 'getPhotoAlbums',
+  setPhotoAlbums: apiPath + 'setPhotoAlbums'
 }

@@ -110,4 +110,39 @@ export class PhotoApiService {
     var postData = { login: authData.login, token: authData.token, clientId: self.clientId, photoId: photoId };
     self.httpClient.post(Config.deletePhotoApiPath, postData).toPromise();
   }
+
+  getUserAlbums(): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = { login: authData.login, token: authData.token, clientId: self.clientId };
+    self.httpClient.post(Config.getUserAlbums, postData).toPromise();
+  }
+
+  createUserAlbums(newAlbums): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = { login: authData.login, token: authData.token, clientId: self.clientId, newAlbums: newAlbums };
+    self.httpClient.post(Config.createUserAlbums, postData).toPromise();
+  }
+
+  deleteUserAlbums(albumsId): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = { login: authData.login, token: authData.token, clientId: self.clientId, albumsId: albumsId };
+    self.httpClient.post(Config.deleteUserAlbums, postData).toPromise();
+  }
+
+  getPhotoAlbums(photoId): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = { login: authData.login, token: authData.token, clientId: self.clientId, photoId: photoId };
+    self.httpClient.post(Config.getPhotoAlbums, postData).toPromise();
+  }
+
+  setPhotoAlbums(photoId, albumsId, albumsName): void {
+    var self = this;
+    var authData = self.localStorage.getAuthData();
+    var postData = { login: authData.login, token: authData.token, clientId: self.clientId, photoId: photoId, albumsId: albumsId, albumsName: albumsName };
+    self.httpClient.post(Config.setPhotoAlbums, postData).toPromise();
+  }
 }

@@ -50,4 +50,24 @@ export class PhotoApiNotifierService {
   onDeletePhotoResponse(handler: any): void {
     this.signalr.addHandler("DeletePhotoResponse", handler);
   }
+
+  onGetUserAlbums(handler: any): void {
+    this.signalr.addHandler("GetUserAlbumsResponse", handler);
+  }
+
+  onCreateUserAlbums(handler: any): void {
+    this.signalr.addHandler("CreateUserAlbumsResponse", handler);
+  }
+
+  onDeleteUserAlbums(handler: any): void {
+    this.signalr.addHandler("DeleteUserAlbumsResponse", handler);
+  }
+
+  onGetPhotoAlbums(handler: any): void {
+    this.signalr.addHandler("GetPhotoAlbumsResponse", handler);
+  }
+
+  onSetPhotoAlbums(handler: any): void {
+    this.signalr.addHandler("SetPhotoAlbumsResponse", handler);
+  }
 }
