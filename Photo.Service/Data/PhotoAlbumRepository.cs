@@ -43,5 +43,12 @@ namespace PhotoBank.Photo.Service.Data
             _context.PhotoAlbums.RemoveRange(photoAlbums);
             _context.SaveChanges();
         }
+
+        public void DeleteAlbumPhotos(IEnumerable<int> albumsId, int userId)
+        {
+            var albumPhotos = _context.PhotoAlbums.Where(p => albumsId.Contains(p.AlbumId) && p.UserId == userId);
+            _context.PhotoAlbums.RemoveRange(albumPhotos);
+            _context.SaveChanges();
+        }
     }
 }

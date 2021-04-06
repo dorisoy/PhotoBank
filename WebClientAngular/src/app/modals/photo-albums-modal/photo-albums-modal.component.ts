@@ -13,7 +13,8 @@ interface Album {
 @Component({
   selector: 'app-photo-albums-modal',
   templateUrl: './photo-albums-modal.component.html',
-  styleUrls: ['./photo-albums-modal.component.css']
+  styleUrls: ['./photo-albums-modal.component.css'],
+  providers: [PhotoApiService, PhotoApiNotifierService]
 })
 export class PhotoAlbumsModalComponent implements OnInit {
 
@@ -64,7 +65,7 @@ export class PhotoAlbumsModalComponent implements OnInit {
 
   addAlbum(): void {
     var self = this;
-    var newAlbum = { id: 0, name: self.newAlbumName, isSelected: false, isDeleted: false };
+    var newAlbum = { id: 0, name: self.newAlbumName, isSelected: true, isDeleted: false };
     self.addedAlbums.push(newAlbum);
     self.newAlbumName = "";
   }
@@ -82,13 +83,13 @@ export class PhotoAlbumsModalComponent implements OnInit {
     var self = this;
 
     if (self.addedAlbums.length > 0) {
-      var newAlbums = self.addedAlbums.map(a => { name: a.name });
+      var newAlbums = self.addedAlbums.map(function(a) { return { name: a.name }; });
       self.photoApi.createUserAlbums(newAlbums);
     }
 
     var deletedAlbums = self.loadedAlbums.filter(a => a.isDeleted);
     if (deletedAlbums.length > 0) {
-      var albumsId = deletedAlbums.map(a => a.id);
+      var albumsId = deletedAlbums.map(function(a) { return a.id; });
       self.photoApi.deleteUserAlbums(albumsId);
     }
 

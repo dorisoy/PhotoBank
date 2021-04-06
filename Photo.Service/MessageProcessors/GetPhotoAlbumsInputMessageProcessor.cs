@@ -17,7 +17,7 @@ namespace PhotoBank.Photo.Service.MessageProcessors
             var inputMessage = GetMessageAs<GetPhotoAlbumsInputMessage>();
             var repo = _context.RepositoryFactory.Get<IPhotoAlbumRepository>();
             var albums = repo.GetPhotoAlbums(inputMessage.PhotoId, inputMessage.UserId);
-            var albumsId = albums.Select(a => a.Id).ToList();
+            var albumsId = albums.Select(a => a.AlbumId).ToList();
             var outputMessage = new GetPhotoAlbumsOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)
             {
                 AlbumsId = albumsId
