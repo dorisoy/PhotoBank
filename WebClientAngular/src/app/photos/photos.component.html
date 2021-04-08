@@ -10,6 +10,17 @@
   <div>
     <div><app-upload-photo></app-upload-photo></div>
     <div>
+      <mat-menu #appMenu="matMenu">
+        <button mat-menu-item (click)="selectAlbum(null)">Все</button>
+        <ul>
+          <li *ngFor="let album of albums">
+            <button mat-menu-item (click)="selectAlbum(album.id)">{{ album.name }}</button>
+          </li>
+        </ul>
+      </mat-menu>
+      <button mat-flat-button [matMenuTriggerFor]="appMenu">Показать фотки</button>
+    </div>
+    <div>
       <ul>
         <li *ngFor="let photo of photos">
           <div style="width: '216px'; height: '155px'; margin: '8px'; background: 'rgb(230,230,230)'">

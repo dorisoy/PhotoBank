@@ -63,10 +63,10 @@ export class PhotoApiService {
     self.httpClient.post(Config.setUserPictureApiPath, postData).toPromise();
   }
 
-  getPhotos(): void {
+  getPhotos(albumsId?: number[]): void {
     var self = this;
     var authData = self.localStorage.getAuthData();
-    var postData = { login: authData.login, token: authData.token, clientId: self.clientId };
+    var postData = { login: authData.login, token: authData.token, clientId: self.clientId, albumsId: albumsId };
     self.httpClient.post(Config.getPhotosApiPath, postData).toPromise();
   }
 

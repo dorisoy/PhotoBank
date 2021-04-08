@@ -14,6 +14,11 @@ interface Photo {
   createDate: Date
 }
 
+interface Album {
+  id: number,
+  name: string
+}
+
 @Component({
   selector: 'app-photos',
   templateUrl: './photos.component.html',
@@ -23,6 +28,7 @@ interface Photo {
 export class PhotosComponent implements OnInit {
 
   photos: Photo[] = [];
+  albums: Album[] = [];
 
   constructor(
     private router: Router,
@@ -75,8 +81,17 @@ export class PhotosComponent implements OnInit {
       }
     });
 
+    self.photoApiNotifier.onGetUserAlbums(function (response) {
+      if (!response || !response.success) {
+        self.router.navigate(['/']);
+      } else {
+        self.albums = response.albums;
+      }
+    });
+
     self.photoApiNotifier.start().then(function () {
       self.photoApi.getPhotos();
+      self.photoApi.getUserAlbums();
     });
   }
 
@@ -84,6 +99,16 @@ export class PhotosComponent implements OnInit {
     var self = this;
     for (var photoIdIndex in photoIds) {
       self.photoApi.getPhoto(photoIds[photoIdIndex]); // получаем содержимое каждой фотки
+    }
+  }
+
+  selectAlbum(albumId): void {
+    var self = this;
+    self.photos = [];
+    if (albumId) {
+      self.photoApi.getPhotos([albumId]);
+    } else {
+      self.photoApi.getPhotos();
     }
   }
 
