@@ -10,5 +10,8 @@ namespace PhotoBank.Broker.Api.Contracts
     {
         [JsonPropertyName("clientId")]
         public string ClientId { get; set; }
+
+        [JsonPropertyName("albumsId")]
+        public IEnumerable<int> AlbumsId { get; set; }
     }
 }

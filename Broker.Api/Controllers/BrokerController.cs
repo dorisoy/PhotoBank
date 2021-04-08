@@ -150,7 +150,8 @@ namespace PhotoBank.Broker.Api.Controllers
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
             var inputMessage = new GetPhotosInputMessage(messageClientId, messageChainId)
             {
-                UserId = _authenticationManager.GetUserId(request.Login, request.Token)
+                UserId = _authenticationManager.GetUserId(request.Login, request.Token),
+                AlbumsId = request.AlbumsId
             };
             _logger.LogInformation("Broker. GetPhotos. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);

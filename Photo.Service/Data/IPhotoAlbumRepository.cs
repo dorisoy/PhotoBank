@@ -13,6 +13,8 @@ namespace PhotoBank.Photo.Service.Data
 
         void DeletePhotoAlbums(int photoId, int userId);
 
+        IEnumerable<PhotoAlbumPoco> GetAlbumPhotos(IEnumerable<int> albumsId, int userId);
+
         void DeleteAlbumPhotos(IEnumerable<int> albumsId, int userId);
     }
 }

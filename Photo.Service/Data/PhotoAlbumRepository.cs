@@ -44,6 +44,12 @@ namespace PhotoBank.Photo.Service.Data
             _context.SaveChanges();
         }
 
+        public IEnumerable<PhotoAlbumPoco> GetAlbumPhotos(IEnumerable<int> albumsId, int userId)
+        {
+            var albumPhotos = _context.PhotoAlbums.Where(p => albumsId.Contains(p.AlbumId) && p.UserId == userId);
+            return albumPhotos;
+        }
+
         public void DeleteAlbumPhotos(IEnumerable<int> albumsId, int userId)
         {
             var albumPhotos = _context.PhotoAlbums.Where(p => albumsId.Contains(p.AlbumId) && p.UserId == userId);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using PhotoBank.QueueLogic.Contracts;
 
 namespace PhotoBank.Photo.Contracts
@@ -13,5 +12,7 @@ namespace PhotoBank.Photo.Contracts
         }
 
         public int UserId { get; set; }
+
+        public IEnumerable<int> AlbumsId { get; set; }
     }
 }
