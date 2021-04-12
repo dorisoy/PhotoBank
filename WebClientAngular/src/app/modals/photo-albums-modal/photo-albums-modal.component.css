@@ -7,8 +7,27 @@ div.container {
     height: 420px;
 }
 
+div.all-albums {
+    height: 388px;
+    overflow-y: auto;
+}
+
 div.loaded-albums {
     width: 100%;
+}
+
+div.separator {
+    text-align: center;
+}
+
+div.separator-hide {
+    display: none;
+}
+
+div.separator > span {
+    font-size: 10pt;
+    font-style: italic;
+    color: lightslategray;
 }
 
 div.added-albums {
@@ -45,12 +64,12 @@ img.delete-album {
 }
 
 div.added-albums-input > input {
-    width: 270px;
+    width: 275px;
     box-sizing: border-box;
 }
 
 div.added-albums-input > button {
-    width: 80px;
+    width: 75px;
 }
 
 div.added-albums-list {
