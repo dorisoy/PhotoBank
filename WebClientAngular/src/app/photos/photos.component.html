@@ -1,49 +1,48 @@
-<div>
-  <div style="height: 100px;">
-    <div style="float: left;">
-      <h1>Photos</h1>
+<div class="root">
+  <div class="title">
+    <div class="upload-photo">
+      <div><app-upload-photo></app-upload-photo></div>
     </div>
-    <div style="float: right; width: 210px;">
-      <app-user-edit></app-user-edit>
+    <div class="user-info">
+      <div><app-user-edit></app-user-edit></div>
     </div>
   </div>
   <div>
-    <div><app-upload-photo></app-upload-photo></div>
     <div>
       <mat-menu #appMenu="matMenu">
-        <button mat-menu-item (click)="selectAlbum(null)">Все</button>
-        <ul>
+        <button class="album-all" mat-menu-item (click)="selectAlbum(null)">Все</button>
+        <ul class="albums">
           <li *ngFor="let album of albums">
             <button mat-menu-item (click)="selectAlbum(album.id)">{{ album.name }}</button>
           </li>
         </ul>
       </mat-menu>
-      <button mat-flat-button [matMenuTriggerFor]="appMenu">Показать фотки</button>
+      <button [matMenuTriggerFor]="appMenu">Показать фотки</button>
     </div>
     <div>
-      <ul>
-        <li *ngFor="let photo of photos">
-          <div style="width: '216px'; height: '155px'; margin: '8px'; background: 'rgb(230,230,230)'">
-            <div style="padding: '8px'">
-                <div style="display: 'block'; margin: 'auto'">
-                  <img [src]="photo.content" width="200px" />
+      <ul class="photos">
+        <li *ngFor="let photo of photos" class="photos">
+          <div class="photo-container">
+            <div class="photo-inner">
+                <div class="photo">
+                  <img [src]="photo.content" class="photo" />
                 </div>
-                <div>
-                  <div style="float: left;">
-                    <span>{{ photo.createDate | date:'dd.MM.yyyy HH:mm:ss' }}</span>
-                  </div>
-                  <div>
-                    <div style="float: 'right'; margin-top: '4px'">
-                      <a (click)="editPhotoAlbums(photo.id)" style="cursor: pointer; margin-right: '8px'">
-                        <img src='/assets/green_cross.png' style="width: '16px'; height: '16px';" />
-                      </a>
-                      <a (click)="editPhotoDescription(photo.id)" style="cursor: pointer; margin-right: '8px'">
-                        <img src='/assets/edit.png' style="width: '16px'; height: '16px';" />
-                      </a>
-                      <a (click)="deletePhoto(photo.id)" style="cursor: pointer;">
-                        <img src='/assets/trash.png' style="width: '16px'; height: '16px';" />
-                      </a>
+                <div class="photo-info-container">
+                  <div class="photo-createdate">
+                    <div>
+                      <span class="photo-createdate">{{ photo.createDate | date:'dd.MM.yyyy HH:mm:ss' }}</span>
                     </div>
+                  </div>
+                  <div class="photo-actions">
+                    <a (click)="editPhotoAlbums(photo.id)" class="edit-photo-albums">
+                      <img src='/assets/green_cross.png' class="photo-action" />
+                    </a>
+                    <a (click)="editPhotoDescription(photo.id)" class="edit-photo-description">
+                      <img src='/assets/edit.png' class="photo-action" />
+                    </a>
+                    <a (click)="deletePhoto(photo.id)" class="delete-photo">
+                      <img src='/assets/trash.png' class="photo-action" />
+                    </a>
                   </div>
                 </div>
             </div>

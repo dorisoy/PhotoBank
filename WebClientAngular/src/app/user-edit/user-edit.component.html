@@ -1,8 +1,8 @@
-<div>
-    <div style="float: left;">
+<div class="user-edit-root">
+    <div class="user-edit-userinfo">
         <div><span>{{ userName }}</span></div>
         <div><span>{{ userEmail }}</span></div>
-        <div><button (click)="openUserEditModal()">редактировать</button></div>
+        <div class="user-edit-action"><a (click)="openUserEditModal()">редактировать</a></div>
     </div>
     <div>
         <img [src]="userPicture" style="width: 60px; height: 60px;" />

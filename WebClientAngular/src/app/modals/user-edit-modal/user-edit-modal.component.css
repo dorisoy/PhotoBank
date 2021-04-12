@@ -1,0 +1,63 @@
+div.root {
+    width: 350px;
+    height: 450px;
+}
+
+div.data {
+    height: 430px;
+}
+
+div.name-container {
+    margin-bottom: 10px;
+}
+
+div.name {
+    float: left;
+    width: 60px;
+}
+
+div.email {
+    float: left;
+    width: 60px;
+}
+
+div.about {
+    margin-top: 10px;
+}
+
+div.picture-container {
+    margin-top: 10px;
+}
+
+div.picture {
+    float: left;
+    margin-right: 20px;
+}
+
+div.picture > img {
+    width: 60px;
+    height: 60px;
+}
+
+div.about > textarea {
+    width: 98%;
+    height: 200px;
+}
+
+div.buttons {
+    float: right;
+    width: 158px;
+}
+
+div.button-ok {
+    float: left;
+    margin-right: 8px;
+}
+
+div.button-ok > button {
+    width: 75px;
+}
+
+div.button-cancel > button {
+    width: 75px;
+}

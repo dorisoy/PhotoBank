@@ -37,7 +37,10 @@ export class PhotoAlbumsModalComponent implements OnInit {
 
     self.photoApiNotifier.onGetUserAlbums(function (response) {
       if (response && response.success) {
-        response.albums.forEach(a => self.loadedAlbums.push({ id: a.id, name: a.name, isSelected: false, isDeleted: false }));
+        var loadedAlbums: Album[] = [];
+        response.albums.forEach(a => loadedAlbums.push({ id: a.id, name: a.name, isSelected: false, isDeleted: false }));
+        loadedAlbums.sort(function(a,b) { return a.name.localeCompare(b.name); });
+        self.loadedAlbums = loadedAlbums;
         self.photoApi.getPhotoAlbums(self.photoId);
       }
     });

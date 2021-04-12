@@ -1,0 +1,26 @@
+div.root {
+    width: 460px;
+    height: 150px;
+}
+
+div.info {
+    height: 120px;
+}
+
+div.buttons {
+    float: right;
+    width: 158px;
+}
+
+div.button-ok {
+    float: left;
+    margin-right: 8px;
+}
+
+div.button-ok > button {
+    width: 75px;
+}
+
+div.button-cancel > button {
+    width: 75px;
+}

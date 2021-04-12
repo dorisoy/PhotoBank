@@ -1,0 +1,31 @@
+div.root {
+    width: 400px;
+    height: 250px;
+}
+
+div.description-container {
+    height: 240px;
+}
+
+div.description-container > textarea {
+    width: 99%;
+    height: 180px;
+}
+
+div.buttons {
+    float: right;
+    width: 158px;
+}
+
+div.button-ok {
+    float: left;
+    margin-right: 8px;
+}
+
+div.button-ok > button {
+    width: 75px;
+}
+
+div.button-cancel > button {
+    width: 75px;
+}

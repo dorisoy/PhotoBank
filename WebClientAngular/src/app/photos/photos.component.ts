@@ -85,7 +85,9 @@ export class PhotosComponent implements OnInit {
       if (!response || !response.success) {
         self.router.navigate(['/']);
       } else {
-        self.albums = response.albums;
+        var albums = response.albums;
+        albums.sort(function (a,b) { return a.name.localeCompare(b.name); });
+        self.albums = albums;
       }
     });
 

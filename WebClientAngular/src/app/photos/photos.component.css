@@ -1,3 +1,112 @@
-li {
+div.title {
+  height: 70px;
+  position: relative;
+}
+
+div.upload-photo {
+  float: left;
+}
+
+div.upload-photo > div {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+div.user-info {
+  float: right;
+  width: 205px;
+}
+
+div.user-info > div{
+  width: 205px;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+button.album-all {
+  font-weight: bold;
+}
+
+ul.albums {
+  padding: 0;
+  margin: 0;
+}
+
+ul.photos {
+  padding: 0;
+}
+
+li.photos {
   display: inline-block;
+}
+
+div.photo-container {
+  width: 216px;
+  height: 155px;
+  margin: 8px;
+  background: rgb(230,230,230);
+}
+
+div.photo-inner {
+  padding: 8px;
+}
+
+div.photo {
+  display: block;
+  margin: auto;
+}
+
+img.photo {
+  width: 200px;
+}
+
+div.photo-createdate {
+  float: left;
+  width: max-content;
+  height: 20px;
+  margin-top: 2px;
+  position: relative;
+}
+
+div.photo-createdate > div {
+  width: max-content;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+span.photo-createdate {
+  font-size: 10pt;
+}
+
+div.photo-actions {
+  float: right;
+  margin-top: 4px;
+}
+
+a.edit-photo-albums {
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+a.edit-photo-description {
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+a.delete-photo {
+  cursor: pointer;
+}
+
+img.photo-action {
+  width: 16px;
+  height: 16px;
 }

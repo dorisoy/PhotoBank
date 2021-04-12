@@ -1,9 +1,9 @@
-<div style="width: 460px; height: 150px;">
-    <div style="height: 120px;">
+<div class="root">
+    <div class="info">
         <p>Вы действительно хотите удалить выбранную фотографию ?</p>
     </div>
-    <div style="float: right">
-        <button [mat-dialog-close]="true" style="width: 75px; margin-right: 10px;">Да</button>
-        <button mat-dialog-close style="width: 75px;">Нет</button>
+    <div class="buttons">
+        <div class="button-ok"><button [mat-dialog-close]="true">Да</button></div>
+        <div class="button-cancel"><button mat-dialog-close>Нет</button></div>
     </div>
 </div>

@@ -1,0 +1,10 @@
+div.user-edit-userinfo {
+    float: left;
+}
+
+div.user-edit-action > a {
+    cursor: pointer;
+    color: steelblue;
+    text-decoration: underline;
+    font-size: 10pt;
+}

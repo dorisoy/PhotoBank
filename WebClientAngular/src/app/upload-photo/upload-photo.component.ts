@@ -9,7 +9,8 @@ import Utils from 'src/utils';
 })
 export class UploadPhotoComponent implements OnInit {
 
-  files: FileList
+  files: FileList;
+  filesCount: number = 0;
 
   constructor(
     private photoApi: PhotoApiService
@@ -22,13 +23,18 @@ export class UploadPhotoComponent implements OnInit {
   handleFilesUpload(files: FileList): void {
     var self = this;
     self.files = files;
+    self.filesCount = files.length;
   }
 
   submitFiles(): void {
     var self = this;
-    var uploadFunc = function (filesBase64) {
-      self.photoApi.uploadPhotos(filesBase64);
-    };
-    Utils.filesToBase64(self.files, uploadFunc);
+    if (self.files) {
+      var uploadFunc = function (filesBase64) {
+        self.photoApi.uploadPhotos(filesBase64);
+        self.files = null;
+        self.filesCount = 0;
+      };
+      Utils.filesToBase64(self.files, uploadFunc);
+    }
   }
 }

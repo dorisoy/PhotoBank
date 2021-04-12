@@ -1,0 +1,76 @@
+div.root {
+    width: 350px;
+    height: 450px;
+}
+
+div.container {
+    height: 420px;
+}
+
+div.loaded-albums {
+    width: 100%;
+}
+
+div.added-albums {
+    width: 100%;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+div.album {
+    float: left;
+    width: 90%;
+}
+
+.deleted {
+    text-decoration: line-through;
+    color: gray;
+}
+
+div.delete-album {
+    float: right;
+}
+
+a.delete-album {
+    cursor: pointer;
+}
+
+img.delete-album {
+    width: 16px;
+    height: 16px;
+}
+
+div.added-albums-input > input {
+    width: 270px;
+    box-sizing: border-box;
+}
+
+div.added-albums-input > button {
+    width: 80px;
+}
+
+div.added-albums-list {
+    margin-top: 8px;
+}
+
+div.buttons {
+    float: right;
+    width: 158px;
+}
+
+div.button-ok {
+    float: left;
+    margin-right: 8px;
+}
+
+div.button-ok > button {
+    width: 75px;
+}
+
+div.button-cancel > button {
+    width: 75px;
+}

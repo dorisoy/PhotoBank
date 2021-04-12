@@ -1,26 +1,26 @@
-<div style="width: 350px; height: 450px;">
-    <div style="height: 430px;">
-        <div style="margin-bottom: 10px;">
-            <div style="float: left; width: 60px;"><label>Имя</label></div>
+<div class="root">
+    <div class="data">
+        <div class="name-container">
+            <div class="name"><label>Имя</label></div>
             <div><input type="text" [value]="userName" (input)="userName = $event.target.value" /></div>
         </div>
-        <div>
-            <div style="float: left; width: 60px;"><label>EMail</label></div>
+        <div class="email-container">
+            <div class="email"><label>Email</label></div>
             <input type="text" [value]="userEmail" (input)="userEmail = $event.target.value" />
         </div>
-        <div style="margin-top: 10px;">
-            <textarea style="width: 98%; height: 200px;" [value]="userAbout" (input)="userAbout = $event.target.value"></textarea>
+        <div class="about">
+            <textarea [value]="userAbout" (input)="userAbout = $event.target.value"></textarea>
         </div>
-        <div style="margin-top: 10px;">
-            <div style="float: left; margin-right: 20px;"><img [src]="userPicture" style="width: 60px; height: 60px;" /></div>
+        <div class="picture-container">
+            <div class="picture"><img [src]="userPicture" /></div>
             <div>
                 <p>Изменить картинку</p>
                 <input type="file" id="files" ref="files" (change)="handleFilesUpload($event.target.files)" />
             </div>
         </div>
     </div>
-    <div style="float: right; width: 158px;">
-        <div style="float: left; margin-right: 8px;"><button [mat-dialog-close]="true" style="width: 75px;">OK</button></div>
-        <div><button mat-dialog-close style="width: 75px;">Отмена</button></div>
+    <div class="buttons">
+        <div class="button-ok"><button [mat-dialog-close]="true">OK</button></div>
+        <div class="button-cancel"><button mat-dialog-close>Отмена</button></div>
     </div>
 </div>
