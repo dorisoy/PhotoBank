@@ -8,6 +8,10 @@ div.welcome {
     text-align: center;
 }
 
+div.container {
+    height: 120px;
+}
+
 div.login-container {
     margin-top: 32px;
     width: 300px;
@@ -56,4 +60,14 @@ div.send {
 
 div.send > button {
     width: 75px;
+}
+
+div.error {
+    float: right;
+    font-size: 10pt;
+    color: red;
+}
+
+div.error-hide {
+    display: none;
 }

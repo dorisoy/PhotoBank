@@ -8,7 +8,7 @@ div.container {
 }
 
 div.all-albums {
-    height: 388px;
+    height: 380px;
     overflow-y: auto;
 }
 
@@ -63,13 +63,18 @@ img.delete-album {
     height: 16px;
 }
 
+div.added-albums-input {
+    margin-top: 8px;
+}
+
 div.added-albums-input > input {
-    width: 275px;
+    width: 267px;
     box-sizing: border-box;
 }
 
 div.added-albums-input > button {
     width: 75px;
+    margin-left: 8px;
 }
 
 div.added-albums-list {

@@ -35,14 +35,14 @@ export class PhotosComponent implements OnInit {
     private photoApi: PhotoApiService,
     private photoApiNotifier: PhotoApiNotifierService,
     private modalService: MatDialog) {
-      const clientId = Utils.getClientId();
-      this.photoApi.setClientId(clientId);
-      this.photoApiNotifier.setClientId(clientId);
+    const clientId = Utils.getClientId();
+    this.photoApi.setClientId(clientId);
+    this.photoApiNotifier.setClientId(clientId);
   }
 
   ngOnInit(): void {
     var self = this;
-    
+
     self.photoApiNotifier.onGetPhotosResponse(function (response) {
       if (!response || !response.success) {
         self.router.navigate(['/']);
@@ -61,7 +61,7 @@ export class PhotosComponent implements OnInit {
           createDate: response.createDate
         };
         self.photos.push(photo);
-        self.photos.sort((x,y) => x.createDate < y.createDate ? -1 : (x.createDate > y.createDate ? 1 : 0));
+        self.photos.sort((x, y) => x.createDate < y.createDate ? -1 : (x.createDate > y.createDate ? 1 : 0));
       }
     });
 
@@ -86,7 +86,7 @@ export class PhotosComponent implements OnInit {
         self.router.navigate(['/']);
       } else {
         var albums = response.albums;
-        albums.sort(function (a,b) { return a.name.localeCompare(b.name); });
+        albums.sort(function (a, b) { return a.name.localeCompare(b.name); });
         self.albums = albums;
       }
     });
@@ -118,6 +118,8 @@ export class PhotosComponent implements OnInit {
     var self = this;
     var modal = self.modalService.open(PhotoAlbumsModalComponent);
     modal.componentInstance.setPhotoId(photoId);
+    modal.componentInstance.setCreateUserAlbumsCallback(() => self.photoApi.getUserAlbums());
+    modal.componentInstance.setDeleteUserAlbumsCallback(() => self.photoApi.getUserAlbums());
     modal.afterClosed().subscribe(result => {
       if (result) {
         modal.componentInstance.save();

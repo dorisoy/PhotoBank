@@ -18,6 +18,8 @@ interface Album {
 })
 export class PhotoAlbumsModalComponent implements OnInit {
 
+  private createUserAlbumsCallback: any;
+  private deleteUserAlbumsCallback: any;
   private photoId: number;
   @Input() loadedAlbums: Album[] = [];
   @Input() addedAlbums: Album[] = [];
@@ -39,7 +41,7 @@ export class PhotoAlbumsModalComponent implements OnInit {
       if (response && response.success) {
         var loadedAlbums: Album[] = [];
         response.albums.forEach(a => loadedAlbums.push({ id: a.id, name: a.name, isSelected: false, isDeleted: false }));
-        loadedAlbums.sort(function(a,b) { return a.name.localeCompare(b.name); });
+        loadedAlbums.sort(function (a, b) { return a.name.localeCompare(b.name); });
         self.loadedAlbums = loadedAlbums;
         self.photoApi.getPhotoAlbums(self.photoId);
       }
@@ -53,9 +55,34 @@ export class PhotoAlbumsModalComponent implements OnInit {
       }
     });
 
+    self.photoApiNotifier.onCreateUserAlbums(function (response) {
+      if (response && response.success) {
+        self.setPhotoAlbums();
+        if (self.createUserAlbumsCallback) {
+          self.createUserAlbumsCallback();
+        }
+      }
+    });
+
+    self.photoApiNotifier.onDeleteUserAlbums(function (response) {
+      if (response && response.success) {
+        if (self.deleteUserAlbumsCallback) {
+          self.deleteUserAlbumsCallback();
+        }
+      }
+    });
+
     self.photoApiNotifier.start().then(function () {
       self.photoApi.getUserAlbums();
     });
+  }
+
+  setCreateUserAlbumsCallback(callback) {
+    this.createUserAlbumsCallback = callback;
+  }
+
+  setDeleteUserAlbumsCallback(callback) {
+    this.deleteUserAlbumsCallback = callback;
   }
 
   setPhotoId(photoId: number): void {
@@ -82,22 +109,30 @@ export class PhotoAlbumsModalComponent implements OnInit {
     self.addedAlbums = self.addedAlbums.filter(a => a !== album);
   }
 
+  setPhotoAlbums(): void {
+    var self = this;
+    var settedAlbumsId = self.loadedAlbums.filter(a => a.isSelected).map(a => a.id);
+    var settedAlbumsName = self.addedAlbums.filter(a => a.isSelected).map(a => a.name);
+    self.photoApi.setPhotoAlbums(self.photoId, settedAlbumsId, settedAlbumsName);
+  }
+
   save(): void {
     var self = this;
 
     if (self.addedAlbums.length > 0) {
-      var newAlbums = self.addedAlbums.map(function(a) { return { name: a.name }; });
+      // если есть новые альбомы
+      // шлем запрос на их создание и ждем ответа, после которого устанавливаем фотку в альбомы
+      var newAlbums = self.addedAlbums.map(function (a) { return { name: a.name }; });
       self.photoApi.createUserAlbums(newAlbums);
+    } else {
+      // если новых альбомов нет, то сразу устанавливаем фотку в альбомы
+      self.setPhotoAlbums();
     }
 
     var deletedAlbums = self.loadedAlbums.filter(a => a.isDeleted);
     if (deletedAlbums.length > 0) {
-      var albumsId = deletedAlbums.map(function(a) { return a.id; });
+      var albumsId = deletedAlbums.map(function (a) { return a.id; });
       self.photoApi.deleteUserAlbums(albumsId);
     }
-
-    var settedAlbumsId = self.loadedAlbums.filter(a => a.isSelected).map(a => a.id);
-    var settedAlbumsName = self.addedAlbums.filter(a => a.isSelected).map(a => a.name);
-    self.photoApi.setPhotoAlbums(self.photoId, settedAlbumsId, settedAlbumsName);
   }
 }

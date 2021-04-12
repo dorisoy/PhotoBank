@@ -13,8 +13,9 @@ import Utils from 'src/utils';
 })
 export class AuthComponent implements OnInit {
 
-  @Input()  login: string = "vinge";
-  @Input()  password: string = "12345";
+  @Input() login: string = "vinge";
+  @Input() password: string = "12345";
+  @Input() hasError: boolean = false;
   
   constructor(
     private router: Router,
@@ -30,8 +31,9 @@ export class AuthComponent implements OnInit {
     var self = this;
     self.photoApiNotifier.onLoginResponse(function (response) {
       if (!response || !response.success) {
-        self.router.navigate(['/']);
+        self.hasError = true;
       } else {
+        self.hasError = false;
         self.localStorage.setAuthData({ login: self.login, token: response.token });
         self.router.navigate(['/photos']);
       }

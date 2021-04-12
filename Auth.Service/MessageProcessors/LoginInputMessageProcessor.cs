@@ -11,13 +11,24 @@ namespace PhotoBank.Auth.Service.MessageProcessors
         public override void Execute()
         {
             var inputMessage = GetMessageAs<LoginInputMessage>();
+            LoginOutputMessage outputMessage;
             var user = _context.RepositoryFactory.Get<IUserRepository>().GetUser(inputMessage.Login, inputMessage.Password);
-            var messageResult = user != null ? OutputMessageResult.Success : OutputMessageResult.Error;
-            var userId = user != null ? user.Id : 0;
-            var token = TokenGenerator.GetNewToken();
-            var tokenPoco = new TokenPoco { Login = inputMessage.Login, UserId = userId, Token = token };
-            _context.RepositoryFactory.Get<ITokenRepository>().AddToken(tokenPoco);
-            var outputMessage = new LoginOutputMessage(inputMessage.ClientId, inputMessage.ChainId, messageResult) { Login = inputMessage.Login, Token = token, UserId = userId };
+            if (user != null)
+            {
+                var token = TokenGenerator.GetNewToken();
+                var tokenPoco = new TokenPoco { Login = inputMessage.Login, UserId = user.Id, Token = token };
+                _context.RepositoryFactory.Get<ITokenRepository>().AddToken(tokenPoco);
+                outputMessage = new LoginOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Success)
+                {
+                    Login = inputMessage.Login,
+                    Token = token,
+                    UserId = user.Id
+                };
+            }
+            else
+            {
+                outputMessage = new LoginOutputMessage(inputMessage.ClientId, inputMessage.ChainId, OutputMessageResult.Error);
+            }
             _context.QueueManager.SendMessage(AuthSettings.AuthOutputQueue, outputMessage);
         }
     }

@@ -17,7 +17,7 @@ namespace PhotoBank.Photo.Service.MessageProcessors
             photoAlbumsRepo.AddPhotoAlbums(inputMessage.PhotoId, inputMessage.AlbumsId, inputMessage.UserId);
 
             var albumsRepo = _context.RepositoryFactory.Get<IAlbumRepository>();
-            var albums = albumsRepo.GetUserAlbums(inputMessage.UserId).ToDictionary(k => k.Name, v => v);
+            var albums = albumsRepo.GetUserAlbums(inputMessage.UserId).GroupBy(x=>x.Name).ToDictionary(k => k.Key, v => v.First());
             foreach (var albumName in inputMessage.AlbumsName)
             {
                 if (albums.ContainsKey(albumName))

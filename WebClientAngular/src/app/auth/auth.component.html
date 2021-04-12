@@ -2,13 +2,20 @@
   <div class="welcome">
     <span>Вход в систему</span>
   </div>
-  <div class="login-container">
-    <div class="login-label"><label>Логин</label></div>
-    <div class="login-input"><input type="text" [value]="login" (input)="login = $event.target.value" /></div>
+  <div class="container">
+    <div class="login-container">
+      <div class="login-label"><label>Логин</label></div>
+      <div class="login-input">
+        <input type="text" [value]="login" (input)="login = $event.target.value" />
+      </div>
+    </div>
+    <div class="password-container">
+      <div class="password-label"><label>Пароль</label></div>
+      <div class="password-input">
+        <input type="password" [value]="password" (input)="password = $event.target.value" />
+      </div>
+    </div>
+    <div class="send"><button (click)="sendAuth()">Войти</button></div>
   </div>
-  <div class="password-container">
-    <div class="password-label"><label>Пароль</label></div>
-    <div class="password-input"><input type="password" [value]="password" (input)="password = $event.target.value" /></div>
-  </div>
-  <div class="send"><button (click)="sendAuth()">Войти</button></div>
+  <div class="error" [class.error-hide]="hasError == false"><span>учетные данные не верны</span></div>
 </div>
