@@ -7,7 +7,7 @@ div.description-container {
     height: 240px;
 }
 
-div.description-container > textarea {
+div.description-container>textarea {
     width: 99%;
     height: 180px;
 }
@@ -22,10 +22,10 @@ div.button-ok {
     margin-right: 8px;
 }
 
-div.button-ok > button {
+div.button-ok>button {
     width: 75px;
 }
 
-div.button-cancel > button {
+div.button-cancel>button {
     width: 75px;
 }

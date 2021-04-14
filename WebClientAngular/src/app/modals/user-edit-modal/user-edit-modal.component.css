@@ -34,12 +34,12 @@ div.picture {
     margin-right: 20px;
 }
 
-div.picture > img {
+div.picture>img {
     width: 60px;
     height: 60px;
 }
 
-div.about > textarea {
+div.about>textarea {
     width: 98%;
     height: 200px;
 }
@@ -54,10 +54,10 @@ div.button-ok {
     margin-right: 8px;
 }
 
-div.button-ok > button {
+div.button-ok>button {
     width: 75px;
 }
 
-div.button-cancel > button {
+div.button-cancel>button {
     width: 75px;
 }

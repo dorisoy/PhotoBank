@@ -28,7 +28,7 @@ div.login-input {
     width: 200px;
 }
 
-div.login-input > input {
+div.login-input>input {
     width: 100%;
     box-sizing: border-box;
 }
@@ -48,7 +48,7 @@ div.password-input {
     width: 200px;
 }
 
-div.password-input > input {
+div.password-input>input {
     width: 100%;
     box-sizing: border-box;
 }
@@ -58,7 +58,7 @@ div.send {
     margin-top: 16px;
 }
 
-div.send > button {
+div.send>button {
     width: 75px;
 }
 

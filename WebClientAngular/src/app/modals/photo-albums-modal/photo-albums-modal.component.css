@@ -24,7 +24,7 @@ div.separator-hide {
     display: none;
 }
 
-div.separator > span {
+div.separator>span {
     font-size: 10pt;
     font-style: italic;
     color: lightslategray;
@@ -67,12 +67,12 @@ div.added-albums-input {
     margin-top: 8px;
 }
 
-div.added-albums-input > input {
+div.added-albums-input>input {
     width: 267px;
     box-sizing: border-box;
 }
 
-div.added-albums-input > button {
+div.added-albums-input>button {
     width: 75px;
     margin-left: 8px;
 }
@@ -91,10 +91,10 @@ div.button-ok {
     margin-right: 8px;
 }
 
-div.button-ok > button {
+div.button-ok>button {
     width: 75px;
 }
 
-div.button-cancel > button {
+div.button-cancel>button {
     width: 75px;
 }

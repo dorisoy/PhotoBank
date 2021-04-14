@@ -9,142 +9,142 @@ import { PhotoDeleteConfirmModalComponent } from 'src/app/modals/photo-delete-co
 import Utils from 'src/utils';
 
 interface Photo {
-  id: number,
-  content: string,
-  createDate: Date
+    id: number,
+    content: string,
+    createDate: Date
 }
 
 interface Album {
-  id: number,
-  name: string
+    id: number,
+    name: string
 }
 
 @Component({
-  selector: 'app-photos',
-  templateUrl: './photos.component.html',
-  styleUrls: ['./photos.component.css'],
-  providers: [PhotoApiService, PhotoApiNotifierService]
+    selector: 'app-photos',
+    templateUrl: './photos.component.html',
+    styleUrls: ['./photos.component.css'],
+    providers: [PhotoApiService, PhotoApiNotifierService]
 })
 export class PhotosComponent implements OnInit {
 
-  photos: Photo[] = [];
-  albums: Album[] = [];
+    photos: Photo[] = [];
+    albums: Album[] = [];
 
-  constructor(
-    private router: Router,
-    private photoApi: PhotoApiService,
-    private photoApiNotifier: PhotoApiNotifierService,
-    private modalService: MatDialog) {
-    const clientId = Utils.getClientId();
-    this.photoApi.setClientId(clientId);
-    this.photoApiNotifier.setClientId(clientId);
-  }
-
-  ngOnInit(): void {
-    var self = this;
-
-    self.photoApiNotifier.onGetPhotosResponse(function (response) {
-      if (!response || !response.success) {
-        self.router.navigate(['/']);
-      } else {
-        self.loadPhotosContent(response.photoIds);
-      }
-    });
-
-    self.photoApiNotifier.onGetPhotoResponse(function (response) {
-      if (!response || !response.success) {
-        self.router.navigate(['/']);
-      } else {
-        var photo = {
-          id: response.photoId,
-          content: Utils.getImageFromBase64(response.fileBase64Content),
-          createDate: response.createDate
-        };
-        self.photos.push(photo);
-        self.photos.sort((x, y) => x.createDate < y.createDate ? -1 : (x.createDate > y.createDate ? 1 : 0));
-      }
-    });
-
-    self.photoApiNotifier.onUploadPhotosResponse(function (response) {
-      if (!response || !response.success) {
-        self.router.navigate(['/']);
-      } else {
-        self.loadPhotosContent([response.photoId]);
-      }
-    });
-
-    self.photoApiNotifier.onDeletePhotoResponse(function (response) {
-      if (!response || !response.success) {
-        self.router.navigate(['/']);
-      } else {
-        self.photos = self.photos.filter(photo => photo.id !== response.photoId);
-      }
-    });
-
-    self.photoApiNotifier.onGetUserAlbums(function (response) {
-      if (!response || !response.success) {
-        self.router.navigate(['/']);
-      } else {
-        var albums = response.albums;
-        albums.sort(function (a, b) { return a.name.localeCompare(b.name); });
-        self.albums = albums;
-      }
-    });
-
-    self.photoApiNotifier.start().then(function () {
-      self.photoApi.getPhotos();
-      self.photoApi.getUserAlbums();
-    });
-  }
-
-  loadPhotosContent(photoIds): void {
-    var self = this;
-    for (var photoIdIndex in photoIds) {
-      self.photoApi.getPhoto(photoIds[photoIdIndex]); // получаем содержимое каждой фотки
+    constructor(
+        private router: Router,
+        private photoApi: PhotoApiService,
+        private photoApiNotifier: PhotoApiNotifierService,
+        private modalService: MatDialog) {
+        const clientId = Utils.getClientId();
+        this.photoApi.setClientId(clientId);
+        this.photoApiNotifier.setClientId(clientId);
     }
-  }
 
-  selectAlbum(albumId): void {
-    var self = this;
-    self.photos = [];
-    if (albumId) {
-      self.photoApi.getPhotos([albumId]);
-    } else {
-      self.photoApi.getPhotos();
+    ngOnInit(): void {
+        var self = this;
+
+        self.photoApiNotifier.onGetPhotosResponse(function (response) {
+            if (!response || !response.success) {
+                self.router.navigate(['/']);
+            } else {
+                self.loadPhotosContent(response.photoIds);
+            }
+        });
+
+        self.photoApiNotifier.onGetPhotoResponse(function (response) {
+            if (!response || !response.success) {
+                self.router.navigate(['/']);
+            } else {
+                var photo = {
+                    id: response.photoId,
+                    content: Utils.getImageFromBase64(response.fileBase64Content),
+                    createDate: response.createDate
+                };
+                self.photos.push(photo);
+                self.photos.sort((x, y) => x.createDate < y.createDate ? -1 : (x.createDate > y.createDate ? 1 : 0));
+            }
+        });
+
+        self.photoApiNotifier.onUploadPhotosResponse(function (response) {
+            if (!response || !response.success) {
+                self.router.navigate(['/']);
+            } else {
+                self.loadPhotosContent([response.photoId]);
+            }
+        });
+
+        self.photoApiNotifier.onDeletePhotoResponse(function (response) {
+            if (!response || !response.success) {
+                self.router.navigate(['/']);
+            } else {
+                self.photos = self.photos.filter(photo => photo.id !== response.photoId);
+            }
+        });
+
+        self.photoApiNotifier.onGetUserAlbums(function (response) {
+            if (!response || !response.success) {
+                self.router.navigate(['/']);
+            } else {
+                var albums = response.albums;
+                albums.sort(function (a, b) { return a.name.localeCompare(b.name); });
+                self.albums = albums;
+            }
+        });
+
+        self.photoApiNotifier.start().then(function () {
+            self.photoApi.getPhotos();
+            self.photoApi.getUserAlbums();
+        });
     }
-  }
 
-  editPhotoAlbums(photoId): void {
-    var self = this;
-    var modal = self.modalService.open(PhotoAlbumsModalComponent);
-    modal.componentInstance.setPhotoId(photoId);
-    modal.componentInstance.setCreateUserAlbumsCallback(() => self.photoApi.getUserAlbums());
-    modal.componentInstance.setDeleteUserAlbumsCallback(() => self.photoApi.getUserAlbums());
-    modal.afterClosed().subscribe(result => {
-      if (result) {
-        modal.componentInstance.save();
-      }
-    });
-  }
+    loadPhotosContent(photoIds): void {
+        var self = this;
+        for (var photoIdIndex in photoIds) {
+            self.photoApi.getPhoto(photoIds[photoIdIndex]); // получаем содержимое каждой фотки
+        }
+    }
 
-  editPhotoDescription(photoId): void {
-    var self = this;
-    var modal = self.modalService.open(PhotoDescriptionModalComponent);
-    modal.componentInstance.setPhotoId(photoId);
-    modal.afterClosed().subscribe(result => {
-      if (result) {
-        modal.componentInstance.save();
-      }
-    });
-  }
+    selectAlbum(albumId): void {
+        var self = this;
+        self.photos = [];
+        if (albumId) {
+            self.photoApi.getPhotos([albumId]);
+        } else {
+            self.photoApi.getPhotos();
+        }
+    }
 
-  deletePhoto(photoId): void {
-    var self = this;
-    var modal = self.modalService.open(PhotoDeleteConfirmModalComponent);
-    modal.afterClosed().subscribe(result => {
-      if (result) {
-        self.photoApi.deletePhoto(photoId);
-      }
-    });
-  }
+    editPhotoAlbums(photoId): void {
+        var self = this;
+        var modal = self.modalService.open(PhotoAlbumsModalComponent);
+        modal.componentInstance.setPhotoId(photoId);
+        modal.componentInstance.setCreateUserAlbumsCallback(() => self.photoApi.getUserAlbums());
+        modal.componentInstance.setDeleteUserAlbumsCallback(() => self.photoApi.getUserAlbums());
+        modal.afterClosed().subscribe(result => {
+            if (result) {
+                modal.componentInstance.save();
+            }
+        });
+    }
+
+    editPhotoDescription(photoId): void {
+        var self = this;
+        var modal = self.modalService.open(PhotoDescriptionModalComponent);
+        modal.componentInstance.setPhotoId(photoId);
+        modal.afterClosed().subscribe(result => {
+            if (result) {
+                modal.componentInstance.save();
+            }
+        });
+    }
+
+    deletePhoto(photoId): void {
+        var self = this;
+        var modal = self.modalService.open(PhotoDeleteConfirmModalComponent);
+        modal.afterClosed().subscribe(result => {
+            if (result) {
+                self.photoApi.deletePhoto(photoId);
+            }
+        });
+    }
 }

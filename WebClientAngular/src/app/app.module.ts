@@ -18,27 +18,27 @@ import { UserEditComponent } from './user-edit/user-edit.component';
 import { PhotoAlbumsModalComponent } from './modals/photo-albums-modal/photo-albums-modal.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    AuthComponent,
-    PhotosComponent,
-    UploadPhotoComponent,
-    UserEditModalComponent,
-    PhotoDeleteConfirmModalComponent,
-    PhotoDescriptionModalComponent,
-    UserEditComponent,
-    PhotoAlbumsModalComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    MatDialogModule,
-    MatMenuModule,
-    MatButtonModule,
-    BrowserAnimationsModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        AuthComponent,
+        PhotosComponent,
+        UploadPhotoComponent,
+        UserEditModalComponent,
+        PhotoDeleteConfirmModalComponent,
+        PhotoDescriptionModalComponent,
+        UserEditComponent,
+        PhotoAlbumsModalComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        MatDialogModule,
+        MatMenuModule,
+        MatButtonModule,
+        BrowserAnimationsModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

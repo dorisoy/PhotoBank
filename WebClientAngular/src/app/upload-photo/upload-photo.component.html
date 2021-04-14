@@ -1,12 +1,12 @@
 <div class="root">
-  <div class="input">
-    <button onclick="document.getElementById('files').click();">Загрузить фотки</button>
-    <input type="file" id="files" ref="files" multiple (change)="handleFilesUpload($event.target.files)" style="display: none;" />
-  </div>
-  <div class="selected-photos">
-    <span>выбрано фоток:</span><span class="files-count">{{ filesCount }}</span>
-  </div>
-  <div class="send">
-    <button (click)="submitFiles()">отправить</button>
-  </div>
+    <div class="input">
+        <button onclick="document.getElementById('files').click();">Загрузить фотки</button>
+        <input type="file" id="files" ref="files" multiple (change)="handleFilesUpload($event.target.files)" style="display: none;" />
+    </div>
+    <div class="selected-photos">
+        <span>выбрано фоток:</span><span class="files-count">{{ filesCount }}</span>
+    </div>
+    <div class="send">
+        <button (click)="submitFiles()">отправить</button>
+    </div>
 </div>

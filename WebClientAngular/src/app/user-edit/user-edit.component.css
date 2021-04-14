@@ -2,9 +2,9 @@ div.user-edit-userinfo {
     float: left;
 }
 
-div.user-edit-action > a {
+div.user-edit-action>a {
     cursor: pointer;
-    color: steelblue;
+    color: #4682b4;
     text-decoration: underline;
     font-size: 10pt;
 }

@@ -6,7 +6,8 @@
                     <li *ngFor="let album of loadedAlbums">
                         <div>
                             <div class="album">
-                                <input id="album_{{ album.id }}" type="checkbox" [checked]="album.isSelected" (change)="selectAlbum(album)" />
+                                <input id="album_{{ album.id }}" type="checkbox" [checked]="album.isSelected"
+                                    (change)="selectAlbum(album)" />
                                 <label for="album_{{ album.id }}" [class.deleted]="album.isDeleted == true">{{ album.name }}</label>
                             </div>
                             <div class="delete-album">
