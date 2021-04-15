@@ -1,7 +1,8 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using PhotoBank.Logger.Common;
 using PhotoBank.Photo.Contracts;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Manager;
@@ -12,9 +13,10 @@ namespace PhotoBank.Photo.Service
     public class PhotoWorker : BackgroundService
     {
         private readonly IMessageProcessorFactory _processorFactory;
-        private readonly ILogger<PhotoWorker> _logger;
+        private readonly IMessageLogger _logger;
 
-        public PhotoWorker(IMessageProcessorFactory processorFactory, IQueueManager queueManager, ILogger<PhotoWorker> logger)
+        public PhotoWorker(
+            IMessageProcessorFactory processorFactory, IQueueManager queueManager, IMessageLogger logger)
         {
             _processorFactory = processorFactory;
             _logger = logger;
@@ -23,10 +25,20 @@ namespace PhotoBank.Photo.Service
 
         private void OnMessageConsume(Message message)
         {
-            _logger.LogInformation("Get input message: " + message.ChainId.Value);
-            var processor = _processorFactory.MakeProcessorFor(message);
-            processor.Execute();
-            _logger.LogInformation("Send output message: " + message.ChainId.Value);
+            try
+            {
+                _logger.Begin(message);
+                var processor = _processorFactory.MakeProcessorFor(message);
+                processor.Execute();
+            }
+            catch (Exception exp)
+            {
+                _logger.Error(message, exp);
+            }
+            finally
+            {
+                _logger.End(message);
+            }
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

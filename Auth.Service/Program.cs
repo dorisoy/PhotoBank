@@ -1,10 +1,10 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Auth.Service.Data;
 using PhotoBank.DataAccess;
+using PhotoBank.Logger.Common;
 using PhotoBank.QueueLogic.Manager;
 using PhotoBank.Service.Common.MessageProcessors;
 
@@ -19,11 +19,6 @@ namespace PhotoBank.Auth.Service
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .ConfigureLogging(logging =>
-            {
-                logging.ClearProviders();
-                logging.AddConsole();
-            })
             .ConfigureServices((hostContext, services) =>
             {
                 var queueManagerFactory = new QueueManagerFactory();
@@ -39,10 +34,14 @@ namespace PhotoBank.Auth.Service
                 repositoryFactory.Add(typeof(ITokenRepository), () => new TokenRepository(contextFactory));
                 services.AddSingleton(typeof(IRepositoryFactory), repositoryFactory);
 
+                var messageLogger = new MessageLogger(queueManager, AuthSettings.Host);
+                services.AddSingleton(typeof(IMessageLogger), messageLogger);
+
                 var processorContext = new MessageProcessorContext
                 {
                     QueueManager = queueManager,
-                    RepositoryFactory = repositoryFactory
+                    RepositoryFactory = repositoryFactory,
+                    Logger = messageLogger
                 };
                 var processorFactory = new MessageProcessorFactory(processorContext);
                 processorFactory.AddFromAssembly(Assembly.GetExecutingAssembly());

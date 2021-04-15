@@ -6,12 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PhotoBank.Broker.Api.Authentication;
 using PhotoBank.Broker.Api.SignalR;
+using PhotoBank.Logger.Common;
 using PhotoBank.QueueLogic.Manager;
 
 namespace PhotoBank.Broker.Api
 {
     public class Startup
     {
+        public readonly string Host = "Broker";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,6 +28,7 @@ namespace PhotoBank.Broker.Api
             var queueManagerFactory = new QueueManagerFactory();
             var queueManager = queueManagerFactory.Make();
             services.AddSingleton(typeof(IQueueManager), queueManager);
+            services.AddSingleton(typeof(IMessageLogger), new MessageLogger(queueManager, Host));
             BrokerNotifier.Instance.Init(queueManager);
             services.AddSignalR(options =>
             {

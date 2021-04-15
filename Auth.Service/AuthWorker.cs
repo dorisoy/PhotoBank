@@ -1,8 +1,9 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using PhotoBank.Auth.Contracts;
+using PhotoBank.Logger.Common;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Manager;
 using PhotoBank.Service.Common.MessageProcessors;
@@ -12,9 +13,10 @@ namespace PhotoBank.Auth.Service
     public class AuthWorker : BackgroundService
     {
         private readonly IMessageProcessorFactory _processorFactory;
-        private readonly ILogger<AuthWorker> _logger;
+        private readonly IMessageLogger _logger;
 
-        public AuthWorker(IMessageProcessorFactory processorFactory, IQueueManager queueManager, ILogger<AuthWorker> logger)
+        public AuthWorker(
+            IMessageProcessorFactory processorFactory, IQueueManager queueManager, IMessageLogger logger)
         {
             _processorFactory = processorFactory;
             _logger = logger;
@@ -23,10 +25,20 @@ namespace PhotoBank.Auth.Service
 
         private void OnMessageConsume(Message message)
         {
-            _logger.LogInformation("Get input message: " + message.ChainId.Value);
-            var processor = _processorFactory.MakeProcessorFor(message);
-            processor.Execute();
-            _logger.LogInformation("Send output message: " + message.ChainId.Value);
+            try
+            {
+                _logger.Begin(message);
+                var processor = _processorFactory.MakeProcessorFor(message);
+                processor.Execute();
+            }
+            catch (Exception exp)
+            {
+                _logger.Error(message, exp);
+            }
+            finally
+            {
+                _logger.End(message);
+            }
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

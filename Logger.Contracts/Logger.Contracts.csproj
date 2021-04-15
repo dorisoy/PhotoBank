@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>PhotoBank.Logger.Contracts</AssemblyName>
+    <RootNamespace>PhotoBank.Logger.Contracts</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QueueLogic\QueueLogic.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Broker.Api.Authentication;
 using PhotoBank.Broker.Api.Contracts;
+using PhotoBank.Logger.Common;
 using PhotoBank.Photo.Contracts;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Manager;
@@ -19,9 +21,9 @@ namespace PhotoBank.Broker.Api.Controllers
     {
         private readonly IAuthenticationManager _authenticationManager;
         private readonly IQueueManager _queueManager;
-        private readonly ILogger<BrokerController> _logger;
+        private readonly IMessageLogger _logger;
 
-        public BrokerController(IAuthenticationManager authenticationManager, IQueueManager queueManager, ILogger<BrokerController> logger)
+        public BrokerController(IAuthenticationManager authenticationManager, IQueueManager queueManager, IMessageLogger logger)
         {
             _authenticationManager = authenticationManager;
             _queueManager = queueManager;
@@ -130,12 +132,13 @@ namespace PhotoBank.Broker.Api.Controllers
         {
             var messageClientId = new MessageClientId(request.ClientId);
             var messageChainId = new MessageChainId(Guid.NewGuid().ToString());
+            _logger.Info(messageClientId, messageChainId, String.Format("Запрос Login. {0}", JsonSerializer.Serialize(request)));
             var inputMessage = new LoginInputMessage(messageClientId, messageChainId)
             {
                 Login = request.Login,
                 Password = request.Password
             };
-            _logger.LogInformation("Broker. Login. Send input message: " + messageChainId.Value);
+            _logger.InputMessageCreated(inputMessage);
             _queueManager.SendMessage(AuthSettings.AuthInputQueue, inputMessage);
 
             return Ok();
@@ -153,7 +156,6 @@ namespace PhotoBank.Broker.Api.Controllers
                 UserId = _authenticationManager.GetUserId(request.Login, request.Token),
                 AlbumsId = request.AlbumsId
             };
-            _logger.LogInformation("Broker. GetPhotos. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
 
             return Ok();
@@ -170,7 +172,6 @@ namespace PhotoBank.Broker.Api.Controllers
             {
                 PhotoId = request.PhotoId
             };
-            _logger.LogInformation("Broker. GetPhoto. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
 
             return Ok();
@@ -195,7 +196,6 @@ namespace PhotoBank.Broker.Api.Controllers
                     UserId = userId,
                     FileBase64Content = fileBase64Content
                 };
-                _logger.LogInformation("Broker. UploadPhotos. Send input message: " + messageChainId.Value);
                 _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
             }
 
@@ -213,7 +213,6 @@ namespace PhotoBank.Broker.Api.Controllers
             {
                 PhotoId = request.PhotoId
             };
-            _logger.LogInformation("Broker. DeletePhoto. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
 
             return Ok();
@@ -230,7 +229,6 @@ namespace PhotoBank.Broker.Api.Controllers
             {
                 PhotoId = request.PhotoId
             };
-            _logger.LogInformation("Broker. GetPhotoAdditionalInfo. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, getPhotoAdditionalInfoInputMessage);
 
             return Ok();
@@ -248,7 +246,6 @@ namespace PhotoBank.Broker.Api.Controllers
                 PhotoId = request.PhotoId,
                 AdditionalInfo = request.AdditionalInfo
             };
-            _logger.LogInformation("Broker. SetPhotoAdditionalInfo. Send input message: " + messageChainId.Value);
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
 
             return Ok();

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Auth.Contracts\Auth.Contracts.csproj" />
+    <ProjectReference Include="..\Logger.Common\Logger.Common.csproj" />
     <ProjectReference Include="..\Photo.Contracts\Photo.Contracts.csproj" />
     <ProjectReference Include="..\QueueLogic\QueueLogic.csproj" />
   </ItemGroup>
