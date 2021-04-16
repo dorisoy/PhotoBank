@@ -7,7 +7,7 @@ namespace PhotoBank.Photo.Contracts
     [Serializable]
     public class GetPhotosInputMessage : InputMessage
     {
-        public GetPhotosInputMessage(MessageClientId userId, MessageChainId chainId) : base(userId, chainId)
+        public GetPhotosInputMessage(MessageClientId clientId, MessageChainId chainId) : base(clientId, chainId)
         {
         }
 

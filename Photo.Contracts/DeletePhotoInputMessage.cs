@@ -6,7 +6,7 @@ namespace PhotoBank.Photo.Contracts
     [Serializable]
     public class DeletePhotoInputMessage : InputMessage
     {
-        public DeletePhotoInputMessage(MessageClientId userId, MessageChainId chainId) : base(userId, chainId)
+        public DeletePhotoInputMessage(MessageClientId clientId, MessageChainId chainId) : base(clientId, chainId)
         {
         }
 

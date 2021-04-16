@@ -19,7 +19,7 @@ namespace Starter
     [Serializable]
     class TestMessage : InputMessage
     {
-        public TestMessage(MessageClientId userId, MessageChainId chainId) : base(userId, chainId)
+        public TestMessage(MessageClientId clientId, MessageChainId chainId) : base(clientId, chainId)
         {
         }
 

@@ -8,7 +8,7 @@ namespace PhotoBank.Photo.Contracts
     [Serializable]
     public class DeleteUserAlbumsInputMessage : InputMessage
     {
-        public DeleteUserAlbumsInputMessage(MessageClientId userId, MessageChainId chainId) : base(userId, chainId)
+        public DeleteUserAlbumsInputMessage(MessageClientId clientId, MessageChainId chainId) : base(clientId, chainId)
         {
         }
 

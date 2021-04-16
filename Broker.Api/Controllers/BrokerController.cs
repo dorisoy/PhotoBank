@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Broker.Api.Authentication;
 using PhotoBank.Broker.Api.Contracts;
