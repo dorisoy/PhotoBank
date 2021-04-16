@@ -46,7 +46,7 @@ namespace PhotoBank.Logger.Contracts
             {
                 Host = host,
                 Text = text,
-                Severity = Severity.Warning,
+                Severity = Severity.Info,
                 CreateDate = DateTime.Now
             };
         }

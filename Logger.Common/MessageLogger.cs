@@ -20,13 +20,13 @@ namespace PhotoBank.Logger.Common
         public void Begin(Message message)
         {
             var text = String.Format("Начало обработки сообщения. {0}. {1}", message.GetType().Name, JsonSerializer.Serialize(message));
-            var logMessage = WriteLogInputMessage.MakeError(message, _host, text);
+            var logMessage = WriteLogInputMessage.MakeInfo(message, _host, text);
             Send(logMessage);
         }
 
         public void End(Message message)
         {
-            var logMessage = WriteLogInputMessage.MakeError(message, _host, "Конец обработки сообщения.");
+            var logMessage = WriteLogInputMessage.MakeInfo(message, _host, "Конец обработки сообщения.");
             Send(logMessage);
         }
 
