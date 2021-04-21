@@ -25,10 +25,14 @@ export class AuthComponent implements OnInit {
         private localStorage: LocalStorageService,
         private photoApi: PhotoApiService,
         private photoApiNotifier: PhotoApiNotifierService) {
+            var self = this;
             const clientId = Utils.getClientId();
-            this.photoApi.setClientId(clientId);
-            this.photoApiNotifier.setClientId(clientId);
-            this.locale = this.localizationService.getLocale();
+            self.photoApi.setClientId(clientId);
+            self.photoApiNotifier.setClientId(clientId);
+            self.locale = self.localizationService.getLocale();
+            self.localizationService.addChangeLanguageCallback(function () {
+                self.locale = self.localizationService.getLocale();
+            });
     }
 
     ngOnInit(): void {

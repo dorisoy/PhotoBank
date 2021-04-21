@@ -342,13 +342,14 @@ namespace PhotoBank.Broker.Api.Controllers
 
         [HttpPost]
         [Route("getLocalization")]
-        public IActionResult GetLocalization()
+        public IActionResult GetLocalization(GetLocalizationRequest request)
         {
-            var defaultLanguage = _configuration["DefaultLanguage"];
+            var language = request.Language ?? _configuration["DefaultLanguage"];
             var reader = new LocalizationReader();
             var response = new GetLocalizationResponse
             {
-                Locale = reader.GetLocalizationFileContent(defaultLanguage)
+                Locale = reader.GetLocalizationFileContent(language),
+                AvailableLanguages = reader.GetAvailableLanguages()
             };
             return new JsonResult(response);
         }

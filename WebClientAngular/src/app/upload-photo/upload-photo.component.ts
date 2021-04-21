@@ -18,7 +18,11 @@ export class UploadPhotoComponent implements OnInit {
         private localizationService: LocalizationService,
         private photoApi: PhotoApiService
     ) {
-        this.locale = this.localizationService.getLocale();
+        var self = this;
+        self.locale = self.localizationService.getLocale();
+        self.localizationService.addChangeLanguageCallback(function () {
+            self.locale = self.localizationService.getLocale();
+        });
     }
 
     ngOnInit(): void {

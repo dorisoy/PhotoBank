@@ -1,0 +1,7 @@
+<div>
+    <ul class="available-languages">
+        <li *ngFor="let availableLanguage of availableLanguages" class="available-language">
+            <a (click)="changeLanguage(availableLanguage)">{{ availableLanguage.name }}</a>
+        </li>
+    </ul>
+</div>

@@ -16,6 +16,7 @@ import { PhotoDeleteConfirmModalComponent } from './modals/photo-delete-confirm-
 import { PhotoDescriptionModalComponent } from './modals/photo-description-modal/photo-description-modal.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { PhotoAlbumsModalComponent } from './modals/photo-albums-modal/photo-albums-modal.component';
+import { LanguageSelectorComponent } from './language-selector/language-selector.component';
 
 @NgModule({
     declarations: [
@@ -27,7 +28,8 @@ import { PhotoAlbumsModalComponent } from './modals/photo-albums-modal/photo-alb
         PhotoDeleteConfirmModalComponent,
         PhotoDescriptionModalComponent,
         UserEditComponent,
-        PhotoAlbumsModalComponent
+        PhotoAlbumsModalComponent,
+        LanguageSelectorComponent
     ],
     imports: [
         BrowserModule,

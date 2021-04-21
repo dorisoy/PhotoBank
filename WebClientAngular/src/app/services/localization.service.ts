@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import Config from 'src/config';
 
+export interface Language {
+    name: string,
+    code: string,
+}
+
 export interface Locale {
     ok: '',
     cancel: '',
@@ -35,6 +40,7 @@ export interface Locale {
 }
 
 export interface Localization {
+    availableLanguages: Language[];
     locale: Locale;
 }
 
@@ -43,7 +49,8 @@ export interface Localization {
 })
 export class LocalizationService {
 
-    private localization: any = {};
+    private localization: Localization;
+    private changeLanguageCallbacks: any[] = [];
 
     constructor(
         private httpClient: HttpClient
@@ -52,9 +59,22 @@ export class LocalizationService {
 
     init() {
         var self = this;
-        return self.httpClient.post(Config.getLocalization, null).toPromise().then(function (localization) {
+        return self.httpClient.post(Config.getLocalization, {}).toPromise().then(function (localization: Localization) {
             self.localization = localization;
         });
+    }
+
+    changeLanguage(language: string) {
+        var self = this;
+        var postData = { language: language };
+        return self.httpClient.post(Config.getLocalization, postData).toPromise().then(function (localization: Localization) {
+            self.localization = localization;
+            self.changeLanguageCallbacks.forEach(function (callback) { callback(); });
+        });
+    }
+
+    addChangeLanguageCallback(callback: any) {
+        this.changeLanguageCallbacks.push(callback);
     }
 
     getLocalization(): Localization {

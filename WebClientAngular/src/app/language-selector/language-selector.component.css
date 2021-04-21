@@ -1,0 +1,18 @@
+ul.available-languages {
+    padding: 0;
+    margin: 0;
+}
+
+li.available-language {
+    margin-left: 16px;
+    display: inline-block;
+    text-transform: lowercase;
+    font-size: 8pt;
+}
+
+li.available-language>a {
+    cursor: pointer;
+    color: #4682b4;
+    text-decoration: underline;
+    text-transform: lowercase;
+}
