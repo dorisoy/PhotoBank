@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Locale, LocalizationService } from 'src/app/services/localization.service';
 import { PhotoApiService } from 'src/app/services/photo-api.service';
 import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
 import Utils from 'src/utils';
@@ -18,20 +19,23 @@ interface Album {
 })
 export class PhotoAlbumsModalComponent implements OnInit {
 
-    private createUserAlbumsCallback: any;
-    private deleteUserAlbumsCallback: any;
-    private photoId: number;
+    locale: Locale;
+    createUserAlbumsCallback: any;
+    deleteUserAlbumsCallback: any;
+    photoId: number;
     @Input() loadedAlbums: Album[] = [];
     @Input() addedAlbums: Album[] = [];
     @Input() newAlbumName: string = "";
 
     constructor(
+        private localizationService: LocalizationService,
         private photoApi: PhotoApiService,
         private photoApiNotifier: PhotoApiNotifierService
     ) {
         const clientId = Utils.getClientId();
         this.photoApi.setClientId(clientId);
         this.photoApiNotifier.setClientId(clientId);
+        this.locale = this.localizationService.getLocale();
     }
 
     ngOnInit(): void {

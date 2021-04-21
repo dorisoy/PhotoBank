@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Locale, LocalizationService } from 'src/app/services/localization.service';
 
 @Component({
     selector: 'app-photo-delete-confirm-modal',
@@ -7,7 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PhotoDeleteConfirmModalComponent implements OnInit {
 
-    constructor() { }
+    locale: Locale;
+
+    constructor(
+        private localizationService: LocalizationService,
+    ) {
+        this.locale = this.localizationService.getLocale();
+    }
 
     ngOnInit(): void {
     }

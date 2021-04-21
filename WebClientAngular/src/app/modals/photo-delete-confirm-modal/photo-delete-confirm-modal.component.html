@@ -1,9 +1,9 @@
 <div class="root">
     <div class="info">
-        <p>Вы действительно хотите удалить выбранную фотографию ?</p>
+        <p>{{ locale.photodeleteConfirm }}</p>
     </div>
     <div class="buttons">
-        <div class="button-ok"><button [mat-dialog-close]="true">Да</button></div>
-        <div class="button-cancel"><button mat-dialog-close>Нет</button></div>
+        <div class="button-ok"><button [mat-dialog-close]="true">{{ locale.yes }}</button></div>
+        <div class="button-cancel"><button mat-dialog-close>{{ locale.no }}</button></div>
     </div>
 </div>

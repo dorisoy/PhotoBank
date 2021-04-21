@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Locale, LocalizationService } from 'src/app/services/localization.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PhotoApiService } from 'src/app/services/photo-api.service';
 import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
@@ -27,17 +28,20 @@ interface Album {
 })
 export class PhotosComponent implements OnInit {
 
+    locale: Locale;
     photos: Photo[] = [];
     albums: Album[] = [];
 
     constructor(
         private router: Router,
+        private localizationService: LocalizationService,
         private photoApi: PhotoApiService,
         private photoApiNotifier: PhotoApiNotifierService,
         private modalService: MatDialog) {
         const clientId = Utils.getClientId();
         this.photoApi.setClientId(clientId);
         this.photoApiNotifier.setClientId(clientId);
+        this.locale = this.localizationService.getLocale();
     }
 
     ngOnInit(): void {

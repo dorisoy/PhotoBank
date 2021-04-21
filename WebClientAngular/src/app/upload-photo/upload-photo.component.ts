@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Locale, LocalizationService } from 'src/app/services/localization.service';
 import { PhotoApiService } from 'src/app/services/photo-api.service';
 import Utils from 'src/utils';
 
@@ -9,12 +10,15 @@ import Utils from 'src/utils';
 })
 export class UploadPhotoComponent implements OnInit {
 
+    locale: Locale;
     files: FileList;
     filesCount: number = 0;
 
     constructor(
+        private localizationService: LocalizationService,
         private photoApi: PhotoApiService
     ) {
+        this.locale = this.localizationService.getLocale();
     }
 
     ngOnInit(): void {

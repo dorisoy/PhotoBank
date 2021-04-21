@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Locale, LocalizationService } from 'src/app/services/localization.service';
 import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
 import { PhotoApiService } from 'src/app/services/photo-api.service';
 import Utils from 'src/utils';
@@ -11,16 +12,19 @@ import Utils from 'src/utils';
 })
 export class PhotoDescriptionModalComponent implements OnInit {
 
+    locale: Locale;
     photoId: number;
     @Input() photoDescription: string = "";
 
     constructor(
+        private localizationService: LocalizationService,
         private photoApi: PhotoApiService,
         private photoApiNotifier: PhotoApiNotifierService
     ) {
         const clientId = Utils.getClientId();
         this.photoApi.setClientId(clientId);
         this.photoApiNotifier.setClientId(clientId);
+        this.locale = this.localizationService.getLocale();
     }
 
     ngOnInit(): void {

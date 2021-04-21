@@ -30,6 +30,10 @@ div.separator>span {
     color: lightslategray;
 }
 
+span.added-albums-header {
+    text-transform: lowercase;
+}
+
 div.added-albums {
     width: 100%;
 }
@@ -75,6 +79,7 @@ div.added-albums-input>input {
 div.added-albums-input>button {
     width: 75px;
     margin-left: 8px;
+    text-transform: lowercase;
 }
 
 div.added-albums-list {

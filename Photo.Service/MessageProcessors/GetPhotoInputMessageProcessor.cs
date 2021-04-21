@@ -15,7 +15,7 @@ namespace PhotoBank.Photo.Service.MessageProcessors
             var inputMessage = GetMessageAs<GetPhotoInputMessage>();
             GetPhotoOutputMessage outputMessage;
             var photo = _context.RepositoryFactory.Get<IPhotoRepository>().GetPhoto(inputMessage.PhotoId);
-            var fullPhotoPath = Path.Combine(PhotoSettings.RootPhotoPath, photo.Path);
+            var fullPhotoPath = photo != null ? Path.Combine(PhotoSettings.RootPhotoPath, photo.Path) : "";
             if (photo != null && File.Exists(fullPhotoPath))
             {
                 var fileContent = File.ReadAllBytes(fullPhotoPath);

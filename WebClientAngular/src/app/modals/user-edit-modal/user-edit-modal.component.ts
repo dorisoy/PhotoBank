@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Locale, LocalizationService } from 'src/app/services/localization.service';
 import { PhotoApiService } from 'src/app/services/photo-api.service';
 import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
 import Utils from 'src/utils';
@@ -11,6 +12,7 @@ import Utils from 'src/utils';
 })
 export class UserEditModalComponent implements OnInit {
 
+    locale: Locale;
     @Input() userName: string = "";
     @Input() userEmail: string = "";
     @Input() userAbout: string = "";
@@ -18,12 +20,14 @@ export class UserEditModalComponent implements OnInit {
     newUserPictureId: string = "";
 
     constructor(
+        private localizationService: LocalizationService,
         private photoApi: PhotoApiService,
         private photoApiNotifier: PhotoApiNotifierService
     ) {
         const clientId = Utils.getClientId();
         this.photoApi.setClientId(clientId);
         this.photoApiNotifier.setClientId(clientId);
+        this.locale = this.localizationService.getLocale();
     }
 
     ngOnInit(): void {

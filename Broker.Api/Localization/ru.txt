@@ -1,0 +1,29 @@
+﻿ok ОК
+cancel Отмена
+yes Да
+no Нет
+
+authWelcome Вход в систему
+authLogin Логин
+authPassword Пароль
+authSend Войти
+authLoginError Учетные данные не верны
+
+photosAllAlbums Все
+photosSelectAlbum Выбрать альбом
+
+uploadUploadPhotos Загрузить фотки
+uploadSelectedPhotos Выбрано фоток
+uploadSend Отправить
+
+usereditEdit Редактировать
+usereditName Имя
+usereditEmail Email
+usereditChangePicture Изменить картинку
+
+albumsAdded Добавленные
+albumsAdd Добавить
+
+photodeleteConfirm Вы действительно хотите удалить выбранную фотографию ?
+
+photodescDescription Примечания к фотке

@@ -1,10 +1,10 @@
 <div class="root">
     <div class="description-container">
-        <p>Примечания к фотке</p>
+        <p>{{ locale.photodescDescription }}</p>
         <textarea [value]="photoDescription" (input)="photoDescription = $event.target.value"></textarea>
     </div>
     <div class="buttons">
-        <div class="button-ok"><button [mat-dialog-close]="true">OK</button></div>
-        <div class="button-cancel"><button mat-dialog-close>Отмена</button></div>
+        <div class="button-ok"><button [mat-dialog-close]="true">{{ locale.ok }}</button></div>
+        <div class="button-cancel"><button mat-dialog-close>{{ locale.cancel }}</button></div>
     </div>
 </div>

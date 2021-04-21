@@ -1,12 +1,12 @@
 <div class="root">
     <div class="input">
-        <button onclick="document.getElementById('files').click();">Загрузить фотки</button>
+        <button onclick="document.getElementById('files').click();">{{ locale.uploadUploadPhotos }}</button>
         <input type="file" id="files" ref="files" multiple (change)="handleFilesUpload($event.target.files)" style="display: none;" />
     </div>
     <div class="selected-photos">
-        <span>выбрано фоток:</span><span class="files-count">{{ filesCount }}</span>
+        <span>{{ locale.uploadSelectedPhotos }}:</span><span class="files-count">{{ filesCount }}</span>
     </div>
     <div class="send">
-        <button (click)="submitFiles()">отправить</button>
+        <button (click)="submitFiles()">{{ locale.uploadSend }}</button>
     </div>
 </div>

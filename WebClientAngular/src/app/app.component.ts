@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { LocalizationService } from './services/localization.service';
 
 @Component({
     selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
     title = 'WebClientAngular';
+    @Input() isInited: boolean = false;
+
+    constructor(
+        private localizationService: LocalizationService
+    ) {
+        var self = this;
+        localizationService.init().then(() => self.isInited = true);
+    }
 }

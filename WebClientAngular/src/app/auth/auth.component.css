@@ -66,6 +66,7 @@ div.error {
     float: right;
     font-size: 10pt;
     color: red;
+    text-transform: lowercase;
 }
 
 div.error-hide {

@@ -3,9 +3,11 @@ using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using PhotoBank.Auth.Contracts;
 using PhotoBank.Broker.Api.Authentication;
 using PhotoBank.Broker.Api.Contracts;
+using PhotoBank.Broker.Api.Localization;
 using PhotoBank.Logger.Common;
 using PhotoBank.Photo.Contracts;
 using PhotoBank.QueueLogic.Contracts;
@@ -20,12 +22,14 @@ namespace PhotoBank.Broker.Api.Controllers
     {
         private readonly IAuthenticationManager _authenticationManager;
         private readonly IQueueManager _queueManager;
+        private readonly IConfiguration _configuration;
         private readonly IMessageLogger _logger;
 
-        public BrokerController(IAuthenticationManager authenticationManager, IQueueManager queueManager, IMessageLogger logger)
+        public BrokerController(IAuthenticationManager authenticationManager, IQueueManager queueManager, IConfiguration configuration, IMessageLogger logger)
         {
             _authenticationManager = authenticationManager;
             _queueManager = queueManager;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -334,6 +338,19 @@ namespace PhotoBank.Broker.Api.Controllers
             _queueManager.SendMessage(PhotoSettings.PhotoInputQueue, inputMessage);
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("getLocalization")]
+        public IActionResult GetLocalization()
+        {
+            var defaultLanguage = _configuration["DefaultLanguage"];
+            var reader = new LocalizationReader();
+            var response = new GetLocalizationResponse
+            {
+                Locale = reader.GetLocalizationFileContent(defaultLanguage)
+            };
+            return new JsonResult(response);
         }
     }
 }

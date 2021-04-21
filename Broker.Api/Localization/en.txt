@@ -1,0 +1,29 @@
+﻿ok OK
+cancel Cancel
+yes Yes
+no No
+
+authWelcome Welcome !
+authLogin Login
+authPassword Password
+authSend Sign in
+authLoginError Wrong login or password
+
+photosAllAlbums All
+photosSelectAlbum Select album
+
+uploadUploadPhotos Upload photos
+uploadSelectedPhotos Selected photos
+uploadSend Upload
+
+usereditEdit Edit
+usereditName Name
+usereditEmail Email
+usereditChangePicture Change the picture
+
+albumsAdded Added
+albumsAdd Add
+
+photodeleteConfirm Do you really want to delete selected photo ?
+
+photodescDescription Photo description

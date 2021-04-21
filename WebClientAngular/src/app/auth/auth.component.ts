@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Locale, LocalizationService } from 'src/app/services/localization.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { PhotoApiService } from 'src/app/services/photo-api.service';
 import { PhotoApiNotifierService } from 'src/app/services/photo-api-notifier.service';
@@ -13,18 +14,21 @@ import Utils from 'src/utils';
 })
 export class AuthComponent implements OnInit {
 
+    locale: Locale;
     @Input() login: string = "vinge";
     @Input() password: string = "12345";
     @Input() hasError: boolean = false;
 
     constructor(
         private router: Router,
+        private localizationService: LocalizationService,
         private localStorage: LocalStorageService,
         private photoApi: PhotoApiService,
         private photoApiNotifier: PhotoApiNotifierService) {
-        const clientId = Utils.getClientId();
-        this.photoApi.setClientId(clientId);
-        this.photoApiNotifier.setClientId(clientId);
+            const clientId = Utils.getClientId();
+            this.photoApi.setClientId(clientId);
+            this.photoApiNotifier.setClientId(clientId);
+            this.locale = this.localizationService.getLocale();
     }
 
     ngOnInit(): void {

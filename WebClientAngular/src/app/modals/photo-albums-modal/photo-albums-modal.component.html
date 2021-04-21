@@ -6,8 +6,7 @@
                     <li *ngFor="let album of loadedAlbums">
                         <div>
                             <div class="album">
-                                <input id="album_{{ album.id }}" type="checkbox" [checked]="album.isSelected"
-                                    (change)="selectAlbum(album)" />
+                                <input id="album_{{ album.id }}" type="checkbox" [checked]="album.isSelected" (change)="selectAlbum(album)" />
                                 <label for="album_{{ album.id }}" [class.deleted]="album.isDeleted == true">{{ album.name }}</label>
                             </div>
                             <div class="delete-album">
@@ -20,7 +19,7 @@
                 </ul>
             </div>
             <div class="separator" [class.separator-hide]="addedAlbums.length == 0">
-                <span>добавленные</span>
+                <span class="added-albums-header">{{ locale.albumsAdded }}</span>
             </div>
             <div class="added-albums">
                 <ul>
@@ -42,11 +41,11 @@
         </div>
         <div class="added-albums-input">
             <input type="text" [value]="newAlbumName" (change)="newAlbumName = $event.target.value" />
-            <button (click)="addAlbum()">добавить</button>
+            <button (click)="addAlbum()">{{ locale.albumsAdd }}</button>
         </div>
     </div>
     <div class="buttons">
-        <div class="button-ok"><button [mat-dialog-close]="true">OK</button></div>
-        <div class="button-cancel"><button mat-dialog-close>Отмена</button></div>
+        <div class="button-ok"><button [mat-dialog-close]="true">{{ locale.ok }}</button></div>
+        <div class="button-cancel"><button mat-dialog-close>{{ locale.cancel }}</button></div>
     </div>
 </div>

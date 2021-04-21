@@ -18,5 +18,6 @@ export default {
   createUserAlbums: apiPath + 'createUserAlbums',
   deleteUserAlbums: apiPath + 'deleteUserAlbums',
   getPhotoAlbums: apiPath + 'getPhotoAlbums',
-  setPhotoAlbums: apiPath + 'setPhotoAlbums'
+  setPhotoAlbums: apiPath + 'setPhotoAlbums',
+  getLocalization: apiPath + 'getLocalization'
 }

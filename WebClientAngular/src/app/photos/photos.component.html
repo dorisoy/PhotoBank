@@ -10,14 +10,14 @@
     <div>
         <div>
             <mat-menu #appMenu="matMenu">
-                <button class="album-all" mat-menu-item (click)="selectAlbum(null)">Все</button>
+                <button class="album-all" mat-menu-item (click)="selectAlbum(null)">{{ locale.photosAllAlbums }}</button>
                 <ul class="albums">
                     <li *ngFor="let album of albums">
                         <button mat-menu-item (click)="selectAlbum(album.id)">{{ album.name }}</button>
                     </li>
                 </ul>
             </mat-menu>
-            <button [matMenuTriggerFor]="appMenu">Выбрать альбом</button>
+            <button [matMenuTriggerFor]="appMenu">{{ locale.photosSelectAlbum }}</button>
         </div>
         <div>
             <ul class="photos">
