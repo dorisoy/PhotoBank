@@ -7,6 +7,10 @@ div.upload-photo {
     float: left;
 }
 
+div.title-right {
+    float: right;
+}
+
 div.upload-photo>div {
     margin: 0;
     position: absolute;
@@ -15,8 +19,13 @@ div.upload-photo>div {
     transform: translateY(-50%);
 }
 
+div.language-selector {
+    float: left;
+    margin-right: 40px;
+}
+
 div.user-info {
-    float: right;
+    float: left;
     width: 205px;
 }
 

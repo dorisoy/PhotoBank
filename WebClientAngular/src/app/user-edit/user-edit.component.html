@@ -1,10 +1,12 @@
 <div class="user-edit-root">
     <div class="user-edit-userinfo">
-        <div><span>{{ userName }}</span></div>
-        <div><span>{{ userEmail }}</span></div>
-        <div class="user-edit-action"><a (click)="openUserEditModal()">{{ locale.usereditEdit }}</a></div>
+        <div>
+            <div><span>{{ userName }}</span></div>
+            <div><span>{{ userEmail }}</span></div>
+            <div class="user-edit-action"><a (click)="openUserEditModal()">{{ locale.usereditEdit }}</a></div>
+        </div>
     </div>
-    <div>
-        <img [src]="userPicture" style="width: 60px; height: 60px;" />
+    <div class="user-picture">
+        <img [src]="userPicture" />
     </div>
 </div>

@@ -9,3 +9,8 @@ div.user-edit-action>a {
     text-transform: lowercase;
     font-size: 10pt;
 }
+
+div.user-picture>img {
+    width: 60px;
+    height: 60px;
+}
