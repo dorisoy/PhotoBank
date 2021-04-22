@@ -1,8 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.SignalR.Client;
-using PhotoBank.Auth.Contracts;
 using PhotoBank.Broker.Api.Contracts;
-using PhotoBank.Photo.Contracts;
 using PhotoBank.QueueLogic.Contracts;
 using PhotoBank.QueueLogic.Manager;
 
@@ -13,9 +11,11 @@ namespace PhotoBank.Broker.Api.SignalR
         public static readonly BrokerNotifier Instance = new BrokerNotifier();
 
         private HubConnection _hubConnection;
+        private readonly OutputMessageConvertersCollection _converters;
 
         private BrokerNotifier()
         {
+            _converters = new OutputMessageConvertersCollection();
         }
 
         public async void Init(IQueueManager queueManager)
@@ -27,201 +27,11 @@ namespace PhotoBank.Broker.Api.SignalR
 
         private async void OnMessageConsume(Message message)
         {
-            var callbackMethodName = GetCallbackMethodName(message);
-            var response = MakeResponse(message);
+            var response = _converters.ToResponse((OutputMessage)message);
+            var callbackMethodName = response.GetType().Name;
             var reponseContainer = new ReponseContainer { MessageClientId = message.ClientId, Response = response };
             var reponseContainerSerialized = JsonSerializer.Serialize(reponseContainer);
             await _hubConnection.InvokeAsync(callbackMethodName, reponseContainerSerialized);
-        }
-
-        private string GetCallbackMethodName(Message message)
-        {
-            if (message is LoginOutputMessage) return "LoginResponse";
-            if (message is GetUserInfoOutputMessage) return "GetUserInfoResponse";
-            if (message is SetUserInfoOutputMessage) return "SetUserInfoResponse";
-            if (message is LoadUserPictureOutputMessage) return "LoadUserPictureResponse";
-            if (message is SetUserPictureOutputMessage) return "SetUserPictureResponse";
-            if (message is GetPhotosOutputMessage) return "GetPhotosResponse";
-            if (message is GetPhotoOutputMessage) return "GetPhotoResponse";
-            if (message is UploadPhotoOutputMessage) return "UploadPhotosResponse";
-            if (message is DeletePhotoOutputMessage) return "DeletePhotoResponse";
-            if (message is GetPhotoAdditionalInfoOutputMessage) return "GetPhotoAdditionalInfoResponse";
-            if (message is SetPhotoAdditionalInfoOutputMessage) return "SetPhotoAdditionalInfoResponse";
-            if (message is GetUserAlbumsOutputMessage) return "GetUserAlbumsResponse";
-            if (message is CreateUserAlbumsOutputMessage) return "CreateUserAlbumsResponse";
-            if (message is DeleteUserAlbumsOutputMessage) return "DeleteUserAlbumsResponse";
-            if (message is GetPhotoAlbumsOutputMessage) return "GetPhotoAlbumsResponse";
-            if (message is SetPhotoAlbumsOutputMessage) return "SetPhotoAlbumsResponse";
-
-            return null;
-        }
-
-        private object MakeResponse(Message message)
-        {
-            if (message is LoginOutputMessage)
-            {
-                var outputMessage = (LoginOutputMessage)message;
-                return new LoginResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    Token = outputMessage.Token
-                };
-            }
-
-            if (message is GetUserInfoOutputMessage)
-            {
-                var outputMessage = (GetUserInfoOutputMessage)message;
-                return new GetUserInfoResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    Name = outputMessage.Name,
-                    EMail = outputMessage.EMail,
-                    About = outputMessage.About,
-                    PictureBase64Content = outputMessage.PictureBase64Content
-                };
-            }
-
-            if (message is SetUserInfoOutputMessage)
-            {
-                var outputMessage = (SetUserInfoOutputMessage)message;
-                return new GetUserInfoResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success
-                };
-            }
-
-            if (message is LoadUserPictureOutputMessage)
-            {
-                var outputMessage = (LoadUserPictureOutputMessage)message;
-                return new LoadUserPictureResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    PictureBase64Content = outputMessage.PictureBase64Content,
-                    NewPictureId = outputMessage.NewPictureId
-                };
-            }
-
-            if (message is SetUserPictureOutputMessage)
-            {
-                var outputMessage = (SetUserPictureOutputMessage)message;
-                return new SetUserPictureResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success
-                };
-            }
-
-            if (message is GetPhotosOutputMessage)
-            {
-                var outputMessage = (GetPhotosOutputMessage)message;
-                return new GetPhotosResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    PhotoIds = outputMessage.PhotoIds
-                };
-            }
-
-            if (message is GetPhotoOutputMessage)
-            {
-                var outputMessage = (GetPhotoOutputMessage)message;
-                return new GetPhotoResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = outputMessage.PhotoId,
-                    FileBase64Content = outputMessage.FileBase64Content,
-                    CreateDate = outputMessage.CreateDate
-                };
-            }
-
-            if (message is UploadPhotoOutputMessage)
-            {
-                var outputMessage = (UploadPhotoOutputMessage)message;
-                return new UploadPhotosResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = outputMessage.PhotoId
-                };
-            }
-
-            if (message is DeletePhotoOutputMessage)
-            {
-                var outputMessage = (DeletePhotoOutputMessage)message;
-                return new DeletePhotoResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = outputMessage.PhotoId
-                };
-            }
-
-            if (message is GetPhotoAdditionalInfoOutputMessage)
-            {
-                var outputMessage = (GetPhotoAdditionalInfoOutputMessage)message;
-                return new GetPhotoAdditionalInfoResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = outputMessage.PhotoId,
-                    AdditionalInfo = outputMessage.AdditionalInfo
-                };
-            }
-
-            if (message is SetPhotoAdditionalInfoOutputMessage)
-            {
-                var outputMessage = (SetPhotoAdditionalInfoOutputMessage)message;
-                return new SetPhotoAdditionalInfoResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    PhotoId = outputMessage.PhotoId
-                };
-            }
-
-            if (message is GetUserAlbumsOutputMessage)
-            {
-                var outputMessage = (GetUserAlbumsOutputMessage)message;
-                return new GetUserAlbumsResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    Albums = outputMessage.Albums
-                };
-            }
-
-            if (message is CreateUserAlbumsOutputMessage)
-            {
-                var outputMessage = (CreateUserAlbumsOutputMessage)message;
-                return new CreateUserAlbumsResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    Albums = outputMessage.Albums
-                };
-            }
-
-            if (message is DeleteUserAlbumsOutputMessage)
-            {
-                var outputMessage = (DeleteUserAlbumsOutputMessage)message;
-                return new DeleteUserAlbumsResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success
-                };
-            }
-
-            if (message is GetPhotoAlbumsOutputMessage)
-            {
-                var outputMessage = (GetPhotoAlbumsOutputMessage)message;
-                return new GetPhotoAlbumsResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success,
-                    AlbumsId = outputMessage.AlbumsId
-                };
-            }
-
-            if (message is SetPhotoAlbumsOutputMessage)
-            {
-                var outputMessage = (SetPhotoAlbumsOutputMessage)message;
-                return new SetPhotoAlbumsResponse
-                {
-                    Success = outputMessage.Result == OutputMessageResult.Success
-                };
-            }
-
-            return null;
         }
     }
 }
